@@ -14,29 +14,22 @@ public struct VideoFile: Identifiable, Equatable {
     public let thumbnail: UIImage?
 }
 
-struct VideoFileGeneratingService {}
-
-extension VideoFileGeneratingService: Service {
-    enum Command {
-        case generatingVideoFile(path: URL)
-    }
-    
-    func process(_ input: Command) -> VideoFile {
-        switch input {
-        case .generatingVideoFile(path: let path):
-            return generateVideoFile(of: path)
-        }
+struct VideoFileGenerator {
+    static func generate(with path: URL) -> VideoFile {
+        let thumbnail = generateThumbnail(for: path)
+        
+        return VideoFile(path: path, thumbnail: thumbnail)
     }
 }
 
-private extension VideoFileGeneratingService {
-    func generateVideoFile(of path: URL) -> VideoFile {
+private extension VideoFileGenerator {
+    static func generateVideoFile(of path: URL) -> VideoFile {
         let thumbnail = generateThumbnail(for: path)
         
         return VideoFile(path: path, thumbnail: thumbnail)
     }
     
-    func generateThumbnail(for path: URL) -> UIImage? {
+    static func generateThumbnail(for path: URL) -> UIImage? {
         let asset = AVURLAsset(url: path, options: nil)
         
         let imageGenerator = AVAssetImageGenerator(asset: asset)
@@ -48,7 +41,7 @@ private extension VideoFileGeneratingService {
             
             return thumbnail
         } catch let error {
-            LoggingManager.logger.log(error: error)
+            Logger.log(error: error)
             return nil
         }
     }

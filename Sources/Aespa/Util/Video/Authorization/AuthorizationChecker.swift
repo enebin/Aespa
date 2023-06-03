@@ -8,8 +8,8 @@
 import Foundation
 import AVFoundation
 
-struct AuthorizationManager {
-    func checkCaptureAuthorizationStatus() async -> Status {
+struct AuthorizationChecker {
+    static func checkCaptureAuthorizationStatus() async -> Status {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             return .permitted
@@ -34,7 +34,7 @@ struct AuthorizationManager {
     }
 }
 
-extension AuthorizationManager {
+extension AuthorizationChecker {
     enum Status {
         case permitted
         case notPermitted

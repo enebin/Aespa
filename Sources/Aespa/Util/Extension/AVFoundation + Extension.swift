@@ -83,7 +83,6 @@ extension AVCaptureSession {
 extension AVCaptureSession {
     func addMovieInput() throws -> Self {
         let session = self
-        session.beginConfiguration()
         
         // Add microphone input
         guard let videoDevice = AVCaptureDevice.default(for: AVMediaType.video) else {
@@ -97,7 +96,6 @@ extension AVCaptureSession {
         
         session.addInput(videoInput)
         
-        session.commitConfiguration()
         return self
     }
     
@@ -108,7 +106,6 @@ extension AVCaptureSession {
             throw AespaError.device(reason: .outputAlreadyExists)
         }
         
-        session.beginConfiguration()
         
         let fileOutput = AVCaptureMovieFileOutput()
         if session.canAddOutput(fileOutput) {
@@ -117,13 +114,12 @@ extension AVCaptureSession {
             throw AespaError.device(reason: .unableToSetOutput)
         }
         
-        session.commitConfiguration()
         return self
     }
     
+    @discardableResult
     func addAudioInput() throws -> Self {
         let session = self
-        session.beginConfiguration()
         
         // Add microphone input
         guard let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio) else {
@@ -137,20 +133,17 @@ extension AVCaptureSession {
         }
         
         session.addInput(audioInput)
-        
-        session.commitConfiguration()
         return self
     }
     
+    @discardableResult
     func removeAudioInput() -> Self {
         let session = self
-        session.beginConfiguration()
         
         if let audioDevice {
             session.removeInput(audioDevice)
         }
         
-        session.commitConfiguration()
         return self
     }
 }
@@ -159,11 +152,6 @@ extension AVCaptureSession {
 extension AVCaptureSession {
     func setCameraPosition(to position: AVCaptureDevice.Position) throws {
         let session = self
-        
-        session.beginConfiguration()
-        defer {
-            session.commitConfiguration()
-        }
         
         if let videoDevice {
             session.removeInput(videoDevice)
@@ -183,11 +171,6 @@ extension AVCaptureSession {
     
     func setVideoQuality(to preset: AVCaptureSession.Preset) {
         let session = self
-
-        session.beginConfiguration()
-        defer {
-            session.commitConfiguration()
-        }
         
         session.sessionPreset = preset
     }

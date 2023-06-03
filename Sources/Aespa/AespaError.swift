@@ -33,8 +33,8 @@ public extension AespaError {
                 "No camera session was created, please check your camera permissions."
         case notRunning =
                 "Session is not running. Check if you've ran the session or permitted camera permissio.n"
-        case notMovieFileOutput =
-                "Configured output is not a movid file output type"
+        case cannnotFindMovieFileOutput =
+                "Couldn't find connected output. Check if you've added connection properly"
         case cannotFindConnection =
                 "Couldn't find connection. Check if you've added connection properly"
         case cannotFindDevice =

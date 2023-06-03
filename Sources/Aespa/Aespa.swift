@@ -1,45 +1,37 @@
-////
-////  Aespa.swift
-////
-////
-////  Created by Young Bin on 2023/06/01.
-////
 //
-//import Foundation
+//  Aespa.swift
+//  
 //
-//public typealias AespaSessionStatus = Result<AespaSession, Error>
+//  Created by 이영빈 on 2023/06/02.
 //
-//public class Aespa {
-////    static public let session = AespaSession()
-//    static public var isConfigured: Bool { session != nil }
-//
-//    static public func configure(with option: AespaOption) -> AespaSessionStatus {
-//        if let session {
-//            LoggingManager.logger.log(message: "Session has already been configured somewhere else")
-//            return .success(session)
-//        }
-//
-//        let newSession = AespaSession(option: option)
-//        do {
-//            try newSession.configure()
-//            session = newSession
-//            LoggingManager.logger.log(message: "Finished configuring session.")
-//            return .success(newSession)
-//        } catch let error {
-//            return .failure(error)
-//        }
-//    }
-//
-//    static public func doctor() async -> AespaSessionStatus {
-//        guard let session else {
-//            return .failure(AespaError.session(reason: .notConfigured))
-//        }
-//
-//        do {
-//            try await session.doctor()
-//            return .success(session)
-//        } catch let error {
-//            return .failure(error)
-//        }
-//    }
-//}
+
+open class Aespa {
+    private static var core: AespaSession?
+    
+    public static func session(with option: AespaOption) -> AespaSession {
+        let newCore = AespaSession(option: option)
+        
+        core = newCore
+        return newCore
+    }
+    
+    /// This method calls `AVCaptureSession`'s `startRunning` method, which is explained:
+    /// Call this method to start the flow of data from the capture session’s inputs to its outputs.
+    /// This method is synchronous and blocks until the session starts running or it fails,
+    /// which it reports by posting an `AVCaptureSessionRuntimeError` notification.
+    public static func configure() async throws {
+        guard let core else {
+            throw AespaError.session(reason: .notConfigured)
+        }
+        
+        guard
+            case .permitted = await AuthorizationChecker.checkCaptureAuthorizationStatus()
+        else {
+            throw AespaError.permission(reason: .denied)
+        }
+        
+        try core.startSession()
+        
+        Logger.log(message: "Session configured successfully")
+    }
+}

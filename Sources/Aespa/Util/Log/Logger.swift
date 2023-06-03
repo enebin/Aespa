@@ -7,19 +7,17 @@
 
 import Foundation
 
-class LoggingManager {
-    static let logger = LoggingManager()
+class Logger {
+    static var enableLogging = true
     
-    private let showLog = true
-    
-    func log(message: String) {
-        if showLog {
+    static func log(message: String) {
+        if enableLogging {
             print("[Aespa] \(message)")
         }
     }
     
-    func log(error: Error, file: String = (#file as NSString).lastPathComponent, method: String = #function) {
-        if showLog {
+    static func log(error: Error, file: String = (#file as NSString).lastPathComponent, method: String = #function) {
+        if enableLogging {
             print("[Aespa : error] [\(file) : \(method)] - \(error) : \(error.localizedDescription)")
         }
     }

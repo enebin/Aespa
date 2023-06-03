@@ -5,7 +5,6 @@
 //  Created by Young Bin on 2023/05/25.
 //
 
-#if canImport(UIKit)
 import UIKit
 import AVFoundation
 
@@ -32,4 +31,3 @@ extension UIDeviceOrientation {
         return previewOrientation
     }
 }
-#endif

@@ -11,21 +11,15 @@ import AVFoundation
 public typealias FileNamingRule = () -> String
 
 public struct AespaOption {
-    static let undefined = AespaOption()
-    
     public let asset: Asset
     public let session: Session
     public let log: Log
     
-    init() {
-        self.init(albumName: "Aespa-default", orientation: .portrait)
-    }
-    
-    public init(albumName: String, orientation: AVCaptureVideoOrientation) {
+    public init(albumName: String, enableLogging: Bool = true) {
         self.init(
             asset: Asset(albumName: albumName),
-            session: Session(orientation: orientation),
-            log: Log())
+            session: Session(),
+            log: Log(enableLogging: enableLogging))
     }
     
     public init(asset: Asset, session: Session, log: Log) {
@@ -55,24 +49,10 @@ public extension AespaOption {
     }
     
     struct Session {
-        var orientation: AVCaptureVideoOrientation
-        var stablizationMode: AVCaptureVideoStabilizationMode
-        var videoQuality: AVCaptureSession.Preset
-        var cameraPosition: AVCaptureDevice.Position
-        var silentMode: Bool
+        var autoVideoOrientation: Bool
         
-        init(
-            orientation: AVCaptureVideoOrientation,
-            stablizationMode: AVCaptureVideoStabilizationMode = .auto,
-            videoQuality: AVCaptureSession.Preset = .high,
-            cameraPosition: AVCaptureDevice.Position = .back,
-            silentMode: Bool = false
-        ) {
-            self.orientation = orientation
-            self.stablizationMode = stablizationMode
-            self.videoQuality = videoQuality
-            self.cameraPosition = cameraPosition
-            self.silentMode = silentMode
+        init(autoVideoOrientation: Bool = true) {
+            self.autoVideoOrientation = autoVideoOrientation
         }
     }
     
