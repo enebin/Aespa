@@ -201,7 +201,7 @@ open class AespaSession {
 }
 
 private extension AespaSession {
-    /// If `count` is `0`, it returns all files
+    /// If `count` is `0`, return all files
     func fetch(count: Int) -> [VideoFile] {
         guard count >= 0 else { return [] }
         
