@@ -64,15 +64,13 @@ extension AVCaptureSession {
     }
     
     var movieOutput: AVCaptureMovieFileOutput? {
-        let session = self
-        let output = session.outputs.first as? AVCaptureMovieFileOutput
+        let output = self.outputs.first as? AVCaptureMovieFileOutput
         
         return output
     }
     
     var previewLayer: AVCaptureVideoPreviewLayer {
-        let session = self
-        let previewLayer = AVCaptureVideoPreviewLayer(session: session)
+        let previewLayer = AVCaptureVideoPreviewLayer(session: self)
         previewLayer.connection?.videoOrientation = .portrait // Fixed value for now
         
         return previewLayer
@@ -82,45 +80,39 @@ extension AVCaptureSession {
 // MARK: - Add/remove in/outputs
 extension AVCaptureSession {
     func addMovieInput() throws -> Self {
-        let session = self
-        
-        // Add microphone input
+        // Add video input
         guard let videoDevice = AVCaptureDevice.default(for: AVMediaType.video) else {
             throw AespaError.device(reason: .unableToSetInput)
         }
         
         let videoInput = try AVCaptureDeviceInput(device: videoDevice)
-        guard session.canAddInput(videoInput) else {
+        guard self.canAddInput(videoInput) else {
             throw AespaError.device(reason: .unableToSetInput)
         }
         
-        session.addInput(videoInput)
+        self.addInput(videoInput)
         
         return self
     }
     
-    func connectMovieOutput() throws -> Self {
-        let session = self
-        
-        guard session.movieOutput == nil else {
-            throw AespaError.device(reason: .outputAlreadyExists)
+    func addMovieFileOutput() throws -> Self {
+        guard self.movieOutput == nil else {
+            // return itself if output is already set
+           return self
         }
-        
         
         let fileOutput = AVCaptureMovieFileOutput()
-        if session.canAddOutput(fileOutput) {
-            session.addOutput(fileOutput)
-        } else {
+        guard self.canAddOutput(fileOutput) else {
             throw AespaError.device(reason: .unableToSetOutput)
         }
+        
+        self.addOutput(fileOutput)
         
         return self
     }
     
     @discardableResult
     func addAudioInput() throws -> Self {
-        let session = self
-        
         // Add microphone input
         guard let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio) else {
             throw AespaError.device(reason: .unableToSetInput)
@@ -128,20 +120,18 @@ extension AVCaptureSession {
         
         let audioInput = try AVCaptureDeviceInput(device: audioDevice)
         
-        guard session.canAddInput(audioInput) else {
+        guard self.canAddInput(audioInput) else {
             throw AespaError.device(reason: .unableToSetInput)
         }
         
-        session.addInput(audioInput)
+        self.addInput(audioInput)
         return self
     }
     
     @discardableResult
     func removeAudioInput() -> Self {
-        let session = self
-        
         if let audioDevice {
-            session.removeInput(audioDevice)
+            self.removeInput(audioDevice)
         }
         
         return self
