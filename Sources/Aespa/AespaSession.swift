@@ -97,14 +97,7 @@ open class AespaSession {
         .eraseToAnyPublisher()
     }
     
-    // MARK: - methods
-    func startSession() throws {
-        let tuner = SessionLaunchTuner()
-        try session.run(tuner)
-        
-        previewLayerSubject.send(previewLayer)
-    }
-    
+    // MARK: - Methods
     public func startRecording() throws {
         let fileName = option.asset.fileNameHandler()
         let filePath = try VideoFilePathProvider.requestFilePath(
@@ -129,52 +122,67 @@ open class AespaSession {
         }
     }
     
-    public func mute() throws {
+    // MARK: Chaining
+    @discardableResult
+    public func mute() throws -> Self {
         let tuner = AudioTuner(isMuted: true)
         try session.run(tuner)
+        return self
     }
-    
-    public func unmute() throws {
+
+    @discardableResult
+    public func unmute() throws -> Self {
         let tuner = AudioTuner(isMuted: false)
         try session.run(tuner)
+        return self
     }
-    
-    public func setQuality(to preset: AVCaptureSession.Preset) throws {
+
+    @discardableResult
+    public func setQuality(to preset: AVCaptureSession.Preset) throws -> Self {
         let tuner = QualityTuner(videoQuality: preset)
         try session.run(tuner)
+        return self
     }
-    
-    public func setPosition(to position: AVCaptureDevice.Position) throws {
+
+    @discardableResult
+    public func setPosition(to position: AVCaptureDevice.Position) throws -> Self {
         let tuner = CameraPositionTuner(position: position)
         try session.run(tuner)
+        return self
     }
     
-    // No throws
-    public func setOrientation(to orientation: AVCaptureVideoOrientation) {
+    // MARK: No throws
+    @discardableResult
+    public func setOrientation(to orientation: AVCaptureVideoOrientation) -> Self {
         let tuner = VideoOrientationTuner(orientation: orientation)
         try? session.run(tuner)
+        return self
     }
-    
-    public func setStabilization(mode: AVCaptureVideoStabilizationMode) {
+
+    @discardableResult
+    public func setStabilization(mode: AVCaptureVideoStabilizationMode) -> Self {
         let tuner = VideoStabilizationTuner(stabilzationMode: mode)
         try? session.run(tuner)
+        return self
     }
-    
-    public func zoom(factor: CGFloat) {
+
+    @discardableResult
+    public func zoom(factor: CGFloat) -> Self {
         let tuner = ZoomTuner(zoomFactor: factor)
         try? session.run(tuner)
+        return self
     }
     
-    public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
-        return fetch(count: limit)
-    }
-    
-    // MARK: - customizable
+    // MARK: customizable
     public func custom(_ tuner: some AespaSessionTuning) throws {
         try session.run(tuner)
     }
     
-    // MARK: - util
+    // MARK: Util
+    public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
+        return fetch(count: limit)
+    }
+    
     /// Check if essential(and minimum) condition for starting recording is satisfied
     public func doctor() async throws {
         // Check authorization status
@@ -197,6 +205,14 @@ open class AespaSession {
         guard session.videoDevice != nil else {
             throw AespaError.session(reason: .cannotFindDevice)
         }
+    }
+    
+    // MARK: Internal
+    func startSession() throws {
+        let tuner = SessionLaunchTuner()
+        try session.run(tuner)
+        
+        previewLayerSubject.send(previewLayer)
     }
 }
 
