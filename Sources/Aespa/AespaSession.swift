@@ -21,6 +21,8 @@ open class AespaSession {
     private let videoFileBufferSubject: CurrentValueSubject<Result<VideoFile, Error>?, Never>
     private let previewLayerSubject: CurrentValueSubject<AVCaptureVideoPreviewLayer?, Never>
     
+    public let previewLayer: AVCaptureVideoPreviewLayer
+    
     convenience init(option: AespaOption) {
         let session = AespaCoreSession(option: option)
         Logger.enableLogging = option.log.enableLogging
@@ -50,6 +52,8 @@ open class AespaSession {
         self.videoFileBufferSubject = .init(nil)
         self.previewLayerSubject = .init(nil)
         
+        self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
+        
         // Add first file to buffer if it exists
         if let firstVideoFile = fetch(count: 1).first {
             self.videoFileBufferSubject.send(.success(firstVideoFile))
@@ -57,11 +61,8 @@ open class AespaSession {
     }
     
     // MARK: vars
-    public var previewLayer: AVCaptureVideoPreviewLayer {
-        let previewLayer = AVCaptureVideoPreviewLayer(session: session)
-        previewLayer.connection?.videoOrientation = .portrait
-        
-        return previewLayer
+    public var isRunning: Bool {
+        session.isRunning
     }
     
     public var maxZoomFactor: CGFloat? {
@@ -118,7 +119,9 @@ open class AespaSession {
         try recorder.stopRecording()
         
         if let currentRecordingURL {
-            Task(priority: .utility) { try await albumManager.addToAlbum(filePath: currentRecordingURL) }
+            Task(priority: .utility) {
+                try await albumManager.addToAlbum(filePath: currentRecordingURL)
+            }
         }
     }
     
