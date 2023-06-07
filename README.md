@@ -1,5 +1,4 @@
 ![Aespa. Ready-to-go package for easy and intuitive camera handling](Assets/header.jpg)
-Aespa. Ready-to-go package for easy and intuitive camera handling
 
 ## Introduction
 Aespa is a robust and intuitive Swift package for video capturing, built with a focus on the ease of setting up and usage. 
@@ -78,92 +77,9 @@ Task(priority: .background) {
 > Please ensure to call `configure` within a background execution context. Neglecting to do so may lead to significantly reduced responsiveness in your application. ([reference](https://developer.apple.com/documentation/avfoundation/avcapturesession/1388185-startrunning))
 
 ### Now you can use...
-<details>
-<summary>Methods - description</summary>
-
-#### Audio
-
-```swift
-mute() throws -> Self
-```
-- Used to mute the audio during a recording session. 
-
-```swift
-unmute() throws -> Self
-```
-- Used to add the audio for a recording session.
-
-#### Options
-
-```swift
-setQuality(to preset: AVCaptureSession.Preset) throws -> Self
-```
-- Used to adjust the quality of the recording session. 
-- It accepts a parameter of type `AVCaptureSession.Preset` which is used to set the quality. 
-
-```swift
-setPosition(to position: AVCaptureDevice.Position) throws -> Self
-```
-- Used to set the position of the capture device (camera). 
-- It accepts a parameter of type `AVCaptureDevice.Position` which can be front or back.
-
-```swift
-setOrientation(to orientation: AVCaptureVideoOrientation) -> Self
-```
-- Used to set the video orientation during a recording session.
-- It accepts a parameter of type `AVCaptureVideoOrientation`.
-
-```swift
-setStabilization(mode: AVCaptureVideoStabilizationMode) -> Self
-```
-- Used to set the video stabilization mode. 
-- It accepts a parameter of type `AVCaptureVideoStabilizationMode`. 
-
-#### Zooming
-
-```swift
-zoom(factor: CGFloat) -> Self
-```
-- Used to adjust the zoom level during a recording session. 
-- It accepts a `CGFloat` as an input for the zoom level.
-
-#### Utilities
-
-```swift
-fetchVideoFiles(limit: Int = 0) -> [VideoFile]
-```
-- Used to fetch video files that were recorded. 
-- It accepts an optional parameter to limit the number of fetched video files. 
-- If no parameter is given, it returns all the recorded video files.
-
-```swift
-doctor() async throws
-```
-- This function is used to check the minimum required conditions for starting a recording session. 
-- It checks for capture authorization status, session running status, connection existence, and device attachment. 
-- If any of these checks fail, it throws an `AespaError`.
-
-</details>
-
-
-<details>
-<summary>Publishers - description</summary>
-
-```swift
-videoFilePublisher: AnyPublisher<Result<VideoFile, Error>, Never>
-```
-- This publisher emits an event every time a video file is recorded.
-- The event contains a `Result` that wraps a `VideoFile` instance in case of success, or an `Error` in case of failure. 
-- The publisher never completes, which means it continues to emit events as long as the `AespaSession` instance is alive.
-
-```swift
-previewLayerPublisher: AnyPublisher<AVCaptureVideoPreviewLayer, Never>
-```
-- This publisher emits an `AVCaptureVideoPreviewLayer` instance whenever the preview layer is updated. 
-- The `AVCaptureVideoPreviewLayer` instance can be used to display a camera preview on the user interface. 
-- Similar to the `videoFilePublisher`, this publisher never completes and continues to emit events as long as the `AespaSession` instance is alive.
-
-</details>
+See more details in our :book: [wiki](https://github.com/enebin/Aespa/wiki)!
+- [Aespa's method](https://github.com/enebin/Aespa/wiki/Aespa's-method)
+- [Aespa's publisher](https://github.com/enebin/Aespa/wiki/Aespa's-publisher)
 
 
 ## Implementation Exapmles
@@ -202,6 +118,58 @@ aespaSession.videoFilePublisher
     }
     .store(in: &subsriptions)
 ```
+Based on the code provided, here is a draft for a README file that includes this functionality:
+
+## SwiftUI Integration
+
+Aespa also provides a super-easy way to integrate video capture functionality into SwiftUI applications. AespaSession includes a helper method to create a SwiftUI `UIViewRepresentable` that provides a preview of the video capture.
+
+### Example usage
+
+```swift
+import Aespa
+import SwiftUI
+
+struct VideoContentView: View {
+    @ObservedObject private var viewModel = VideoContentViewModel()
+    
+    var body: some View {
+        ZStack {
+            viewModel.preview
+                .frame(minWidth: 0,
+                       maxWidth: .infinity,
+                       minHeight: 0,
+                       maxHeight: .infinity)
+                .edgesIgnoringSafeArea(.all)
+        }
+    }
+}
+
+class VideoContentViewModel: ObservableObject {
+    let aespaSession: AespaSession
+    var preview: some UIViewRepresentable {
+        aespaSession.preview()
+    }
+    
+    init() {
+        let option = AespaOption(albumName: "Aespa-Demo")
+        self.aespaSession = Aespa.session(with: option)
+        
+        Task(priority: .background) {
+            do {
+                try await Aespa.configure()
+            } catch let error {
+                print(error)
+            }
+        }
+    }
+}
+```
+> **Note**: You can find the demo app in here([Aespa-iOS](https://github.com/enebin/Aespa-iOS))
+
+> **Note**: In UIKit, you can access the preview through the `previewLayer` property of `AespaSession`. 
+> 
+> For more details, refer to the [AVCaptureVideoPreviewLayer](https://developer.apple.com/documentation/avfoundation/avcapturevideopreviewlayer).in the official Apple documentation.
 
 ## Contributing
 Contributions to Aespa are warmly welcomed. Please feel free to submit a pull request or create an issue if you find a bug or have a feature request.
