@@ -61,8 +61,12 @@ open class AespaSession {
     }
     
     // MARK: vars
-    public var isRunning: Bool {
-        coreSession.isRunning
+    public var captureSession: AVCaptureSession {
+        return coreSession
+    }
+    
+    public var isMuted: Bool {
+        coreSession.audioDeviceInput == nil
     }
     
     public var maxZoomFactor: CGFloat? {
@@ -99,7 +103,102 @@ open class AespaSession {
     }
     
     // MARK: - Methods
-    public func startRecording() throws {
+    // MARK: No throws for convenience - not recommended!
+    public func startRecording() {
+        do {
+            try startRecordingWithError()
+        } catch let error {
+            Logger.log(error: error)
+        }
+    }
+
+    public func stopRecording() {
+        do {
+            try stopRecordingWithError()
+        } catch let error {
+            Logger.log(error: error)
+        }
+    }
+    
+    @discardableResult
+    public func setQuality(to preset: AVCaptureSession.Preset) -> Self {
+        do {
+            try self.setQualityWithError(to: preset)
+        } catch let error {
+            Logger.log(error: error)
+        }
+        
+        return self
+    }
+    
+    @discardableResult
+    public func mute() -> Self {
+        do {
+            try self.muteWithError()
+        } catch let error {
+            Logger.log(error: error)
+        }
+        
+        return self
+    }
+
+    @discardableResult
+    public func unmute() -> Self {
+        do {
+            try self.unmuteWithError()
+        } catch let error {
+            Logger.log(error: error)
+        }
+        
+        return self
+    }
+
+    @discardableResult
+    public func setPosition(to position: AVCaptureDevice.Position) -> Self {
+        do {
+            try self.setPositionWithError(to: position)
+        } catch let error {
+            Logger.log(error: error)
+        }
+        
+        return self
+    }
+
+    @discardableResult
+    public func setOrientation(to orientation: AVCaptureVideoOrientation) -> Self {
+        do {
+            try self.setOrientationWithError(to: orientation)
+        } catch let error {
+            Logger.log(error: error)
+        }
+        
+        return self
+    }
+
+    @discardableResult
+    public func setStabilization(mode: AVCaptureVideoStabilizationMode) -> Self {
+        do {
+            try self.setStabilizationWithError(mode: mode)
+        } catch let error {
+            Logger.log(error: error)
+        }
+        
+        return self
+    }
+
+    @discardableResult
+    public func zoom(factor: CGFloat) -> Self {
+        do {
+            try self.zoomWithError(factor: factor)
+        } catch let error {
+            Logger.log(error: error)
+        }
+        
+        return self
+    }
+
+    // MARK: Throwing
+    public func startRecordingWithError() throws {
         let fileName = option.asset.fileNameHandler()
         let filePath = try VideoFilePathProvider.requestFilePath(
             from: fileManager,
@@ -107,7 +206,7 @@ open class AespaSession {
             fileName: fileName)
         
         if option.session.autoVideoOrientation {
-            setOrientation(to: UIDevice.current.orientation.toVideoOrientation)
+            try setOrientationWithError(to: UIDevice.current.orientation.toVideoOrientation)
         }
         
         try recorder.startRecording(in: filePath)
@@ -115,7 +214,7 @@ open class AespaSession {
         currentRecordingURL = filePath
     }
     
-    public func stopRecording() throws {
+    public func stopRecordingWithError() throws {
         try recorder.stopRecording()
         
         if let currentRecordingURL {
@@ -125,54 +224,53 @@ open class AespaSession {
         }
     }
     
-    // MARK: Chaining
     @discardableResult
-    public func mute() throws -> Self {
+    public func muteWithError() throws -> Self {
         let tuner = AudioTuner(isMuted: true)
         try coreSession.run(tuner)
         return self
     }
 
     @discardableResult
-    public func unmute() throws -> Self {
+    public func unmuteWithError() throws -> Self {
         let tuner = AudioTuner(isMuted: false)
         try coreSession.run(tuner)
         return self
     }
 
+
     @discardableResult
-    public func setQuality(to preset: AVCaptureSession.Preset) throws -> Self {
+    public func setQualityWithError(to preset: AVCaptureSession.Preset) throws -> Self {
         let tuner = QualityTuner(videoQuality: preset)
         try coreSession.run(tuner)
         return self
     }
 
     @discardableResult
-    public func setPosition(to position: AVCaptureDevice.Position) throws -> Self {
+    public func setPositionWithError(to position: AVCaptureDevice.Position) throws -> Self {
         let tuner = CameraPositionTuner(position: position)
         try coreSession.run(tuner)
         return self
     }
-    
-    // MARK: No throws
+
     @discardableResult
-    public func setOrientation(to orientation: AVCaptureVideoOrientation) -> Self {
+    public func setOrientationWithError(to orientation: AVCaptureVideoOrientation) throws -> Self {
         let tuner = VideoOrientationTuner(orientation: orientation)
-        try? coreSession.run(tuner)
+        try coreSession.run(tuner)
         return self
     }
 
     @discardableResult
-    public func setStabilization(mode: AVCaptureVideoStabilizationMode) -> Self {
+    public func setStabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> Self {
         let tuner = VideoStabilizationTuner(stabilzationMode: mode)
-        try? coreSession.run(tuner)
+        try coreSession.run(tuner)
         return self
     }
 
     @discardableResult
-    public func zoom(factor: CGFloat) -> Self {
+    public func zoomWithError(factor: CGFloat) throws -> Self {
         let tuner = ZoomTuner(zoomFactor: factor)
-        try? coreSession.run(tuner)
+        try coreSession.run(tuner)
         return self
     }
     
