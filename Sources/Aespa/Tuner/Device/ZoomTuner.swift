@@ -7,10 +7,11 @@
 
 import AVFoundation
 
-struct ZoomTuner: AespaDeviceInputTuning {
+struct ZoomTuner: AespaDeviceTuning {
+    var needLock = true
     var zoomFactor: CGFloat
 
-    func tune(_ deviceInput: AVCaptureDeviceInput) {
-        deviceInput.setZoomFactor(factor: zoomFactor)
+    func tune(_ device: AVCaptureDevice) {
+        device.setZoomFactor(factor: zoomFactor)
     }
 }

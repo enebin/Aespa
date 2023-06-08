@@ -11,7 +11,7 @@ struct QualityTuner: AespaSessionTuning {
     let needTransaction = true
     var videoQuality: AVCaptureSession.Preset // default zoom factor
 
-    func tune(_ session: AVCaptureSession) {
+    func tune(_ session: some AespaCoreSessionRepresentable) {
         session.setVideoQuality(to: self.videoQuality)
     }
 }

@@ -10,7 +10,7 @@ import AVFoundation
 struct SessionLaunchTuner: AespaSessionTuning {
     let needTransaction = false
     
-    func tune(_ session: AVCaptureSession) throws {
+    func tune(_ session: some AespaCoreSessionRepresentable) throws {
         guard session.isRunning == false else { return }
         
         try session

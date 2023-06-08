@@ -12,7 +12,7 @@ import AVFoundation
 
 open class AespaSession {
     private let option: AespaOption
-    private let session: AespaCoreSession
+    private let coreSession: AespaCoreSession
     private let recorder: AespaCoreRecorder
     private let fileManager: FileManager
     private let albumManager: AespaCoreAlbumManager
@@ -44,7 +44,7 @@ open class AespaSession {
         albumManager: AespaCoreAlbumManager
     ) {
         self.option = option
-        self.session = session
+        self.coreSession = session
         self.recorder = recorder
         self.fileManager = fileManager
         self.albumManager = albumManager
@@ -62,16 +62,16 @@ open class AespaSession {
     
     // MARK: vars
     public var isRunning: Bool {
-        session.isRunning
+        coreSession.isRunning
     }
     
     public var maxZoomFactor: CGFloat? {
-        guard let videoDeviceInput = session.videoDevice else { return nil }
+        guard let videoDeviceInput = coreSession.videoDeviceInput else { return nil }
         return videoDeviceInput.device.activeFormat.videoMaxZoomFactor
     }
     
     public var currentZoomFactor: CGFloat? {
-        guard let videoDeviceInput = session.videoDevice else { return nil }
+        guard let videoDeviceInput = coreSession.videoDeviceInput else { return nil }
         return videoDeviceInput.device.videoZoomFactor
     }
     
@@ -129,28 +129,28 @@ open class AespaSession {
     @discardableResult
     public func mute() throws -> Self {
         let tuner = AudioTuner(isMuted: true)
-        try session.run(tuner)
+        try coreSession.run(tuner)
         return self
     }
 
     @discardableResult
     public func unmute() throws -> Self {
         let tuner = AudioTuner(isMuted: false)
-        try session.run(tuner)
+        try coreSession.run(tuner)
         return self
     }
 
     @discardableResult
     public func setQuality(to preset: AVCaptureSession.Preset) throws -> Self {
         let tuner = QualityTuner(videoQuality: preset)
-        try session.run(tuner)
+        try coreSession.run(tuner)
         return self
     }
 
     @discardableResult
     public func setPosition(to position: AVCaptureDevice.Position) throws -> Self {
         let tuner = CameraPositionTuner(position: position)
-        try session.run(tuner)
+        try coreSession.run(tuner)
         return self
     }
     
@@ -158,27 +158,27 @@ open class AespaSession {
     @discardableResult
     public func setOrientation(to orientation: AVCaptureVideoOrientation) -> Self {
         let tuner = VideoOrientationTuner(orientation: orientation)
-        try? session.run(tuner)
+        try? coreSession.run(tuner)
         return self
     }
 
     @discardableResult
     public func setStabilization(mode: AVCaptureVideoStabilizationMode) -> Self {
         let tuner = VideoStabilizationTuner(stabilzationMode: mode)
-        try? session.run(tuner)
+        try? coreSession.run(tuner)
         return self
     }
 
     @discardableResult
     public func zoom(factor: CGFloat) -> Self {
         let tuner = ZoomTuner(zoomFactor: factor)
-        try? session.run(tuner)
+        try? coreSession.run(tuner)
         return self
     }
     
     // MARK: customizable
     public func custom(_ tuner: some AespaSessionTuning) throws {
-        try session.run(tuner)
+        try coreSession.run(tuner)
     }
     
     // MARK: Util
@@ -195,17 +195,17 @@ open class AespaSession {
             throw AespaError.permission(reason: .denied)
         }
         
-        guard session.isRunning else {
+        guard coreSession.isRunning else {
             throw AespaError.session(reason: .notRunning)
         }
         
         // Check if connection exists
-        guard session.movieOutput != nil else {
+        guard coreSession.movieFileOutput != nil else {
             throw AespaError.session(reason: .cannotFindConnection)
         }
         
         // Check if device is attached
-        guard session.videoDevice != nil else {
+        guard coreSession.videoDeviceInput != nil else {
             throw AespaError.session(reason: .cannotFindDevice)
         }
     }
@@ -213,7 +213,7 @@ open class AespaSession {
     // MARK: Internal
     func startSession() throws {
         let tuner = SessionLaunchTuner()
-        try session.run(tuner)
+        try coreSession.run(tuner)
         
         previewLayerSubject.send(previewLayer)
     }

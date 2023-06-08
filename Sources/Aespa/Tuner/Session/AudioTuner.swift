@@ -11,7 +11,7 @@ struct AudioTuner: AespaSessionTuning {
     let needTransaction = true
     var isMuted: Bool // default zoom factor
     
-    func tune(_ session: AVCaptureSession) throws {
+    func tune(_ session: some AespaCoreSessionRepresentable) throws {
         if isMuted {
             session.removeAudioInput()
         } else {

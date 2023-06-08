@@ -9,21 +9,20 @@ import Combine
 import Foundation
 import AVFoundation
 
+/// - Warning: Do not `begin` or `commit` session change yourself. It can cause deadlock.
+///     Instead, use `needTransaction` flag
 public protocol AespaSessionTuning {
-    /// - Warning: Do not `begin` or `commit` session change
-    /// It can cause deadlock
     var needTransaction: Bool { get }
-    func tune(_ session: AVCaptureSession) throws
+    func tune(_ session: some AespaCoreSessionRepresentable) throws
 }
 
 protocol AespaConnectionTuning {
-    /// - Warning: Do not `begin` or `commit` session change
-    /// It can cause deadlock
     func tune(_ connection: AVCaptureConnection) throws
 }
 
-protocol AespaDeviceInputTuning {
-    /// - Warning: Do not `begin` or `commit` session change
-    /// It can cause deadlock
-    func tune(_ deviceInput: AVCaptureDeviceInput) throws
+/// - Warning: Do not `lock` or `release` device yourself. It can cause deadlock.
+///     Instead, use `needLock` flag
+protocol AespaDeviceTuning {
+    var needLock: Bool { get }
+    func tune(_ device: AVCaptureDevice) throws
 }
