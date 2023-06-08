@@ -21,11 +21,4 @@ class Logger {
             print("[Aespa : error] [\(file) : \(method)] - \(error) : \(error.localizedDescription)")
         }
     }
-    
-    enum Level {
-        case debug
-        case info
-        case warning
-        case error
-    }
 }
