@@ -1,0 +1,15 @@
+@Tutorials(name: "Configuring Aespa") {
+    @Intro(title: "Meet Aespa") {
+        Aespa helps building video capturing functionalities like a charm. Dive in and see for yourself!
+        
+        @Image(source: slothcreator-intro.png, alt: "An illustration of 3 iPhones in portrait mode, displaying the UI of finding, creating, and taking care of a sloth in Slothy — the sample app that you build in this collection of tutorials.")
+    }
+    
+    @Chapter(name: "Configure Aespa") {
+        @Image(source: ch1-main.png, alt: "Chapter thumbnail")
+        
+        Craft your demo app and explore unprecedented convenience in video camera configuration.
+        
+        @TutorialReference(tutorial: "doc:Configure-Aespa")
+    }
+}
