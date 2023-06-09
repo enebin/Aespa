@@ -10,6 +10,14 @@ import Combine
 import Foundation
 import AVFoundation
 
+/// The `AespaSession` is a Swift interface which provides a wrapper around the `AVFoundation`'s `AVCaptureSession`,
+/// simplifying its use for video capture.
+///
+/// The interface allows you to start and stop recording, manage device input and output,
+/// change video quality and camera's position, etc.
+/// For more option, you can use customization method to handle session with your own logic.
+///
+/// It also includes functionalities to fetch video files.
 open class AespaSession {
     private let option: AespaOption
     private let coreSession: AespaCoreSession
