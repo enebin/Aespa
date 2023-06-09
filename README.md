@@ -1,5 +1,9 @@
 ![Aespa. Ready-to-go package for easy and intuitive camera handling](Assets/header.jpg)
 
+### Quick link
+- Latest documentation can be found in [here](https://enebin.github.io/Aespa/documentation/aespa/)
+- Demo app & usage example can be found in [here](https://github.com/enebin/Aespa-iOS/tree/main/Aespa-iOS)
+
 ## Introduction
 Aespa is a robust and intuitive Swift package for video capturing, built with a focus on the ease of setting up and usage. 
 
@@ -9,7 +13,11 @@ Aespa is a robust and intuitive Swift package for video capturing, built with a 
 
 
 ## Features
-### User-friendly Interface
+Aespa is designed to be easy to use for both beginners and experienced developers.  If you're new to video recording on iOS or if you're looking to simplify your existing recording setup, Aespa could be the perfect fit for your project.
+
+<details>
+<summary> ✅ Super easy to use </summary>
+
 *Before*
 ``` mermaid
 graph LR
@@ -28,7 +36,11 @@ graph LR
 
 - Aespa provides an accessible API that abstracts the complexity of `AVFoundation`, allowing you to manage video capturing tasks with ease.
 
-### Adaptable Configuration & Custom Tuning
+</details>
+
+<details>
+<summary> ✅ Offer essential preset configuration & customization </summary>
+
 ``` mermaid
 graph TD
 AS["AespaSession"]
@@ -40,7 +52,11 @@ AS --> D["Fetching asset files"]
 - With Aespa, you can readily adjust a variety of settings. 
 - For a higher degree of customization, it also supports the creation of custom tunings for the recording session, offering flexible control over your recording needs.
 
-### Reactive Programming & Async Support
+</details>
+
+<details>
+<summary> ✅ `Combine` & `async` support </summary>
+
 ``` mermaid
 graph LR;
     A[Session update] -->|Trigger| B[previewLayerPublisher, ...]
@@ -51,17 +67,18 @@ graph LR;
 - Aespa's API leverages Swift's latest concurrency model to provide asynchronous functions, ensuring smooth and efficient execution of tasks.
 - Additionally, it is built with `Combine` in mind, enabling you to handle updates such as video output and preview layer  reactively using publishers and subscribers.
 
-### Error Handling
+</details>
+
+<details>
+<summary> ✅ Comprehensive error handling </summary>
+
 - The package provides comprehensive error handling, allowing you to build robust applications with minimal effort.
 
-> **Note**
-> Aespa is designed to be easy to use for both beginners and experienced developers. 
-> 
-> If you're new to video recording on iOS or if you're looking to simplify your existing recording setup, Aespa could be the perfect fit for your project.
+</details>
 
 ## Usage
 ### Requirements
-- Swift 5.4+
+- Swift 5.5+
 - iOS 14.0+
 
 ### Getting started
@@ -76,10 +93,27 @@ Task(priority: .background) {
 > **Warning**
 > Please ensure to call `configure` within a background execution context. Neglecting to do so may lead to significantly reduced responsiveness in your application. ([reference](https://developer.apple.com/documentation/avfoundation/avcapturesession/1388185-startrunning))
 
-### Now you can use...
-See more details in our :book: [wiki](https://github.com/enebin/Aespa/wiki)!
-- [Aespa's method](https://github.com/enebin/Aespa/wiki/Aespa's-method)
-- [Aespa's publisher](https://github.com/enebin/Aespa/wiki/Aespa's-publisher)
+### Functionality
+Aespa offers the following functionalities for managing a video recording session:
+
+
+| Function                     | Description                                       |
+|------------------------------|---------------------------------------------------|
+| `startRecording`               | Start the video recording session.                  |
+| `stopRecording`                | Stop the ongoing video recording session and add the video file to the album. |
+| `mute`                         | Mute the audio input for the video recording session. |
+| `unmute`                       | Unmute the audio input for the video recording session. |
+| `setOrientation`               | Set the orientation for the video recording session. |
+| `setPosition`                  | Set the camera position for the video recording session. |
+| `setQuality`                   | Set the video quality preset for the recording session. |
+| `setStabilization`             | Set the stabilization mode for the video recording session. |
+| `zoom`                         | Set the zoom factor for the video recording session. |
+| `fetchVideoFiles`              | Fetch a list of recorded video files.             |
+| `doctor`                       | Check if essential conditions for recording are satisfied. |
+
+
+and so on. You can find the latest documetation in [here](https://enebin.github.io/Aespa/documentation/aespa/)
+.Implementation examples are decribed in [here](##Implementation-Exapmles)
 
 
 ## Implementation Exapmles
