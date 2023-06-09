@@ -11,7 +11,9 @@ let package = Package(
             name: "Aespa",
             targets: ["Aespa"]),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/apple/swift-docc-plugin", .upToNextMinor(from: "1.2.0")),
+    ],
     targets: [
         .target(
             name: "Aespa",
