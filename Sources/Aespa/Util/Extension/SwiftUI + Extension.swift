@@ -10,6 +10,11 @@ import SwiftUI
 import AVFoundation
 
 public extension AespaSession {
+    /// A `SwiftUI` `View` that you use to display video as it is being captured by an input device.
+    ///
+    /// - Parameter gravity: Define `AVLayerVideoGravity` for preview's orientation. `.resizeAspectFill` by default.
+    ///
+    /// - Returns: `some UIViewRepresentable` which can coordinate other `View` components
     func preview(gravity: AVLayerVideoGravity = .resizeAspectFill) -> some UIViewRepresentable {
         AespaSwiftUIPreview(with: previewLayerPublisher, gravity: gravity)
     }
