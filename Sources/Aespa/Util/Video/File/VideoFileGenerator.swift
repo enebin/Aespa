@@ -8,9 +8,20 @@
 import UIKit
 import AVFoundation
 
+/// `VideoFile` represents a video file with its associated metadata.
+///
+/// This struct holds information about the video file, including a unique identifier (`id`),
+/// the path to the video file (`path`), and an optional thumbnail image (`thumbnail`)
+/// generated from the video.
 public struct VideoFile: Identifiable, Equatable {
+    /// A unique identifier for the video file.
     public let id = UUID()
+    
+    /// The path to the video file.
     public let path: URL
+    
+    /// An optional thumbnail image generated from the video.
+    /// This will be `nil` if the thumbnail could not be generated for some reason.
     public let thumbnail: UIImage?
 }
 

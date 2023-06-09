@@ -5,6 +5,7 @@
 //  Created by 이영빈 on 2023/06/02.
 //
 
+/// Top-level class that serves as the main access point for video recording sessions.
 open class Aespa {
     /// The core `AespaSession` that manages the actual video recording session.
     private static var core: AespaSession?
