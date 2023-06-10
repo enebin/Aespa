@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy the document to Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Build document
         run: |
-          ./build-doc.sh $OUTPUT_PATH
+          .github/workflows/scripts/build-doc.sh $OUTPUT_PATH
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
