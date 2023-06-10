@@ -477,6 +477,11 @@ extension AespaSession {
         
         previewLayerSubject.send(previewLayer)
     }
+    
+    func terminateSession() throws {
+        let tuner = SessionTerminationTuner()
+        try coreSession.run(tuner)
+    }
 }
 
 private extension AespaSession {
