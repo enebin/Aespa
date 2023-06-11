@@ -17,7 +17,7 @@ class AespaCoreSession: AVCaptureSession {
         self.option = option
     }
     
-    func run(_ tuner: some AespaSessionTuning) throws {
+    func run<T: AespaSessionTuning>(_ tuner: T) throws {
         if tuner.needTransaction { self.beginConfiguration() }
         defer {
             if tuner.needTransaction { self.commitConfiguration() }
@@ -26,7 +26,7 @@ class AespaCoreSession: AVCaptureSession {
         try tuner.tune(self)
     }
     
-    func run(_ tuner: some AespaDeviceTuning) throws {
+    func run<T: AespaDeviceTuning>(_ tuner: T) throws {
         guard let device = self.videoDeviceInput?.device else {
             throw AespaError.device(reason: .invalid)
         }
@@ -39,7 +39,7 @@ class AespaCoreSession: AVCaptureSession {
         try tuner.tune(device)
     }
     
-    func run(_ tuner: some AespaConnectionTuning) throws {
+    func run<T: AespaConnectionTuning>(_ tuner: T) throws {
         guard let connection = self.connections.first else {
             throw AespaError.session(reason: .cannotFindConnection)
         }
@@ -47,7 +47,7 @@ class AespaCoreSession: AVCaptureSession {
         try tuner.tune(connection)
     }
     
-    func run(_ processor: some AespaFileOutputProcessing) throws {
+    func run<T: AespaFileOutputProcessing>(_ processor: T) throws {
         guard let output = self.movieFileOutput else {
             throw AespaError.session(reason: .cannotFindConnection)
         }

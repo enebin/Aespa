@@ -11,7 +11,7 @@ struct CameraPositionTuner: AespaSessionTuning {
     let needTransaction = true
     var position: AVCaptureDevice.Position
     
-    func tune(_ session: some AespaCoreSessionRepresentable) throws {
+    func tune<T: AespaCoreSessionRepresentable>(_ session: T) throws {
         try session.setCameraPosition(to: position)
     }
 }

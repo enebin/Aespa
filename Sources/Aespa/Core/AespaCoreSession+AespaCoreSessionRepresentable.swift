@@ -10,7 +10,13 @@ import AVFoundation
 
 /// `AespaCoreSessionRepresentable` defines a set of requirements for classes or structs that interact with `AVCaptureDeviceInput`
 /// and `AVCaptureMovieFileOutput` to setup and configure a camera session for recording videos.
-public protocol AespaCoreSessionRepresentable: AVCaptureSession {
+public protocol AespaCoreSessionRepresentable {
+    /// The `AVCaptureSession` that coordinates the flow of data from AV input devices to outputs.
+    var session: AVCaptureSession { get }
+
+    /// A Boolean value indicating whether the capture session is running.
+    var isRunning: Bool { get }
+    
     /// The `AVCaptureDeviceInput` representing the audio input.
     var audioDeviceInput: AVCaptureDeviceInput? { get }
     
@@ -23,31 +29,42 @@ public protocol AespaCoreSessionRepresentable: AVCaptureSession {
     /// The `AVCaptureVideoPreviewLayer` for previewing the video being recorded.
     var previewLayer: AVCaptureVideoPreviewLayer { get }
     
+    /// Starts the capture session. This method is synchronous and blocks until the session starts.
+    func startRunning()
+    
+    /// Stops the capture session. This method is synchronous and blocks until the session stops.
+    func stopRunning()
+    
     /// Adds movie input to the recording session.
-    func addMovieInput() throws -> Self
+    /// Throws an error if the operation fails.
+    func addMovieInput() throws
     
     /// Removes movie input from the recording session if it exists.
-    func removeMovieInput() -> Self
+    func removeMovieInput()
     
     /// Adds audio input to the recording session.
-    func addAudioInput() throws -> Self
+    /// Throws an error if the operation fails.
+    func addAudioInput() throws
     
     /// Removes audio input from the recording session if it exists.
-    func removeAudioInput() -> Self
+    func removeAudioInput()
     
     /// Adds movie file output to the recording session.
-    func addMovieFileOutput() throws -> Self
+    /// Throws an error if the operation fails.
+    func addMovieFileOutput() throws
     
     /// Sets the position of the camera.
+    /// Throws an error if the operation fails.
     func setCameraPosition(to position: AVCaptureDevice.Position) throws
     
     /// Sets the video quality preset.
     func setVideoQuality(to preset: AVCaptureSession.Preset)
 }
 
-
 extension AespaCoreSession: AespaCoreSessionRepresentable {
     // MARK: - Vars
+    var session: AVCaptureSession { self }
+
     var audioDeviceInput: AVCaptureDeviceInput? {
         return self.inputs
             .compactMap { $0 as? AVCaptureDeviceInput } // Get inputs
@@ -76,8 +93,8 @@ extension AespaCoreSession: AespaCoreSessionRepresentable {
     }
     
     // MARK: - Input and output
-    @discardableResult
-    func addMovieInput() throws -> Self {
+    
+    func addMovieInput() throws {
         // Add video input
         guard let videoDevice = AVCaptureDevice.default(for: AVMediaType.video) else {
             throw AespaError.device(reason: .unableToSetInput)
@@ -89,26 +106,22 @@ extension AespaCoreSession: AespaCoreSessionRepresentable {
         }
         
         self.addInput(videoInput)
-        
-        return self
     }
     
-    @discardableResult
-    func removeMovieInput() -> Self {
+    
+    func removeMovieInput()  {
         guard
             let videoDevice = AVCaptureDevice.default(for: AVMediaType.video),
             let videoInput = try? AVCaptureDeviceInput(device: videoDevice)
         else {
-            return self
+            return
         }
 
         self.removeInput(videoInput)
-        
-        return self
     }
     
-    @discardableResult
-    func addAudioInput() throws -> Self {
+    
+    func addAudioInput() throws {
         // Add microphone input
         guard let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio) else {
             throw AespaError.device(reason: .unableToSetInput)
@@ -121,23 +134,20 @@ extension AespaCoreSession: AespaCoreSessionRepresentable {
         }
         
         self.addInput(audioInput)
-        return self
     }
     
-    @discardableResult
-    func removeAudioInput() -> Self {
+    
+    func removeAudioInput() {
         if let audioDeviceInput {
             self.removeInput(audioDeviceInput)
         }
-        
-        return self
     }
     
-    @discardableResult
-    func addMovieFileOutput() throws -> Self {
+    
+    func addMovieFileOutput() throws {
         guard self.movieFileOutput == nil else {
             // return itself if output is already set
-           return self
+           return
         }
         
         let fileOutput = AVCaptureMovieFileOutput()
@@ -146,8 +156,6 @@ extension AespaCoreSession: AespaCoreSessionRepresentable {
         }
         
         self.addOutput(fileOutput)
-        
-        return self
     }
     
     // MARK: - Option related

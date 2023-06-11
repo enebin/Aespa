@@ -13,7 +13,7 @@ import AVFoundation
 ///     Instead, use `needTransaction` flag
 public protocol AespaSessionTuning {
     var needTransaction: Bool { get }
-    func tune(_ session: some AespaCoreSessionRepresentable) throws
+    func tune<T: AespaCoreSessionRepresentable>(_ session: T) throws
 }
 
 protocol AespaConnectionTuning {

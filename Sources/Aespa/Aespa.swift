@@ -19,6 +19,10 @@ open class Aespa {
         let newCore = AespaSession(option: option)
         
         core = newCore
+        
+        // Check logging option
+        Logger.enableLogging = option.log.loggingEnabled
+        
         return newCore
     }
     
