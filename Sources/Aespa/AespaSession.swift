@@ -36,7 +36,6 @@ open class AespaSession {
 
     convenience init(option: AespaOption) {
         let session = AespaCoreSession(option: option)
-        Logger.enableLogging = option.log.enableLogging
         
         self.init(
             option: option,
@@ -133,7 +132,6 @@ open class AespaSession {
         .eraseToAnyPublisher()
     }
 
-    
     // MARK: - Methods
     // MARK: No throws for convenience - not recommended!
     /// Starts the recording of a video session.
@@ -267,6 +265,25 @@ open class AespaSession {
         
         return self
     }
+    
+    /// Sets the autofocusing mode for the video recording session.
+    ///
+    /// - Parameter mode: The focus mode for the capture device.
+    ///
+    /// If an error occurs during the operation, the error is logged.
+    ///
+    /// - Returns: `AespaSession`, for chaining calls.
+    @discardableResult
+    public func setAutofocusing(mode: AVCaptureDevice.FocusMode) -> AespaSession {
+        do {
+            try self.setAutofocusingWithError(mode: mode)
+        } catch let error {
+            Logger.log(error: error) // Logs any errors encountered during the operation
+        }
+        
+        return self
+    }
+
 
     /// Sets the zoom factor for the video recording session.
     ///
@@ -299,7 +316,7 @@ open class AespaSession {
             directoryName: option.asset.albumName,
             fileName: fileName)
         
-        if option.session.autoVideoOrientation {
+        if option.session.autoVideoOrientationEnabled {
             try setOrientationWithError(to: UIDevice.current.orientation.toVideoOrientation)
         }
         
@@ -403,7 +420,22 @@ open class AespaSession {
         try coreSession.run(tuner)
         return self
     }
+    
+    /// Sets the autofocusing mode for the video recording session.
+    ///
+    /// - Parameter mode: The focus mode(`AVCaptureDevice.FocusMode`) for the session.
+    ///
+    /// - Throws: `AespaError` if the session fails to run the tuner.
+    ///
+    /// - Returns: `AespaSession`, for chaining calls.
+    @discardableResult
+    public func setAutofocusingWithError(mode: AVCaptureDevice.FocusMode) throws -> AespaSession {
+        let tuner = AutoFocusTuner(mode: mode)
+        try coreSession.run(tuner)
+        return self
+    }
 
+    
     /// Sets the zoom factor for the video recording session.
     ///
     /// - Parameter factor: A `CGFloat` value indicating the zoom factor to be set.
@@ -424,7 +456,7 @@ open class AespaSession {
     ///
     /// - Parameter tuner: An instance that conforms to `AespaSessionTuning`.
     /// - Throws: If the session fails to run the tuner.
-    public func custom(_ tuner: some AespaSessionTuning) throws {
+    public func custom<T: AespaSessionTuning>(_ tuner: T) throws {
         try coreSession.run(tuner)
     }
 
@@ -476,6 +508,15 @@ extension AespaSession {
         try coreSession.run(tuner)
         
         previewLayerSubject.send(previewLayer)
+    }
+    
+    func terminateSession() throws {
+        let tuner = SessionTerminationTuner()
+        try coreSession.run(tuner)
+    }
+    
+    func handleOption(_ option: AespaOption) {
+        option.session.autoVideoOrientationEnabled
     }
 }
 

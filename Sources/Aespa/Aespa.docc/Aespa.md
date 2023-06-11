@@ -1,9 +1,8 @@
 # ``Aespa``. 
-Easiest camera handling package ever
+Easiest camera handling you've ever experienced
 
 ![header](header.jpg)
 
-### Overview
 Aespa is a robust and intuitive Swift package for video capturing, built with a focus on the ease of setting up and usage. 
 
 **`Aespa` provides a high-level API over Apple's `AVFoundation` framework**:

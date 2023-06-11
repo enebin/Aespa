@@ -76,24 +76,7 @@ graph LR;
 
 </details>
 
-## Usage
-### Requirements
-- Swift 5.5+
-- iOS 14.0+
-
-### Getting started
-``` Swift
-let aespaOption = AespaOption(albumName: "YOUR_ALBUM_NAME")
-let aespaSession = Aespa.session(with: aespaOption)
-
-Task(priority: .background) {
-    try await Aespa.configure()
-}
-```
-> **Warning**
-> Please ensure to call `configure` within a background execution context. Neglecting to do so may lead to significantly reduced responsiveness in your application. ([reference](https://developer.apple.com/documentation/avfoundation/avcapturesession/1388185-startrunning))
-
-### Functionality
+## Functionality
 Aespa offers the following functionalities for managing a video recording session:
 
 
@@ -110,6 +93,23 @@ Aespa offers the following functionalities for managing a video recording sessio
 | `zoom`                         | Set the zoom factor for the video recording session. |
 | `fetchVideoFiles`              | Fetch a list of recorded video files.             |
 | `doctor`                       | Check if essential conditions for recording are satisfied. |
+
+## Usage
+### Requirements
+- Swift 5.5+
+- iOS 14.0+
+
+### Getting started
+``` Swift
+let aespaOption = AespaOption(albumName: "YOUR_ALBUM_NAME")
+let aespaSession = Aespa.session(with: aespaOption)
+
+Task(priority: .background) {
+    try await Aespa.configure()
+}
+```
+> **Warning**
+> Please ensure to call `configure` within a background execution context. Neglecting to do so may lead to significantly reduced responsiveness in your application. ([reference](https://developer.apple.com/documentation/avfoundation/avcapturesession/1388185-startrunning))
 
 
 and so on. You can find the latest documetation in [here](https://enebin.github.io/Aespa/documentation/aespa/)

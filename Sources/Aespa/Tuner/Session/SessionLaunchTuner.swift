@@ -10,13 +10,12 @@ import AVFoundation
 struct SessionLaunchTuner: AespaSessionTuning {
     let needTransaction = false
     
-    func tune(_ session: some AespaCoreSessionRepresentable) throws {
+    func tune<T: AespaCoreSessionRepresentable>(_ session: T) throws {
         guard session.isRunning == false else { return }
         
-        try session
-            .addMovieInput()
-            .addMovieFileOutput()
-            .startRunning()
+        try session.addMovieInput()
+        try session.addMovieFileOutput()
+        session.startRunning()
     }
 }
 

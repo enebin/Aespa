@@ -20,7 +20,7 @@ class AespaCoreRecorder: NSObject {
         self.core = core
     }
     
-    func run(processor: some AespaFileOutputProcessing) throws {
+    func run<T: AespaFileOutputProcessing>(processor: T) throws {
         guard let output = core.movieFileOutput else {
             throw AespaError.session(reason: .cannotFindConnection)
         }

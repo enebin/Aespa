@@ -27,7 +27,7 @@ class AespaCoreAlbumManager {
         self.photoLibrary = photoLibrary
     }
     
-    func run(processor: some AespaAssetProcessing) async throws {
+    func run<T: AespaAssetProcessing>(processor: T) async throws {
         let album = try AlbumImporter.getAlbum(name: albumName, in: photoLibrary)
         
         try await processor.process(photoLibrary, album)

@@ -19,6 +19,10 @@ open class Aespa {
         let newCore = AespaSession(option: option)
         
         core = newCore
+        
+        // Check logging option
+        Logger.enableLogging = option.log.loggingEnabled
+        
         return newCore
     }
     
@@ -43,6 +47,19 @@ open class Aespa {
         
         try core.startSession()
         
-        Logger.log(message: "Session configured successfully")
+        Logger.log(message: "Session is configured successfully")
+    }
+    
+    /// Terminates the current `AespaSession`.
+    ///
+    /// If a session has been started, it stops the session and releases resources.
+    /// After termination, a new session needs to be configured to start recording again.
+    public static func terminate() throws {
+        guard let core = core else {
+            return
+        }
+        
+        try core.terminateSession()
+        Logger.log(message: "Session is terminated successfully")
     }
 }

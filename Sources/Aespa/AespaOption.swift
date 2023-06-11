@@ -27,7 +27,7 @@ public struct AespaOption {
         self.init(
             asset: Asset(albumName: albumName),
             session: Session(),
-            log: Log(enableLogging: enableLogging))
+            log: Log(loggingEnabled: enableLogging))
     }
     
     /// Creates an `AespaOption` with specified asset, session and log options.
@@ -44,19 +44,15 @@ public struct AespaOption {
 }
 
 public extension AespaOption {
-    /// `Asset` provides options for configuring the video assets, such as the album name,
-    /// file naming rule, and file extension.
+    /// `Asset` provides options for configuring the video assets, such as the album name, file naming rule, and file extension.
     struct Asset {
+        /// The name of the album where recorded videos will be saved.
         let albumName: String
+        /// The file extension for the recorded videos.
         let fileNameHandler: FileNamingRule
+        /// The rule for naming video files.
         let fileExtension: String
         
-        /// Creates an `Asset` option with specified album name, file extension, and file naming rule.
-        ///
-        /// - Parameters:
-        ///   - albumName: The name of the album where recorded videos will be saved.
-        ///   - fileExtension: The file extension for the recorded videos.
-        ///   - fileNameHandler: The rule for naming video files.
         init(
             albumName: String,
             fileExtension: FileExtension = .mp4,
@@ -70,20 +66,13 @@ public extension AespaOption {
     
     /// `Session` provides options for configuring the video recording session, such as automatic video orientation.
     struct Session {
-        var autoVideoOrientation: Bool
-        
-        /// Creates a `Session` option with specified automatic video orientation.
-        ///
-        /// - Parameters:
-        ///   - autoVideoOrientation: A Boolean value that determines whether video orientation should be automatic.
-        init(autoVideoOrientation: Bool = true) {
-            self.autoVideoOrientation = autoVideoOrientation
-        }
+        /// A Boolean value that determines whether video orientation should be automatic.
+        var autoVideoOrientationEnabled: Bool = true
     }
     
     /// `Log` provides an option for enabling or disabling logging.
     struct Log {
-        var enableLogging: Bool = true
+        var loggingEnabled: Bool = true
     }
 }
 
