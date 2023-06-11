@@ -11,7 +11,6 @@
 		07939F932A343B8D00DFA8BB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07939F922A343B8D00DFA8BB /* ContentView.swift */; };
 		07939F952A343B8E00DFA8BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07939F942A343B8E00DFA8BB /* Assets.xcassets */; };
 		07939F982A343B8E00DFA8BB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07939F972A343B8E00DFA8BB /* Preview Assets.xcassets */; };
-		0795E1212A35A3AC001AD4DC /* AespaSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0795E1202A35A3AC001AD4DC /* AespaSessionTests.swift */; };
 		07F359B12A34449B00F4EF16 /* Aespa in Frameworks */ = {isa = PBXBuildFile; productRef = 07F359B02A34449B00F4EF16 /* Aespa */; };
 		07F359B82A347CA400F4EF16 /* Cuckoo in Frameworks */ = {isa = PBXBuildFile; productRef = 07F359B72A347CA400F4EF16 /* Cuckoo */; };
 		07F359BA2A347DF600F4EF16 /* GeneratedMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F359B92A347DF600F4EF16 /* GeneratedMocks.swift */; };
@@ -44,7 +43,6 @@
 		07939F9D2A343B8E00DFA8BB /* Aespa-iOS-testTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Aespa-iOS-testTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07939FA72A343B8E00DFA8BB /* Aespa-iOS-testUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Aespa-iOS-testUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0795E11E2A35A0E9001AD4DC /* Aespa */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Aespa; path = ..; sourceTree = "<group>"; };
-		0795E1202A35A3AC001AD4DC /* AespaSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AespaSessionTests.swift; sourceTree = "<group>"; };
 		07F359B92A347DF600F4EF16 /* GeneratedMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratedMocks.swift; sourceTree = "<group>"; };
 		07F359BD2A3489C000F4EF16 /* SessionTunerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTunerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -121,7 +119,6 @@
 			children = (
 				0795E11F2A35A2FC001AD4DC /* Tuner */,
 				07F359AA2A3443EC00F4EF16 /* Mock */,
-				0795E1202A35A3AC001AD4DC /* AespaSessionTests.swift */,
 			);
 			path = "Aespa-iOS-testTests";
 			sourceTree = "<group>";
@@ -304,7 +301,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				07F359BE2A3489C000F4EF16 /* SessionTunerTests.swift in Sources */,
-				0795E1212A35A3AC001AD4DC /* AespaSessionTests.swift in Sources */,
 				07F359BA2A347DF600F4EF16 /* GeneratedMocks.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

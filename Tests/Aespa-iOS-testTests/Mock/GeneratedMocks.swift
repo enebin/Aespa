@@ -1,4 +1,4 @@
-// MARK: - Mocks generated from file: ../Sources/Aespa/Aespa.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Aespa.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  Aespa.swift
@@ -81,7 +81,7 @@ public class AespaStub: Aespa {
 
 
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/AespaError.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/AespaError.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  VideoRecorderError.swift
@@ -93,7 +93,7 @@ import Cuckoo
 
 import Foundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/AespaOption.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/AespaOption.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  AespaOption.swift
@@ -106,7 +106,7 @@ import Cuckoo
 import AVFoundation
 import Foundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/AespaSession.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/AespaSession.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  AespaSession.swift
@@ -1611,7 +1611,7 @@ public class AespaSessionStub: AespaSession {
 
 
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Core/AespaCoreAlbumManager.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreAlbumManager.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  AespaCoreAlbumManager.swift
@@ -1744,7 +1744,7 @@ import Photos
 
 
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Core/AespaCoreRecorder.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreRecorder.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  AespaCoreRecorder.swift
@@ -1878,7 +1878,7 @@ import Foundation
 
 
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Core/AespaCoreSession+AespaCoreSessionRepresentable.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreSession+AespaCoreSessionRepresentable.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  AespaCoreSession + AespaCoreSessionRepresentable.swift
@@ -2667,7 +2667,7 @@ public class AespaCoreSessionRepresentableStub: AespaCoreSessionRepresentable {
 
 
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Core/AespaCoreSession.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreSession.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  AespaCoreSessionManager.swift
@@ -3008,7 +3008,7 @@ import UIKit
 
 
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Processor/AespaProcessing.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Processor/AespaProcessing.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  AespaProcessing.swift
@@ -3262,7 +3262,7 @@ import Photos
 
 
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Processor/Asset/AssetAdditionProcessor.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Processor/Asset/AssetAdditionProcessor.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  AssetAddingProcessor.swift
@@ -3275,7 +3275,7 @@ import Cuckoo
 import Foundation
 import Photos
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Processor/Record/FinishRecordProcessor.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Processor/Record/FinishRecordProcessor.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  FinishRecordingProcessor.swift
@@ -3288,7 +3288,7 @@ import Cuckoo
 import AVFoundation
 import Combine
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Processor/Record/StartRecordProcessor.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Processor/Record/StartRecordProcessor.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  RecordingStarter.swift
@@ -3301,7 +3301,7 @@ import Cuckoo
 import AVFoundation
 import Combine
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Tuner/AespaTuning.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/AespaTuning.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  AespaTuning.swift
@@ -3759,7 +3759,7 @@ public class AespaSessionTuningStub: AespaSessionTuning {
 
 
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Tuner/Connection/VideoOrientationTuner.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Connection/VideoOrientationTuner.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  VideoOrientationTuner.swift
@@ -3771,7 +3771,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Tuner/Connection/VideoStabilizationTuner.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Connection/VideoStabilizationTuner.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  VideoStabilizationTuner.swift
@@ -3783,7 +3783,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Tuner/Device/AutoFocusTuner.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Device/AutoFocusTuner.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  AutoFocusTuner.swift
@@ -3798,7 +3798,7 @@ import Cuckoo
 import AVFoundation
 import Foundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Tuner/Device/ZoomTuner.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Device/ZoomTuner.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  ZoomTuner.swift
@@ -3810,7 +3810,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Tuner/Session/AudioTuner.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/AudioTuner.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  File.swift
@@ -3822,7 +3822,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Tuner/Session/CameraPositionTuner.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/CameraPositionTuner.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  CameraPositionTuner.swift
@@ -3834,7 +3834,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Tuner/Session/QualityTuner.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/QualityTuner.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  QualityTuner.swift
@@ -3846,7 +3846,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Tuner/Session/SessionLaunchTuner.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/SessionLaunchTuner.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  SessionLauncher.swift
@@ -3858,7 +3858,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Tuner/Session/SessionTerminationTuner.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/SessionTerminationTuner.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  SessionTerminationTuner.swift
@@ -3872,7 +3872,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Util/Extension/AVFoundation+Extension.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Extension/AVFoundation+Extension.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  AVFoundation + Extension.swift
@@ -3886,7 +3886,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Util/Extension/SwiftUI+Extension.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Extension/SwiftUI+Extension.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  SwiftUI + Extension.swift
@@ -3902,7 +3902,7 @@ import AVFoundation
 import Combine
 import SwiftUI
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Util/Extension/UIKit+Extension.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Extension/UIKit+Extension.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  UIKit + Extension.swift
@@ -3917,7 +3917,7 @@ import Cuckoo
 import AVFoundation
 import UIKit
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Util/Log/Logger.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Log/Logger.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  LoggingManager.swift
@@ -4000,7 +4000,7 @@ import Foundation
 
 
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Util/Video/Album/AlbumImporter.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Video/Album/AlbumImporter.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  VideoAlbumProvider.swift
@@ -4016,7 +4016,7 @@ import Foundation
 import Photos
 import UIKit
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Util/Video/Authorization/AuthorizationChecker.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Video/Authorization/AuthorizationChecker.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  AuthorizationManager.swift
@@ -4031,7 +4031,7 @@ import Cuckoo
 import AVFoundation
 import Foundation
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Util/Video/File/VideoFileGenerator.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Video/File/VideoFileGenerator.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  File.swift
@@ -4046,7 +4046,7 @@ import Cuckoo
 import AVFoundation
 import UIKit
 
-// MARK: - Mocks generated from file: ../Sources/Aespa/Util/Video/File/VideoFilePathProvider.swift at 2023-06-11 07:02:50 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Video/File/VideoFilePathProvider.swift at 2023-06-11 07:19:03 +0000
 
 //
 //  VideoFilePathProvidingService.swift
