@@ -27,14 +27,9 @@ struct AssetAdditionProcessor: AespaAssetProcessing {
 
     /// Add the video to the app's album roll
     func add(video path: URL, to album: PHAssetCollection, _ photoLibrary: PHPhotoLibrary) async throws -> Void {
-        func isVideo(fileUrl: URL) -> Bool {
-            let asset = AVAsset(url: fileUrl)
-            let tracks = asset.tracks(withMediaType: AVMediaType.video)
-
-            return !tracks.isEmpty
+        guard isVideo(fileUrl: path) else {
+            throw AespaError.album(reason: .notVideoURL)
         }
-        
-        print(isVideo(fileUrl: path))
         
         return try await photoLibrary.performChanges {
             guard
@@ -49,5 +44,14 @@ struct AssetAdditionProcessor: AespaAssetProcessing {
             let enumeration = NSArray(object: placeholder)
             albumChangeRequest.addAssets(enumeration)
         }
+    }
+}
+
+private extension AssetAdditionProcessor {
+    func isVideo(fileUrl: URL) -> Bool {
+        let asset = AVAsset(url: fileUrl)
+        let tracks = asset.tracks(withMediaType: AVMediaType.video)
+
+        return !tracks.isEmpty
     }
 }
