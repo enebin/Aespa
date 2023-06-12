@@ -18,7 +18,7 @@ struct AlbumImporter {
         let collection = PHAssetCollection.fetchAssetCollections(
             with: .album, subtype: .any, options: fetchOptions
         )
-        
+
         if let album = collection.firstObject {
             return album
         } else {

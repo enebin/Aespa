@@ -25,7 +25,6 @@ open class AespaSession {
     private let fileManager: FileManager
     private let albumManager: AespaCoreAlbumManager
     
-    private var currentRecordingURL: URL?
     private let videoFileBufferSubject: CurrentValueSubject<Result<VideoFile, Error>?, Never>
     private let previewLayerSubject: CurrentValueSubject<AVCaptureVideoPreviewLayer?, Never>
     
@@ -148,17 +147,29 @@ open class AespaSession {
         }
     }
 
-    /// Stops the ongoing video recording session and attempts to add the video file to the album.
+    /// Stops the current video recording session and attempts to save the video file to the album.
     ///
-    /// If an error occurs during the operation, the error is logged.
-    public func stopRecording() {
-        do {
-            try stopRecordingWithError()
-        } catch let error {
-            Logger.log(error: error) // Logs any errors encountered during the operation
+    /// Any errors that occur during the process are captured and logged.
+    ///
+    /// - Parameter completionHandler: A closure that handles the result of the operation.
+    ///      It's called with a `Result` object that encapsulates either a `VideoFile` instance.
+    ///
+    /// - Note: It is recommended to use the ``stopRecording() async throws`` for more straightforward error handling.
+    public func stopRecording(
+        _ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }
+    ) {
+        Task(priority: .utility) {
+            do {
+                let videoFile = try await self.stopRecording()
+                return completionHandler(.success(videoFile))
+            } catch let error {
+                Logger.log(error: error)
+                return completionHandler(.failure(error))
+            }
         }
     }
 
+    
     /// Mutes the audio input for the video recording session.
     ///
     /// If an error occurs during the operation, the error is logged.
@@ -321,23 +332,21 @@ open class AespaSession {
         }
         
         try recorder.startRecording(in: filePath)
-        
-        currentRecordingURL = filePath
     }
-
+    
+    
     /// Stops the ongoing video recording session and attempts to add the video file to the album.
     ///
+    /// Supporting `async`, you can use this method in Swift Concurrency's context
+    ///
     /// - Throws: `AespaError` if stopping the recording fails.
-    public func stopRecordingWithError() throws {
-        try recorder.stopRecording()
+    public func stopRecording() async throws -> VideoFile {
+        let videoFilePath = try await recorder.stopRecording()
+        try await self.albumManager.addToAlbum(filePath: videoFilePath)
         
-        if let currentRecordingURL {
-            Task(priority: .utility) {
-                try await albumManager.addToAlbum(filePath: currentRecordingURL)
-            }
-        }
+        return VideoFileGenerator.generate(with: videoFilePath)
     }
-
+    
     /// Mutes the audio input for the video recording session.
     ///
     /// - Throws: `AespaError` if the session fails to run the tuner.

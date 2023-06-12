@@ -15,6 +15,7 @@ class AespaCoreRecorder: NSObject {
     
     /// Notify the end of recording
     private let fileIOResultSubject = PassthroughSubject<Result<URL, Error>, Never>()
+    private var fileIOResultSubsciption: Cancellable?
     
     init(core: AespaCoreSession) {
         self.core = core
@@ -38,8 +39,21 @@ extension AespaCoreRecorder {
         try run(processor: StartRecordProcessor(filePath: filePath, delegate: self))
     }
     
-    func stopRecording() throws {
+    func stopRecording() async throws -> URL {
         try run(processor: FinishRecordProcessor())
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            fileIOResultSubsciption = fileIOResultSubject.sink { _ in
+                // Do nothing on completion; we're only interested in values.
+            } receiveValue: { result in
+                switch result {
+                case .success(let url):
+                    continuation.resume(returning: url)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 }
 
