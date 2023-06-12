@@ -16,9 +16,15 @@ public protocol AespaSessionTuning {
     func tune<T: AespaCoreSessionRepresentable>(_ session: T) throws
 }
 
+public extension AespaSessionTuning {
+    var needTransaction: Bool { true }
+}
+
+
 protocol AespaConnectionTuning {
     func tune(_ connection: AVCaptureConnection) throws
 }
+
 
 /// - Warning: Do not `lock` or `release` device yourself. It can cause deadlock.
 ///     Instead, use `needLock` flag

@@ -465,7 +465,7 @@ open class AespaSession {
     ///
     /// - Parameter tuner: An instance that conforms to `AespaSessionTuning`.
     /// - Throws: If the session fails to run the tuner.
-    public func custom<T: AespaSessionTuning>(_ tuner: T) throws {
+    public func customize<T: AespaSessionTuning>(_ tuner: T) throws {
         try coreSession.run(tuner)
     }
 
