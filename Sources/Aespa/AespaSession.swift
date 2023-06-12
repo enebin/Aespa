@@ -473,6 +473,8 @@ open class AespaSession {
     // MARK: - Utilities
     /// Fetches a list of recorded video files. The number of files fetched is controlled by the limit parameter.
     ///
+    /// It is recommended not to be called in main thread.
+    ///
     /// - Parameter limit: An integer specifying the maximum number of video files to fetch.
     ///     If the limit is set to 0 (default), all recorded video files will be fetched.
     /// - Returns: An array of `VideoFile` instances.
@@ -523,13 +525,41 @@ extension AespaSession {
         let tuner = SessionTerminationTuner()
         try coreSession.run(tuner)
     }
-    
-    func handleOption(_ option: AespaOption) {
-        option.session.autoVideoOrientationEnabled
-    }
 }
 
 private extension AespaSession {
+    /// If `count` is `0`, return all existing files
+    func fetch(count: Int) async -> [VideoFile] {
+        guard count >= 0 else { return [] }
+        
+        return await withCheckedContinuation { [weak self] continuation in
+            guard let self else { return }
+            
+            DispatchQueue.global(qos: .utility).async {
+                do {
+                    let directoryPath = try VideoFilePathProvider.requestDirectoryPath(from: self.fileManager,
+                                                                                       name: self.option.asset.albumName)
+                    
+                    let filePaths = try self.fileManager.contentsOfDirectory(atPath: directoryPath.path)
+                    let filePathPrefix = count == 0 ? filePaths : Array(filePaths.prefix(count))
+                    
+                    let files = filePathPrefix
+                        .map { name -> URL in
+                            return directoryPath.appendingPathComponent(name)
+                        }
+                        .map { filePath -> VideoFile in
+                            return VideoFileGenerator.generate(with: filePath)
+                        }
+                    
+                    continuation.resume(returning: files)
+                } catch let error {
+                    Logger.log(error: error)
+                    continuation.resume(returning: [])
+                }
+            }
+        }
+    }
+    
     /// If `count` is `0`, return all existing files
     func fetch(count: Int) -> [VideoFile] {
         guard count >= 0 else { return [] }
