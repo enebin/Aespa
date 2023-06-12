@@ -64,5 +64,7 @@ public extension AespaError {
                 "Unable to access album"
         case videoNotExist =
                 "Trying to delete or fetch the video that does not exist."
+        case notVideoURL =
+                "Received URL is not a video type."
     }
 }

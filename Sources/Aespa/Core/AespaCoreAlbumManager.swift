@@ -13,6 +13,7 @@ class AespaCoreAlbumManager {
     // Dependencies
     private let photoLibrary: PHPhotoLibrary
     private let albumName: String
+    private var album: PHAssetCollection?
     
     convenience init(albumName: String) {
         let photoLibrary = PHPhotoLibrary.shared()
@@ -28,9 +29,12 @@ class AespaCoreAlbumManager {
     }
     
     func run<T: AespaAssetProcessing>(processor: T) async throws {
-        let album = try AlbumImporter.getAlbum(name: albumName, in: photoLibrary)
-        
-        try await processor.process(photoLibrary, album)
+        if let album {
+            try await processor.process(photoLibrary, album)
+        } else {
+            album = try AlbumImporter.getAlbum(name: albumName, in: photoLibrary)
+            try await run(processor: processor)
+        }
     }
 }
 

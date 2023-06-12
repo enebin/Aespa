@@ -13,7 +13,7 @@ struct AssetAdditionProcessor: AespaAssetProcessing {
     
     func process(_ photoLibrary: PHPhotoLibrary, _ assetCollection: PHAssetCollection) async throws {
         guard
-            case .authorized = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
+            case .authorized = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
         else {
             let error = AespaError.album(reason: .unabledToAccess)
             Logger.log(error: error)
@@ -22,20 +22,36 @@ struct AssetAdditionProcessor: AespaAssetProcessing {
         
         let album = assetCollection
         try await add(video: filePath, to: album, photoLibrary)
+        Logger.log(message: "File is added to album")
     }
 
     /// Add the video to the app's album roll
     func add(video path: URL, to album: PHAssetCollection, _ photoLibrary: PHPhotoLibrary) async throws -> Void {
-        return try await photoLibrary.performChanges {
-            if
-                let assetChangeRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: path),
-                let placeholder = assetChangeRequest.placeholderForCreatedAsset
-            {
-                let albumChangeRequest = PHAssetCollectionChangeRequest(for: album)
-                let enumeration = NSArray(object: placeholder)
-                
-                albumChangeRequest?.addAssets(enumeration)
-            }
+        guard isVideo(fileUrl: path) else {
+            throw AespaError.album(reason: .notVideoURL)
         }
+        
+        return try await photoLibrary.performChanges {
+            guard
+                let assetChangeRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: path),
+                let placeholder = assetChangeRequest.placeholderForCreatedAsset,
+                let albumChangeRequest = PHAssetCollectionChangeRequest(for: album)
+            else {
+                Logger.log(error: AespaError.album(reason: .unabledToAccess))
+                return
+            }
+            
+            let enumeration = NSArray(object: placeholder)
+            albumChangeRequest.addAssets(enumeration)
+        }
+    }
+}
+
+private extension AssetAdditionProcessor {
+    func isVideo(fileUrl: URL) -> Bool {
+        let asset = AVAsset(url: fileUrl)
+        let tracks = asset.tracks(withMediaType: AVMediaType.video)
+
+        return !tracks.isEmpty
     }
 }

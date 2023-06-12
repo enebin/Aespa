@@ -12,7 +12,7 @@ import AVFoundation
 /// and `AVCaptureMovieFileOutput` to setup and configure a camera session for recording videos.
 public protocol AespaCoreSessionRepresentable {
     /// The `AVCaptureSession` that coordinates the flow of data from AV input devices to outputs.
-    var session: AVCaptureSession { get }
+    var avCaptureSession: AVCaptureSession { get }
 
     /// A Boolean value indicating whether the capture session is running.
     var isRunning: Bool { get }
@@ -63,7 +63,7 @@ public protocol AespaCoreSessionRepresentable {
 
 extension AespaCoreSession: AespaCoreSessionRepresentable {
     // MARK: - Vars
-    var session: AVCaptureSession { self }
+    var avCaptureSession: AVCaptureSession { self }
 
     var audioDeviceInput: AVCaptureDeviceInput? {
         return self.inputs

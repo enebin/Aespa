@@ -26,8 +26,6 @@ extension UIDeviceOrientation {
             previewOrientation = .portrait
         }
         
-        print(previewOrientation.rawValue)
-        
         return previewOrientation
     }
 }
