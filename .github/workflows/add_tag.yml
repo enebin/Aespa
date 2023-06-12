@@ -1,23 +1,29 @@
 name: Create Tag and Release
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches: [main]
     paths: ['release/*']
+
+  workflow_dispatch:
+
+permissions:
+  contents: 'read'
+  id-token: 'write'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # fetch complete history so that tags can be generated correctly
 
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_HEAD_REF#refs/heads/release/}
-        
+        run: echo ::set-output name=VERSION::$(git describe --tags --abbrev=0)
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
