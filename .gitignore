@@ -11,3 +11,7 @@ DerivedData/
 Aespa-test-env/cuckoo_generator
 
 Aespa-test-env/run
+
+Tests/Cuckoo/cuckoo_generator
+
+Tests/Cuckoo/run
