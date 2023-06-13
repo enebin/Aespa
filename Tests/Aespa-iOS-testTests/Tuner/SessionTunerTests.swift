@@ -35,7 +35,7 @@ final class SessionTunerTests: XCTestCase {
             when(proxy.setVideoQuality(to: any())).thenDoNothing()
         }
         
-        tuner.tune(mockSessionProtocol)
+        try tuner.tune(mockSessionProtocol)
         verify(mockSessionProtocol)
             .setVideoQuality(to: equal(to: AVCaptureSession.Preset.cif352x288))
             .with(returnType: Void.self)
@@ -46,12 +46,12 @@ final class SessionTunerTests: XCTestCase {
         let tuner = CameraPositionTuner(position: position)
         
         stub(mockSessionProtocol) { proxy in
-            when(proxy.setCameraPosition(to: any())).thenDoNothing()
+            when(proxy.setCameraPosition(to: any(), device: any())).thenDoNothing()
         }
         
         try tuner.tune(mockSessionProtocol)
         verify(mockSessionProtocol)
-            .setCameraPosition(to: equal(to: AVCaptureDevice.Position.front))
+            .setCameraPosition(to: equal(to: AVCaptureDevice.Position.front), device: any())
             .with(returnType: Void.self)
     }
     
