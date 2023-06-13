@@ -481,6 +481,10 @@ open class AespaSession {
     public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
         return fetch(count: limit)
     }
+    
+    public func fetchVideoFiles(limit: Int = 0) async -> [VideoFile] {
+        return await fetch(count: limit)
+    }
 
     /// Checks if essential conditions to start recording are satisfied.
     /// This includes checking for capture authorization, if the session is running,
@@ -536,26 +540,8 @@ private extension AespaSession {
             guard let self else { return }
             
             DispatchQueue.global(qos: .utility).async {
-                do {
-                    let directoryPath = try VideoFilePathProvider.requestDirectoryPath(from: self.fileManager,
-                                                                                       name: self.option.asset.albumName)
-                    
-                    let filePaths = try self.fileManager.contentsOfDirectory(atPath: directoryPath.path)
-                    let filePathPrefix = count == 0 ? filePaths : Array(filePaths.prefix(count))
-                    
-                    let files = filePathPrefix
-                        .map { name -> URL in
-                            return directoryPath.appendingPathComponent(name)
-                        }
-                        .map { filePath -> VideoFile in
-                            return VideoFileGenerator.generate(with: filePath)
-                        }
-                    
-                    continuation.resume(returning: files)
-                } catch let error {
-                    Logger.log(error: error)
-                    continuation.resume(returning: [])
-                }
+                let files = self.fetch(count: count)
+                continuation.resume(with: .success(files))
             }
         }
     }
@@ -572,6 +558,8 @@ private extension AespaSession {
             let filePathPrefix = count == 0 ? filePaths : Array(filePaths.prefix(count))
             
             return filePathPrefix
+                .sorted()
+                .reversed()
                 .map { name -> URL in
                     return directoryPath.appendingPathComponent(name)
                 }
