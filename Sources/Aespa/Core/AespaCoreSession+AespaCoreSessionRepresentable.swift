@@ -55,10 +55,10 @@ public protocol AespaCoreSessionRepresentable {
     
     /// Sets the position of the camera.
     /// Throws an error if the operation fails.
-    func setCameraPosition(to position: AVCaptureDevice.Position) throws
+    func setCameraPosition(to position: AVCaptureDevice.Position, device deviceType: AVCaptureDevice.DeviceType?) throws
     
     /// Sets the video quality preset.
-    func setVideoQuality(to preset: AVCaptureSession.Preset)
+    func setVideoQuality(to preset: AVCaptureSession.Preset) throws
 }
 
 extension AespaCoreSession: AespaCoreSessionRepresentable {
@@ -159,14 +159,22 @@ extension AespaCoreSession: AespaCoreSessionRepresentable {
     }
     
     // MARK: - Option related
-    func setCameraPosition(to position: AVCaptureDevice.Position) throws {
+    func setCameraPosition(to position: AVCaptureDevice.Position,device deviceType: AVCaptureDevice.DeviceType?) throws {
         let session = self
         
         if let videoDeviceInput {
             session.removeInput(videoDeviceInput)
         }
         
-        guard let device = position.chooseBestCamera else {
+        let device: AVCaptureDevice
+        if
+            let deviceType,
+            let captureDeivce = AVCaptureDevice.default(deviceType, for: .video, position: position)
+        {
+            device = captureDeivce
+        } else if let bestDevice = position.chooseBestCamera {
+            device = bestDevice
+        } else {
             throw AespaError.device(reason: .invalid)
         }
         

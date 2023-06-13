@@ -387,6 +387,8 @@ open class AespaSession {
 
     /// Sets the camera position for the video recording session.
     ///
+    /// It refers to `AespaOption.Session.cameraDevicePreference` when choosing the camera device.
+    ///
     /// - Parameter position: An `AVCaptureDevice.Position` value indicating the camera position to be set.
     ///
     /// - Throws: `AespaError` if the session fails to run the tuner.
@@ -394,7 +396,8 @@ open class AespaSession {
     /// - Returns: `AespaSession`, for chaining calls.
     @discardableResult
     public func setPositionWithError(to position: AVCaptureDevice.Position) throws -> AespaSession {
-        let tuner = CameraPositionTuner(position: position)
+        let tuner = CameraPositionTuner(position: position,
+                                        devicePreference: option.session.cameraDevicePreference)
         try coreSession.run(tuner)
         return self
     }

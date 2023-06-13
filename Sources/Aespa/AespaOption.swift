@@ -68,6 +68,8 @@ public extension AespaOption {
     struct Session {
         /// A Boolean value that determines whether video orientation should be automatic.
         var autoVideoOrientationEnabled: Bool = true
+        /// An `AVCaptureDevice.DeviceType` value that determines camera device. If not specified, the device is automatically selected.
+        var cameraDevicePreference: AVCaptureDevice.DeviceType?
     }
     
     /// `Log` provides an option for enabling or disabling logging.
