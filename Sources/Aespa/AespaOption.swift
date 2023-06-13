@@ -91,7 +91,7 @@ public extension AespaOption {
             /// Creates a `Timestamp` file naming rule.
             init() {
                 formatter = DateFormatter()
-                formatter.dateFormat = "yyyy_MM_dd_HH-mm"
+                formatter.dateFormat = "yyyy_MM_dd_HH_mm_ss"
             }
         }
         
