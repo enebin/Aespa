@@ -40,7 +40,7 @@ open class AespaSession {
             option: option,
             session: session,
             recorder: .init(core: session),
-            fileManager: .init(),
+            fileManager: .init(enableCaching: option.asset.useVideoFileCache),
             albumManager: .init(albumName: option.asset.albumName)
         )
     }
@@ -65,7 +65,7 @@ open class AespaSession {
         
         // Add first video file to buffer if it exists
         if let firstVideoFile = fileManager.fetch(albumName: option.asset.albumName, count: 1).first {
-            self.videoFileBufferSubject.send(.success(firstVideoFile))
+            videoFileBufferSubject.send(.success(firstVideoFile))
         }
     }
     
@@ -105,17 +105,12 @@ open class AespaSession {
     ///
     /// - Returns: `VideoFile` wrapped in a `Result` type.
     public var videoFilePublisher: AnyPublisher<Result<VideoFile, Error>, Never> {
-        recorder.fileIOResultPublihser.map { status in
-            switch status {
-            case .success(let url):
-                return .success(VideoFileGenerator.generate(with: url))
-            case .failure(let error):
+        videoFileBufferSubject.handleEvents(receiveOutput: { status in
+            if case .failure(let error) = status {
                 Logger.log(error: error)
-                return .failure(error)
             }
-        }
-        .merge(with: videoFileBufferSubject.eraseToAnyPublisher())
-        .compactMap { $0 }
+        })
+        .compactMap({ $0 })
         .eraseToAnyPublisher()
     }
 
@@ -168,7 +163,6 @@ open class AespaSession {
             }
         }
     }
-
     
     /// Mutes the audio input for the video recording session.
     ///
@@ -342,9 +336,12 @@ open class AespaSession {
     /// - Throws: `AespaError` if stopping the recording fails.
     public func stopRecording() async throws -> VideoFile {
         let videoFilePath = try await recorder.stopRecording()
-        try await self.albumManager.addToAlbum(filePath: videoFilePath)
+        let videoFile = VideoFileGenerator.generate(with: videoFilePath, date: Date())
         
-        return VideoFileGenerator.generate(with: videoFilePath)
+        try await albumManager.addToAlbum(filePath: videoFilePath)
+        videoFileBufferSubject.send(.success(videoFile))
+        
+        return videoFile
     }
     
     /// Mutes the audio input for the video recording session.

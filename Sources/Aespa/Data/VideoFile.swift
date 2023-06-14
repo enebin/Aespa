@@ -14,24 +14,20 @@ import AVFoundation
 /// This struct holds information about the video file, including a unique identifier (`id`),
 /// the path to the video file (`path`), and an optional thumbnail image (`thumbnail`)
 /// generated from the video.
-public struct VideoFile: Identifiable, Equatable {
-    /// A unique identifier for the video file.
-    public let id = UUID()
-    
+public struct VideoFile: Equatable {
     /// A `Date` value keeps the date it's generated
     public let generatedDate: Date
     
     /// The path to the video file.
     public let path: URL
+    
+    /// An optional thumbnail generated from the video with `UIImage` type.
+    /// This will be `nil` if the thumbnail could not be generated for some reason.
+    public var thumbnail: UIImage?
 }
 
 /// UI related extension methods
 public extension VideoFile {
-    /// An optional thumbnail generated from the video with `UIImage` type.
-    /// This will be `nil` if the thumbnail could not be generated for some reason.
-    var thumbnail: UIImage? {
-        VideoFileGenerator.generateThumbnail(for: path)
-    }
     
     /// An optional thumbnail generated from the video with SwiftUI `Image` type.
     /// This will be `nil` if the thumbnail could not be generated for some reason.
@@ -41,6 +37,12 @@ public extension VideoFile {
         }
         
         return nil
+    }
+}
+
+extension VideoFile: Identifiable {
+    public var id: URL {
+        self.path
     }
 }
 

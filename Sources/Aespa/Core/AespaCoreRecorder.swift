@@ -31,10 +31,6 @@ class AespaCoreRecorder: NSObject {
 }
 
 extension AespaCoreRecorder {
-    var fileIOResultPublihser: AnyPublisher<Result<URL, Error>, Never> {
-        return self.fileIOResultSubject.eraseToAnyPublisher()
-    }
-    
     func startRecording(in filePath: URL) throws {
         try run(processor: StartRecordProcessor(filePath: filePath, delegate: self))
     }

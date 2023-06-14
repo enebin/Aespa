@@ -152,7 +152,6 @@ aespaSession.videoFilePublisher
     }
     .store(in: &subsriptions)
 ```
-Based on the code provided, here is a draft for a README file that includes this functionality:
 
 ## SwiftUI Integration
 

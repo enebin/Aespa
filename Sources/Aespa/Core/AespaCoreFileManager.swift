@@ -1,6 +1,6 @@
 //
 //  AespaCoreFileManager.swift
-//  
+//
 //
 //  Created by 이영빈 on 2023/06/13.
 //
@@ -8,9 +8,17 @@
 import Foundation
 
 class AespaCoreFileManager {
+    private var videoFileProxyDictionary: [String: VideoFileCachingProxy]
+    private let enableCaching: Bool
+    
     let systemFileManager: FileManager
     
-    init(fileManager: FileManager = .default) {
+    init(
+        enableCaching: Bool,
+        fileManager: FileManager = .default
+    ) {
+        videoFileProxyDictionary = [:]
+        self.enableCaching = enableCaching
         self.systemFileManager = fileManager
     }
     
@@ -18,25 +26,17 @@ class AespaCoreFileManager {
     func fetch(albumName: String, count: Int) -> [VideoFile] {
         guard count >= 0 else { return [] }
         
-        do {
-            let directoryPath = try VideoFilePathProvider.requestDirectoryPath(from: systemFileManager,
-                                                                               name: albumName)
+        guard let proxy = videoFileProxyDictionary[albumName] else {
+            videoFileProxyDictionary[albumName] = VideoFileCachingProxy(
+                albumName: albumName,
+                enableCaching: enableCaching,
+                fileManager: systemFileManager)
             
-            let filePaths = try systemFileManager.contentsOfDirectory(atPath: directoryPath.path)
-            let filePathPrefix = count == 0 ? filePaths : Array(filePaths.prefix(count))
-            
-            return filePathPrefix
-                .map { name -> URL in
-                    return directoryPath.appendingPathComponent(name)
-                }
-                .map { filePath -> VideoFile in
-                    return VideoFileGenerator.generate(with: filePath)
-                }
-                .sorted() // Sorted by date(recent date first)
-
-        } catch let error {
-            Logger.log(error: error)
-            return []
+            return fetch(albumName: albumName, count: count)
         }
+        
+        let files = proxy.fetch(count: count)
+        Logger.log(message: "\(files.count) Video files fetched")
+        return files
     }
 }

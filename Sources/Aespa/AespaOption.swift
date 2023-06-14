@@ -48,17 +48,26 @@ public extension AespaOption {
     struct Asset {
         /// The name of the album where recorded videos will be saved.
         let albumName: String
+        
+        /// A `Boolean` flag that determines to use in-memory cache for `VideoFile`
+        ///
+        /// It's set `true` by default.
+        let useVideoFileCache: Bool
+        
         /// The file extension for the recorded videos.
         let fileNameHandler: FileNamingRule
+        
         /// The rule for naming video files.
         let fileExtension: String
         
         init(
             albumName: String,
+            useVideoFileCache: Bool = true,
             fileExtension: FileExtension = .mp4,
             fileNameHandler: @escaping FileNamingRule = FileNamingRulePreset.Timestamp().rule
         ) {
             self.albumName = albumName
+            self.useVideoFileCache = useVideoFileCache
             self.fileExtension = fileExtension.rawValue
             self.fileNameHandler = fileNameHandler
         }

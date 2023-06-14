@@ -19,7 +19,7 @@ extension AVCaptureConnection {
 
 extension AVCaptureDevice.Position {
     var chooseBestCamera: AVCaptureDevice? {
-        let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInDualCamera, .builtInTripleCamera],
+        let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInDualCamera, .builtInTripleCamera, .builtInWideAngleCamera],
                                                                 mediaType: .video,
                                                                 position: self)
 
