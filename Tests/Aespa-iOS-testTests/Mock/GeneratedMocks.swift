@@ -1,4 +1,4 @@
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Aespa.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Aespa.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  Aespa.swift
@@ -81,7 +81,7 @@ public class AespaStub: Aespa {
 
 
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/AespaError.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/AespaError.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  VideoRecorderError.swift
@@ -93,7 +93,7 @@ import Cuckoo
 
 import Foundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/AespaOption.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/AespaOption.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  AespaOption.swift
@@ -106,7 +106,7 @@ import Cuckoo
 import AVFoundation
 import Foundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/AespaSession.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/AespaSession.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  AespaSession.swift
@@ -270,19 +270,19 @@ public class MockAespaSession: AespaSession, Cuckoo.ClassMock {
     
     
     
-    public override func stopRecording()  {
+    public override func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void)  {
         
     return cuckoo_manager.call(
     """
-    stopRecording()
+    stopRecording(_: @escaping (Result<VideoFile, Error>) -> Void)
     """,
-            parameters: (),
-            escapingParameters: (),
+            parameters: (completionHandler),
+            escapingParameters: (completionHandler),
             superclassCall:
                 
-                super.stopRecording()
+                super.stopRecording(completionHandler)
                 ,
-            defaultCall: __defaultImplStub!.stopRecording())
+            defaultCall: __defaultImplStub!.stopRecording(completionHandler))
         
     }
     
@@ -470,19 +470,19 @@ public class MockAespaSession: AespaSession, Cuckoo.ClassMock {
     
     
     
-    public override func stopRecordingWithError() throws {
+    public override func stopRecording() async throws -> VideoFile {
         
-    return try cuckoo_manager.callThrows(
+    return try await cuckoo_manager.callThrows(
     """
-    stopRecordingWithError() throws
+    stopRecording() async throws -> VideoFile
     """,
             parameters: (),
             escapingParameters: (),
             superclassCall:
                 
-                super.stopRecordingWithError()
+                await super.stopRecording()
                 ,
-            defaultCall: __defaultImplStub!.stopRecordingWithError())
+            defaultCall: await __defaultImplStub!.stopRecording())
         
     }
     
@@ -650,19 +650,19 @@ public class MockAespaSession: AespaSession, Cuckoo.ClassMock {
     
     
     
-    public override func custom<T: AespaSessionTuning>(_ tuner: T) throws {
+    public override func customize<T: AespaSessionTuning>(_ tuner: T) throws {
         
     return try cuckoo_manager.callThrows(
     """
-    custom(_: T) throws
+    customize(_: T) throws
     """,
             parameters: (tuner),
             escapingParameters: (tuner),
             superclassCall:
                 
-                super.custom(tuner)
+                super.customize(tuner)
                 ,
-            defaultCall: __defaultImplStub!.custom(tuner))
+            defaultCall: __defaultImplStub!.customize(tuner))
         
     }
     
@@ -771,11 +771,11 @@ public class MockAespaSession: AespaSession, Cuckoo.ClassMock {
         
         
         
-        func stopRecording() -> Cuckoo.ClassStubNoReturnFunction<()> {
-            let matchers: [Cuckoo.ParameterMatcher<Void>] = []
+        func stopRecording<M1: Cuckoo.Matchable>(_ completionHandler: M1) -> Cuckoo.ClassStubNoReturnFunction<((Result<VideoFile, Error>) -> Void)> where M1.MatchedType == (Result<VideoFile, Error>) -> Void {
+            let matchers: [Cuckoo.ParameterMatcher<((Result<VideoFile, Error>) -> Void)>] = [wrap(matchable: completionHandler) { $0 }]
             return .init(stub: cuckoo_manager.createStub(for: MockAespaSession.self, method:
     """
-    stopRecording()
+    stopRecording(_: @escaping (Result<VideoFile, Error>) -> Void)
     """, parameterMatchers: matchers))
         }
         
@@ -881,11 +881,11 @@ public class MockAespaSession: AespaSession, Cuckoo.ClassMock {
         
         
         
-        func stopRecordingWithError() -> Cuckoo.ClassStubNoReturnThrowingFunction<()> {
+        func stopRecording() -> Cuckoo.ClassStubThrowingFunction<(), VideoFile> {
             let matchers: [Cuckoo.ParameterMatcher<Void>] = []
             return .init(stub: cuckoo_manager.createStub(for: MockAespaSession.self, method:
     """
-    stopRecordingWithError() throws
+    stopRecording() async throws -> VideoFile
     """, parameterMatchers: matchers))
         }
         
@@ -980,11 +980,11 @@ public class MockAespaSession: AespaSession, Cuckoo.ClassMock {
         
         
         
-        func custom<M1: Cuckoo.Matchable, T: AespaSessionTuning>(_ tuner: M1) -> Cuckoo.ClassStubNoReturnThrowingFunction<(T)> where M1.MatchedType == T {
+        func customize<M1: Cuckoo.Matchable, T: AespaSessionTuning>(_ tuner: M1) -> Cuckoo.ClassStubNoReturnThrowingFunction<(T)> where M1.MatchedType == T {
             let matchers: [Cuckoo.ParameterMatcher<(T)>] = [wrap(matchable: tuner) { $0 }]
             return .init(stub: cuckoo_manager.createStub(for: MockAespaSession.self, method:
     """
-    custom(_: T) throws
+    customize(_: T) throws
     """, parameterMatchers: matchers))
         }
         
@@ -1084,11 +1084,11 @@ public class MockAespaSession: AespaSession, Cuckoo.ClassMock {
         
         
         @discardableResult
-        func stopRecording() -> Cuckoo.__DoNotUse<(), Void> {
-            let matchers: [Cuckoo.ParameterMatcher<Void>] = []
+        func stopRecording<M1: Cuckoo.Matchable>(_ completionHandler: M1) -> Cuckoo.__DoNotUse<((Result<VideoFile, Error>) -> Void), Void> where M1.MatchedType == (Result<VideoFile, Error>) -> Void {
+            let matchers: [Cuckoo.ParameterMatcher<((Result<VideoFile, Error>) -> Void)>] = [wrap(matchable: completionHandler) { $0 }]
             return cuckoo_manager.verify(
     """
-    stopRecording()
+    stopRecording(_: @escaping (Result<VideoFile, Error>) -> Void)
     """, callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
         }
         
@@ -1204,11 +1204,11 @@ public class MockAespaSession: AespaSession, Cuckoo.ClassMock {
         
         
         @discardableResult
-        func stopRecordingWithError() -> Cuckoo.__DoNotUse<(), Void> {
+        func stopRecording() -> Cuckoo.__DoNotUse<(), VideoFile> {
             let matchers: [Cuckoo.ParameterMatcher<Void>] = []
             return cuckoo_manager.verify(
     """
-    stopRecordingWithError() throws
+    stopRecording() async throws -> VideoFile
     """, callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
         }
         
@@ -1312,11 +1312,11 @@ public class MockAespaSession: AespaSession, Cuckoo.ClassMock {
         
         
         @discardableResult
-        func custom<M1: Cuckoo.Matchable, T: AespaSessionTuning>(_ tuner: M1) -> Cuckoo.__DoNotUse<(T), Void> where M1.MatchedType == T {
+        func customize<M1: Cuckoo.Matchable, T: AespaSessionTuning>(_ tuner: M1) -> Cuckoo.__DoNotUse<(T), Void> where M1.MatchedType == T {
             let matchers: [Cuckoo.ParameterMatcher<(T)>] = [wrap(matchable: tuner) { $0 }]
             return cuckoo_manager.verify(
     """
-    custom(_: T) throws
+    customize(_: T) throws
     """, callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
         }
         
@@ -1432,7 +1432,7 @@ public class AespaSessionStub: AespaSession {
     
     
     
-    public override func stopRecording()   {
+    public override func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void)   {
         return DefaultValueRegistry.defaultValue(for: (Void).self)
     }
     
@@ -1512,8 +1512,8 @@ public class AespaSessionStub: AespaSession {
     
     
     
-    public override func stopRecordingWithError() throws  {
-        return DefaultValueRegistry.defaultValue(for: (Void).self)
+    public override func stopRecording() async throws -> VideoFile  {
+        return DefaultValueRegistry.defaultValue(for: (VideoFile).self)
     }
     
     
@@ -1584,7 +1584,7 @@ public class AespaSessionStub: AespaSession {
     
     
     
-    public override func custom<T: AespaSessionTuning>(_ tuner: T) throws  {
+    public override func customize<T: AespaSessionTuning>(_ tuner: T) throws  {
         return DefaultValueRegistry.defaultValue(for: (Void).self)
     }
     
@@ -1611,7 +1611,7 @@ public class AespaSessionStub: AespaSession {
 
 
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreAlbumManager.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreAlbumManager.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  AespaCoreAlbumManager.swift
@@ -1744,7 +1744,139 @@ import Photos
 
 
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreRecorder.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreFileManager.swift at 2023-06-13 08:25:34 +0000
+
+//
+//  AespaCoreFileManager.swift
+//  
+//
+//  Created by 이영빈 on 2023/06/13
+import Cuckoo
+@testable import Aespa
+
+import Foundation
+
+
+
+
+
+
+ class MockAespaCoreFileManager: AespaCoreFileManager, Cuckoo.ClassMock {
+    
+     typealias MocksType = AespaCoreFileManager
+    
+     typealias Stubbing = __StubbingProxy_AespaCoreFileManager
+     typealias Verification = __VerificationProxy_AespaCoreFileManager
+
+     let cuckoo_manager = Cuckoo.MockManager.preconfiguredManager ?? Cuckoo.MockManager(hasParent: true)
+
+    
+    private var __defaultImplStub: AespaCoreFileManager?
+
+     func enableDefaultImplementation(_ stub: AespaCoreFileManager) {
+        __defaultImplStub = stub
+        cuckoo_manager.enableDefaultStubImplementation()
+    }
+    
+
+    
+
+    
+
+    
+    
+    
+    
+     override func fetch(albumName: String, count: Int) -> [VideoFile] {
+        
+    return cuckoo_manager.call(
+    """
+    fetch(albumName: String, count: Int) -> [VideoFile]
+    """,
+            parameters: (albumName, count),
+            escapingParameters: (albumName, count),
+            superclassCall:
+                
+                super.fetch(albumName: albumName, count: count)
+                ,
+            defaultCall: __defaultImplStub!.fetch(albumName: albumName, count: count))
+        
+    }
+    
+    
+
+     struct __StubbingProxy_AespaCoreFileManager: Cuckoo.StubbingProxy {
+        private let cuckoo_manager: Cuckoo.MockManager
+    
+         init(manager: Cuckoo.MockManager) {
+            self.cuckoo_manager = manager
+        }
+        
+        
+        
+        
+        func fetch<M1: Cuckoo.Matchable, M2: Cuckoo.Matchable>(albumName: M1, count: M2) -> Cuckoo.ClassStubFunction<(String, Int), [VideoFile]> where M1.MatchedType == String, M2.MatchedType == Int {
+            let matchers: [Cuckoo.ParameterMatcher<(String, Int)>] = [wrap(matchable: albumName) { $0.0 }, wrap(matchable: count) { $0.1 }]
+            return .init(stub: cuckoo_manager.createStub(for: MockAespaCoreFileManager.self, method:
+    """
+    fetch(albumName: String, count: Int) -> [VideoFile]
+    """, parameterMatchers: matchers))
+        }
+        
+        
+    }
+
+     struct __VerificationProxy_AespaCoreFileManager: Cuckoo.VerificationProxy {
+        private let cuckoo_manager: Cuckoo.MockManager
+        private let callMatcher: Cuckoo.CallMatcher
+        private let sourceLocation: Cuckoo.SourceLocation
+    
+         init(manager: Cuckoo.MockManager, callMatcher: Cuckoo.CallMatcher, sourceLocation: Cuckoo.SourceLocation) {
+            self.cuckoo_manager = manager
+            self.callMatcher = callMatcher
+            self.sourceLocation = sourceLocation
+        }
+    
+        
+    
+        
+        
+        
+        @discardableResult
+        func fetch<M1: Cuckoo.Matchable, M2: Cuckoo.Matchable>(albumName: M1, count: M2) -> Cuckoo.__DoNotUse<(String, Int), [VideoFile]> where M1.MatchedType == String, M2.MatchedType == Int {
+            let matchers: [Cuckoo.ParameterMatcher<(String, Int)>] = [wrap(matchable: albumName) { $0.0 }, wrap(matchable: count) { $0.1 }]
+            return cuckoo_manager.verify(
+    """
+    fetch(albumName: String, count: Int) -> [VideoFile]
+    """, callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
+        }
+        
+        
+    }
+}
+
+
+ class AespaCoreFileManagerStub: AespaCoreFileManager {
+    
+
+    
+
+    
+    
+    
+    
+     override func fetch(albumName: String, count: Int) -> [VideoFile]  {
+        return DefaultValueRegistry.defaultValue(for: ([VideoFile]).self)
+    }
+    
+    
+}
+
+
+
+
+
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreRecorder.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  AespaCoreRecorder.swift
@@ -1878,7 +2010,7 @@ import Foundation
 
 
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreSession+AespaCoreSessionRepresentable.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreSession+AespaCoreSessionRepresentable.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  AespaCoreSession + AespaCoreSessionRepresentable.swift
@@ -1920,14 +2052,14 @@ public class MockAespaCoreSessionRepresentable: AespaCoreSessionRepresentable, C
     
     
     
-    public var session: AVCaptureSession {
+    public var avCaptureSession: AVCaptureSession {
         get {
-            return cuckoo_manager.getter("session",
+            return cuckoo_manager.getter("avCaptureSession",
                 superclassCall:
                     
                     Cuckoo.MockManager.crashOnProtocolSuperclassCall()
                     ,
-                defaultCall:  __defaultImplStub!.session)
+                defaultCall:  __defaultImplStub!.avCaptureSession)
         }
         
     }
@@ -2160,19 +2292,19 @@ public class MockAespaCoreSessionRepresentable: AespaCoreSessionRepresentable, C
     
     
     
-    public func setCameraPosition(to position: AVCaptureDevice.Position) throws {
+    public func setCameraPosition(to position: AVCaptureDevice.Position, device deviceType: AVCaptureDevice.DeviceType?) throws {
         
     return try cuckoo_manager.callThrows(
     """
-    setCameraPosition(to: AVCaptureDevice.Position) throws
+    setCameraPosition(to: AVCaptureDevice.Position, device: AVCaptureDevice.DeviceType?) throws
     """,
-            parameters: (position),
-            escapingParameters: (position),
+            parameters: (position, deviceType),
+            escapingParameters: (position, deviceType),
             superclassCall:
                 
                 Cuckoo.MockManager.crashOnProtocolSuperclassCall()
                 ,
-            defaultCall: __defaultImplStub!.setCameraPosition(to: position))
+            defaultCall: __defaultImplStub!.setCameraPosition(to: position, device: deviceType))
         
     }
     
@@ -2180,11 +2312,11 @@ public class MockAespaCoreSessionRepresentable: AespaCoreSessionRepresentable, C
     
     
     
-    public func setVideoQuality(to preset: AVCaptureSession.Preset)  {
+    public func setVideoQuality(to preset: AVCaptureSession.Preset) throws {
         
-    return cuckoo_manager.call(
+    return try cuckoo_manager.callThrows(
     """
-    setVideoQuality(to: AVCaptureSession.Preset)
+    setVideoQuality(to: AVCaptureSession.Preset) throws
     """,
             parameters: (preset),
             escapingParameters: (preset),
@@ -2207,8 +2339,8 @@ public class MockAespaCoreSessionRepresentable: AespaCoreSessionRepresentable, C
         
         
         
-        var session: Cuckoo.ProtocolToBeStubbedReadOnlyProperty<MockAespaCoreSessionRepresentable, AVCaptureSession> {
-            return .init(manager: cuckoo_manager, name: "session")
+        var avCaptureSession: Cuckoo.ProtocolToBeStubbedReadOnlyProperty<MockAespaCoreSessionRepresentable, AVCaptureSession> {
+            return .init(manager: cuckoo_manager, name: "avCaptureSession")
         }
         
         
@@ -2327,22 +2459,22 @@ public class MockAespaCoreSessionRepresentable: AespaCoreSessionRepresentable, C
         
         
         
-        func setCameraPosition<M1: Cuckoo.Matchable>(to position: M1) -> Cuckoo.ProtocolStubNoReturnThrowingFunction<(AVCaptureDevice.Position)> where M1.MatchedType == AVCaptureDevice.Position {
-            let matchers: [Cuckoo.ParameterMatcher<(AVCaptureDevice.Position)>] = [wrap(matchable: position) { $0 }]
+        func setCameraPosition<M1: Cuckoo.Matchable, M2: Cuckoo.OptionalMatchable>(to position: M1, device deviceType: M2) -> Cuckoo.ProtocolStubNoReturnThrowingFunction<(AVCaptureDevice.Position, AVCaptureDevice.DeviceType?)> where M1.MatchedType == AVCaptureDevice.Position, M2.OptionalMatchedType == AVCaptureDevice.DeviceType {
+            let matchers: [Cuckoo.ParameterMatcher<(AVCaptureDevice.Position, AVCaptureDevice.DeviceType?)>] = [wrap(matchable: position) { $0.0 }, wrap(matchable: deviceType) { $0.1 }]
             return .init(stub: cuckoo_manager.createStub(for: MockAespaCoreSessionRepresentable.self, method:
     """
-    setCameraPosition(to: AVCaptureDevice.Position) throws
+    setCameraPosition(to: AVCaptureDevice.Position, device: AVCaptureDevice.DeviceType?) throws
     """, parameterMatchers: matchers))
         }
         
         
         
         
-        func setVideoQuality<M1: Cuckoo.Matchable>(to preset: M1) -> Cuckoo.ProtocolStubNoReturnFunction<(AVCaptureSession.Preset)> where M1.MatchedType == AVCaptureSession.Preset {
+        func setVideoQuality<M1: Cuckoo.Matchable>(to preset: M1) -> Cuckoo.ProtocolStubNoReturnThrowingFunction<(AVCaptureSession.Preset)> where M1.MatchedType == AVCaptureSession.Preset {
             let matchers: [Cuckoo.ParameterMatcher<(AVCaptureSession.Preset)>] = [wrap(matchable: preset) { $0 }]
             return .init(stub: cuckoo_manager.createStub(for: MockAespaCoreSessionRepresentable.self, method:
     """
-    setVideoQuality(to: AVCaptureSession.Preset)
+    setVideoQuality(to: AVCaptureSession.Preset) throws
     """, parameterMatchers: matchers))
         }
         
@@ -2363,8 +2495,8 @@ public class MockAespaCoreSessionRepresentable: AespaCoreSessionRepresentable, C
         
         
         
-        var session: Cuckoo.VerifyReadOnlyProperty<AVCaptureSession> {
-            return .init(manager: cuckoo_manager, name: "session", callMatcher: callMatcher, sourceLocation: sourceLocation)
+        var avCaptureSession: Cuckoo.VerifyReadOnlyProperty<AVCaptureSession> {
+            return .init(manager: cuckoo_manager, name: "avCaptureSession", callMatcher: callMatcher, sourceLocation: sourceLocation)
         }
         
         
@@ -2492,11 +2624,11 @@ public class MockAespaCoreSessionRepresentable: AespaCoreSessionRepresentable, C
         
         
         @discardableResult
-        func setCameraPosition<M1: Cuckoo.Matchable>(to position: M1) -> Cuckoo.__DoNotUse<(AVCaptureDevice.Position), Void> where M1.MatchedType == AVCaptureDevice.Position {
-            let matchers: [Cuckoo.ParameterMatcher<(AVCaptureDevice.Position)>] = [wrap(matchable: position) { $0 }]
+        func setCameraPosition<M1: Cuckoo.Matchable, M2: Cuckoo.OptionalMatchable>(to position: M1, device deviceType: M2) -> Cuckoo.__DoNotUse<(AVCaptureDevice.Position, AVCaptureDevice.DeviceType?), Void> where M1.MatchedType == AVCaptureDevice.Position, M2.OptionalMatchedType == AVCaptureDevice.DeviceType {
+            let matchers: [Cuckoo.ParameterMatcher<(AVCaptureDevice.Position, AVCaptureDevice.DeviceType?)>] = [wrap(matchable: position) { $0.0 }, wrap(matchable: deviceType) { $0.1 }]
             return cuckoo_manager.verify(
     """
-    setCameraPosition(to: AVCaptureDevice.Position) throws
+    setCameraPosition(to: AVCaptureDevice.Position, device: AVCaptureDevice.DeviceType?) throws
     """, callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
         }
         
@@ -2508,7 +2640,7 @@ public class MockAespaCoreSessionRepresentable: AespaCoreSessionRepresentable, C
             let matchers: [Cuckoo.ParameterMatcher<(AVCaptureSession.Preset)>] = [wrap(matchable: preset) { $0 }]
             return cuckoo_manager.verify(
     """
-    setVideoQuality(to: AVCaptureSession.Preset)
+    setVideoQuality(to: AVCaptureSession.Preset) throws
     """, callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
         }
         
@@ -2522,7 +2654,7 @@ public class AespaCoreSessionRepresentableStub: AespaCoreSessionRepresentable {
     
     
     
-    public var session: AVCaptureSession {
+    public var avCaptureSession: AVCaptureSession {
         get {
             return DefaultValueRegistry.defaultValue(for: (AVCaptureSession).self)
         }
@@ -2648,7 +2780,7 @@ public class AespaCoreSessionRepresentableStub: AespaCoreSessionRepresentable {
     
     
     
-    public func setCameraPosition(to position: AVCaptureDevice.Position) throws  {
+    public func setCameraPosition(to position: AVCaptureDevice.Position, device deviceType: AVCaptureDevice.DeviceType?) throws  {
         return DefaultValueRegistry.defaultValue(for: (Void).self)
     }
     
@@ -2656,7 +2788,7 @@ public class AespaCoreSessionRepresentableStub: AespaCoreSessionRepresentable {
     
     
     
-    public func setVideoQuality(to preset: AVCaptureSession.Preset)   {
+    public func setVideoQuality(to preset: AVCaptureSession.Preset) throws  {
         return DefaultValueRegistry.defaultValue(for: (Void).self)
     }
     
@@ -2667,7 +2799,7 @@ public class AespaCoreSessionRepresentableStub: AespaCoreSessionRepresentable {
 
 
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreSession.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Core/AespaCoreSession.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  AespaCoreSessionManager.swift
@@ -3008,7 +3140,21 @@ import UIKit
 
 
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Processor/AespaProcessing.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Data/VideoFile.swift at 2023-06-13 08:25:34 +0000
+
+//
+//  VideoFile.swift
+//  
+//
+//  Created by 이영빈 on 2023/06/13
+import Cuckoo
+@testable import Aespa
+
+import AVFoundation
+import SwiftUI
+import UIKit
+
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Processor/AespaProcessing.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  AespaProcessing.swift
@@ -3262,7 +3408,7 @@ import Photos
 
 
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Processor/Asset/AssetAdditionProcessor.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Processor/Asset/AssetAdditionProcessor.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  AssetAddingProcessor.swift
@@ -3275,7 +3421,7 @@ import Cuckoo
 import Foundation
 import Photos
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Processor/Record/FinishRecordProcessor.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Processor/Record/FinishRecordProcessor.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  FinishRecordingProcessor.swift
@@ -3288,7 +3434,7 @@ import Cuckoo
 import AVFoundation
 import Combine
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Processor/Record/StartRecordProcessor.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Processor/Record/StartRecordProcessor.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  RecordingStarter.swift
@@ -3301,7 +3447,7 @@ import Cuckoo
 import AVFoundation
 import Combine
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/AespaTuning.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/AespaTuning.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  AespaTuning.swift
@@ -3759,7 +3905,7 @@ public class AespaSessionTuningStub: AespaSessionTuning {
 
 
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Connection/VideoOrientationTuner.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Connection/VideoOrientationTuner.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  VideoOrientationTuner.swift
@@ -3771,7 +3917,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Connection/VideoStabilizationTuner.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Connection/VideoStabilizationTuner.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  VideoStabilizationTuner.swift
@@ -3783,7 +3929,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Device/AutoFocusTuner.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Device/AutoFocusTuner.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  AutoFocusTuner.swift
@@ -3798,7 +3944,7 @@ import Cuckoo
 import AVFoundation
 import Foundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Device/ZoomTuner.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Device/ZoomTuner.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  ZoomTuner.swift
@@ -3810,7 +3956,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/AudioTuner.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/AudioTuner.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  File.swift
@@ -3822,7 +3968,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/CameraPositionTuner.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/CameraPositionTuner.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  CameraPositionTuner.swift
@@ -3834,7 +3980,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/QualityTuner.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/QualityTuner.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  QualityTuner.swift
@@ -3846,7 +3992,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/SessionLaunchTuner.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/SessionLaunchTuner.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  SessionLauncher.swift
@@ -3858,7 +4004,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/SessionTerminationTuner.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Tuner/Session/SessionTerminationTuner.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  SessionTerminationTuner.swift
@@ -3872,7 +4018,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Extension/AVFoundation+Extension.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Extension/AVFoundation+Extension.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  AVFoundation + Extension.swift
@@ -3886,7 +4032,7 @@ import Cuckoo
 
 import AVFoundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Extension/SwiftUI+Extension.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Extension/SwiftUI+Extension.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  SwiftUI + Extension.swift
@@ -3902,7 +4048,7 @@ import AVFoundation
 import Combine
 import SwiftUI
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Extension/UIKit+Extension.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Extension/UIKit+Extension.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  UIKit + Extension.swift
@@ -3917,7 +4063,7 @@ import Cuckoo
 import AVFoundation
 import UIKit
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Log/Logger.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Log/Logger.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  LoggingManager.swift
@@ -4000,7 +4146,7 @@ import Foundation
 
 
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Video/Album/AlbumImporter.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Video/Album/AlbumImporter.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  VideoAlbumProvider.swift
@@ -4016,7 +4162,7 @@ import Foundation
 import Photos
 import UIKit
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Video/Authorization/AuthorizationChecker.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Video/Authorization/AuthorizationChecker.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  AuthorizationManager.swift
@@ -4031,7 +4177,7 @@ import Cuckoo
 import AVFoundation
 import Foundation
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Video/File/VideoFileGenerator.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Video/File/VideoFileGenerator.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  File.swift
@@ -4046,7 +4192,7 @@ import Cuckoo
 import AVFoundation
 import UIKit
 
-// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Video/File/VideoFilePathProvider.swift at 2023-06-11 07:19:03 +0000
+// MARK: - Mocks generated from file: ../../Sources/Aespa/Util/Video/File/VideoFilePathProvider.swift at 2023-06-13 08:25:34 +0000
 
 //
 //  VideoFilePathProvidingService.swift

@@ -20,16 +20,6 @@ public extension AespaSession {
     }
 }
 
-public extension VideoFile {
-    var thumbnailImage: Image? {
-        if let thumbnail {
-            return Image(uiImage: thumbnail)
-        }
-        
-        return nil
-    }
-}
-
 fileprivate struct AespaSwiftUIPreview: UIViewRepresentable {
     @StateObject var viewModel: AespaSwiftUIPreviewViewModel
     let gravity: AVLayerVideoGravity

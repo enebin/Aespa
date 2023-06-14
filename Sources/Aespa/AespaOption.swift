@@ -48,17 +48,26 @@ public extension AespaOption {
     struct Asset {
         /// The name of the album where recorded videos will be saved.
         let albumName: String
+        
+        /// A `Boolean` flag that determines to use in-memory cache for `VideoFile`
+        ///
+        /// It's set `true` by default.
+        let useVideoFileCache: Bool
+        
         /// The file extension for the recorded videos.
         let fileNameHandler: FileNamingRule
+        
         /// The rule for naming video files.
         let fileExtension: String
         
         init(
             albumName: String,
+            useVideoFileCache: Bool = true,
             fileExtension: FileExtension = .mp4,
             fileNameHandler: @escaping FileNamingRule = FileNamingRulePreset.Timestamp().rule
         ) {
             self.albumName = albumName
+            self.useVideoFileCache = useVideoFileCache
             self.fileExtension = fileExtension.rawValue
             self.fileNameHandler = fileNameHandler
         }
@@ -68,6 +77,8 @@ public extension AespaOption {
     struct Session {
         /// A Boolean value that determines whether video orientation should be automatic.
         var autoVideoOrientationEnabled: Bool = true
+        /// An `AVCaptureDevice.DeviceType` value that determines camera device. If not specified, the device is automatically selected.
+        var cameraDevicePreference: AVCaptureDevice.DeviceType?
     }
     
     /// `Log` provides an option for enabling or disabling logging.
@@ -89,7 +100,7 @@ public extension AespaOption {
             /// Creates a `Timestamp` file naming rule.
             init() {
                 formatter = DateFormatter()
-                formatter.dateFormat = "yyyy_MM_dd_HH-mm"
+                formatter.dateFormat = "yyyy_MM_dd_HH_mm_ss"
             }
         }
         

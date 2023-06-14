@@ -22,7 +22,7 @@ open class AespaSession {
     private let option: AespaOption
     private let coreSession: AespaCoreSession
     private let recorder: AespaCoreRecorder
-    private let fileManager: FileManager
+    private let fileManager: AespaCoreFileManager
     private let albumManager: AespaCoreAlbumManager
     
     private let videoFileBufferSubject: CurrentValueSubject<Result<VideoFile, Error>?, Never>
@@ -40,7 +40,7 @@ open class AespaSession {
             option: option,
             session: session,
             recorder: .init(core: session),
-            fileManager: .default,
+            fileManager: .init(enableCaching: option.asset.useVideoFileCache),
             albumManager: .init(albumName: option.asset.albumName)
         )
     }
@@ -49,7 +49,7 @@ open class AespaSession {
         option: AespaOption,
         session: AespaCoreSession,
         recorder: AespaCoreRecorder,
-        fileManager: FileManager,
+        fileManager: AespaCoreFileManager,
         albumManager: AespaCoreAlbumManager
     ) {
         self.option = option
@@ -64,8 +64,8 @@ open class AespaSession {
         self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
         
         // Add first video file to buffer if it exists
-        if let firstVideoFile = fetch(count: 1).first {
-            self.videoFileBufferSubject.send(.success(firstVideoFile))
+        if let firstVideoFile = fileManager.fetch(albumName: option.asset.albumName, count: 1).first {
+            videoFileBufferSubject.send(.success(firstVideoFile))
         }
     }
     
@@ -105,17 +105,12 @@ open class AespaSession {
     ///
     /// - Returns: `VideoFile` wrapped in a `Result` type.
     public var videoFilePublisher: AnyPublisher<Result<VideoFile, Error>, Never> {
-        recorder.fileIOResultPublihser.map { status in
-            switch status {
-            case .success(let url):
-                return .success(VideoFileGenerator.generate(with: url))
-            case .failure(let error):
+        videoFileBufferSubject.handleEvents(receiveOutput: { status in
+            if case .failure(let error) = status {
                 Logger.log(error: error)
-                return .failure(error)
             }
-        }
-        .merge(with: videoFileBufferSubject.eraseToAnyPublisher())
-        .compactMap { $0 }
+        })
+        .compactMap({ $0 })
         .eraseToAnyPublisher()
     }
 
@@ -168,7 +163,6 @@ open class AespaSession {
             }
         }
     }
-
     
     /// Mutes the audio input for the video recording session.
     ///
@@ -323,7 +317,7 @@ open class AespaSession {
     public func startRecordingWithError() throws {
         let fileName = option.asset.fileNameHandler()
         let filePath = try VideoFilePathProvider.requestFilePath(
-            from: fileManager,
+            from: fileManager.systemFileManager,
             directoryName: option.asset.albumName,
             fileName: fileName)
         
@@ -342,9 +336,12 @@ open class AespaSession {
     /// - Throws: `AespaError` if stopping the recording fails.
     public func stopRecording() async throws -> VideoFile {
         let videoFilePath = try await recorder.stopRecording()
-        try await self.albumManager.addToAlbum(filePath: videoFilePath)
+        let videoFile = VideoFileGenerator.generate(with: videoFilePath, date: Date())
         
-        return VideoFileGenerator.generate(with: videoFilePath)
+        try await albumManager.addToAlbum(filePath: videoFilePath)
+        videoFileBufferSubject.send(.success(videoFile))
+        
+        return videoFile
     }
     
     /// Mutes the audio input for the video recording session.
@@ -387,6 +384,8 @@ open class AespaSession {
 
     /// Sets the camera position for the video recording session.
     ///
+    /// It refers to `AespaOption.Session.cameraDevicePreference` when choosing the camera device.
+    ///
     /// - Parameter position: An `AVCaptureDevice.Position` value indicating the camera position to be set.
     ///
     /// - Throws: `AespaError` if the session fails to run the tuner.
@@ -394,7 +393,8 @@ open class AespaSession {
     /// - Returns: `AespaSession`, for chaining calls.
     @discardableResult
     public func setPositionWithError(to position: AVCaptureDevice.Position) throws -> AespaSession {
-        let tuner = CameraPositionTuner(position: position)
+        let tuner = CameraPositionTuner(position: position,
+                                        devicePreference: option.session.cameraDevicePreference)
         try coreSession.run(tuner)
         return self
     }
@@ -479,9 +479,9 @@ open class AespaSession {
     ///     If the limit is set to 0 (default), all recorded video files will be fetched.
     /// - Returns: An array of `VideoFile` instances.
     public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
-        return fetch(count: limit)
+        return fileManager.fetch(albumName: option.asset.albumName, count: limit)
     }
-
+    
     /// Checks if essential conditions to start recording are satisfied.
     /// This includes checking for capture authorization, if the session is running,
     /// if there is an existing connection and if a device is attached.
@@ -524,63 +524,5 @@ extension AespaSession {
     func terminateSession() throws {
         let tuner = SessionTerminationTuner()
         try coreSession.run(tuner)
-    }
-}
-
-private extension AespaSession {
-    /// If `count` is `0`, return all existing files
-    func fetch(count: Int) async -> [VideoFile] {
-        guard count >= 0 else { return [] }
-        
-        return await withCheckedContinuation { [weak self] continuation in
-            guard let self else { return }
-            
-            DispatchQueue.global(qos: .utility).async {
-                do {
-                    let directoryPath = try VideoFilePathProvider.requestDirectoryPath(from: self.fileManager,
-                                                                                       name: self.option.asset.albumName)
-                    
-                    let filePaths = try self.fileManager.contentsOfDirectory(atPath: directoryPath.path)
-                    let filePathPrefix = count == 0 ? filePaths : Array(filePaths.prefix(count))
-                    
-                    let files = filePathPrefix
-                        .map { name -> URL in
-                            return directoryPath.appendingPathComponent(name)
-                        }
-                        .map { filePath -> VideoFile in
-                            return VideoFileGenerator.generate(with: filePath)
-                        }
-                    
-                    continuation.resume(returning: files)
-                } catch let error {
-                    Logger.log(error: error)
-                    continuation.resume(returning: [])
-                }
-            }
-        }
-    }
-    
-    /// If `count` is `0`, return all existing files
-    func fetch(count: Int) -> [VideoFile] {
-        guard count >= 0 else { return [] }
-        
-        do {
-            let directoryPath = try VideoFilePathProvider.requestDirectoryPath(from: fileManager,
-                                                                               name: option.asset.albumName)
-            
-            let filePaths = try fileManager.contentsOfDirectory(atPath: directoryPath.path)
-            let filePathPrefix = count == 0 ? filePaths : Array(filePaths.prefix(count))
-            
-            return filePathPrefix
-                .map { name -> URL in
-                    return directoryPath.appendingPathComponent(name)
-                }
-                .map { filePath -> VideoFile in
-                    return VideoFileGenerator.generate(with: filePath)
-                }
-        } catch let error {
-            Logger.log(error: error)
-            return []
-        }
     }
 }
