@@ -79,20 +79,33 @@ graph LR;
 ## Functionality
 Aespa offers the following functionalities for managing a video recording session:
 
+Sure, here is the updated version of the table without the "logs any errors that occur during the operation" sentences:
 
 | Function                     | Description                                       |
 |------------------------------|---------------------------------------------------|
-| `startRecording`               | Start the video recording session.                  |
-| `stopRecording`                | Stop the ongoing video recording session and add the video file to the album. |
-| `mute`                         | Mute the audio input for the video recording session. |
-| `unmute`                       | Unmute the audio input for the video recording session. |
-| `setOrientation`               | Set the orientation for the video recording session. |
-| `setPosition`                  | Set the camera position for the video recording session. |
-| `setQuality`                   | Set the video quality preset for the recording session. |
-| `setStabilization`             | Set the stabilization mode for the video recording session. |
-| `zoom`                         | Set the zoom factor for the video recording session. |
+| `startRecording`             | Initiates the recording of a video session.       |
+| `stopRecording`              | Terminates the current video recording session and attempts to save the video file. |
+| `mute`                       | Mutes the audio input for the video recording session. |
+| `unmute`                     | Restores the audio input for the video recording session. |
+| `setOrientation`             | Adjusts the orientation for the video recording session. |
+| `setPosition`                | Changes the camera position for the video recording session. |
+| `setQuality`                 | Alters the video quality preset for the recording session. |
+| `setStabilization`           | Modifies the stabilization mode for the video recording session. |
+| `zoom`                       | Adjusts the zoom factor for the video recording session. |
+| `setAutofocusing`            | Modifies the autofocusing mode for the video recording session. |
 | `fetchVideoFiles`              | Fetch a list of recorded video files.             |
 | `doctor`                       | Check if essential conditions for recording are satisfied. |
+
+## Installation 
+### Swift Package Manager (SPM)
+Follow these steps to install **Aespa** using SPM:
+
+1. From within Xcode 13 or later, choose `File` > `Swift Packages` > `Add Package Dependency`.
+2. At the next screen, enter the URL for the **Aespa** repository in the search bar (https://github.com/enebin/Aespa.git) then click `Next`.
+3. For the `Version rule`, select `Up to Next Minor` and specify the current Aespa version then click `Next`.
+4. On the final screen, select the `Aespa` library and then click `Finish`.
+
+**Aespa** should now be integrated into your project.
 
 ## Usage
 ### Requirements
@@ -101,6 +114,8 @@ Aespa offers the following functionalities for managing a video recording sessio
 
 ### Getting started
 ``` Swift
+import Aespa
+
 let aespaOption = AespaOption(albumName: "YOUR_ALBUM_NAME")
 let aespaSession = Aespa.session(with: aespaOption)
 
@@ -142,12 +157,13 @@ aespaSession.videoFilePublisher
     .receive(on: DispatchQueue.global(qos: .utility))
     .sink { [weak self] status in
         guard let self else { return }
-        
-        if case .failure(let error) = status {
-            // Handle error in here...
-            // ex. try? self.stopRecordingVideo()
-        } else {
-            // Handle captured file in here...
+        switch status {
+        case .success(let file):
+            // Handle file
+            // ex) return file.thumbnailImage
+        case .failure(let error):
+            // Handle error
+            // ex)print(error)
         }
     }
     .store(in: &subsriptions)
@@ -164,7 +180,7 @@ import Aespa
 import SwiftUI
 
 struct VideoContentView: View {
-    @ObservedObject private var viewModel = VideoContentViewModel()
+    @StateObject private var viewModel = VideoContentViewModel()
     
     var body: some View {
         ZStack {
@@ -191,6 +207,14 @@ class VideoContentViewModel: ObservableObject {
         Task(priority: .background) {
             do {
                 try await Aespa.configure()
+                try aespaSession
+                    .mute()
+                    .setAutofocusing(mode: .continuousAutoFocus)
+                    .setStabilization(mode: .auto)
+                    .setOrientation(to: .portrait)
+                    .setQuality(to: .high)
+                    .customize(WideColorCameraTuner())
+                
             } catch let error {
                 print(error)
             }
@@ -202,7 +226,7 @@ class VideoContentViewModel: ObservableObject {
 
 > **Note**: In UIKit, you can access the preview through the `previewLayer` property of `AespaSession`. 
 > 
-> For more details, refer to the [AVCaptureVideoPreviewLayer](https://developer.apple.com/documentation/avfoundation/avcapturevideopreviewlayer).in the official Apple documentation.
+> For more details, refer to the [AVCaptureVideoPreviewLayer](https://developer.apple.com/documentation/avfoundation/avcapturevideopreviewlayer) in the official Apple documentation.
 
 ## Contributing
 Contributions to Aespa are warmly welcomed. Please feel free to submit a pull request or create an issue if you find a bug or have a feature request.
