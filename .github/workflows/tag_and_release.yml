@@ -27,6 +27,6 @@ jobs:
         with:
           tag_name: ${{ env.RELEASE_VERSION }}
           release_name: v${{ env.RELEASE_VERSION }}
+          body: ${{ github.event.pull_request.body }}
           draft: true
           prerelease: false
-          
