@@ -32,3 +32,7 @@ protocol AespaDeviceTuning {
     var needLock: Bool { get }
     func tune<T: AespaCaptureDeviceRepresentable>(_ device: T) throws
 }
+
+extension AespaDeviceTuning {
+    var needLock: Bool { true }
+}

@@ -203,6 +203,7 @@
 				07939F892A343B8D00DFA8BB /* Sources */,
 				07939F8A2A343B8D00DFA8BB /* Frameworks */,
 				07939F8B2A343B8D00DFA8BB /* Resources */,
+				9B9CD51D2A3D3B430075B72F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -295,6 +296,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9B9CD51D2A3D3B430075B72F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(PROJECT_DIR)/Aespa-iOS-testTests/Mock/GeneratedMocks.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd ../Scripts\n./gen-mocks.sh\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		07939F892A343B8D00DFA8BB /* Sources */ = {

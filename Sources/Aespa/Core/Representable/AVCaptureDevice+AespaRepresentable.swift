@@ -9,19 +9,36 @@ import Foundation
 import AVFoundation
 
 protocol AespaCaptureDeviceRepresentable {
+    var hasTorch: Bool { get }
     var focusMode: AVCaptureDevice.FocusMode { get set }
+    var flashMode: AVCaptureDevice.FlashMode { get set }
     var videoZoomFactor: CGFloat { get set }
     
     var maxResolution: Double? { get }
     
     func isFocusModeSupported(_ focusMode: AVCaptureDevice.FocusMode) -> Bool
     
-    func setFocusMode(_ focusMode: AVCaptureDevice.FocusMode) throws
     func setZoomFactor(_ factor: CGFloat)
+    func setFocusMode(_ focusMode: AVCaptureDevice.FocusMode)
+    func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode)
+    func setTorchModeOn(level torchLevel: Float) throws
 }
 
 extension AVCaptureDevice: AespaCaptureDeviceRepresentable {
-    func setFocusMode(_ focusMode: FocusMode) throws {
+    func setTorchMode(_ torchMode: TorchMode) {
+        switch torchMode {
+        case .off:
+            self.torchMode = .off
+        case .on:
+            self.torchMode = .on
+        case .auto:
+            self.torchMode = .auto
+        @unknown default:
+            self.torchMode = .off
+        }
+    }
+    
+    func setFocusMode(_ focusMode: FocusMode) {
         self.focusMode = focusMode
     }
     

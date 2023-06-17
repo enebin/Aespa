@@ -59,6 +59,27 @@ final class DeviceTunerTests: XCTestCase {
         
         XCTAssertEqual(device.videoZoomFactor, factor)
     }
+    
+    func testTorchTuner() throws {
+        let level: Float = 0.15
+        let mode: AVCaptureDevice.TorchMode = .auto
+        let tuner = TorchTuner(level: level, torchMode: mode)
+        
+        stub(device) { proxy in
+            when(proxy.hasTorch.get).thenReturn(true)
+            when(proxy.setTorchMode(equal(to: mode))).thenDoNothing()
+            when(proxy.setTorchModeOn(level: level)).thenDoNothing()
+        }
+        
+        try tuner.tune(device)
+        verify(device)
+            .setTorchMode(equal(to: mode))
+            .with(returnType: Void.self)
+        
+        verify(device)
+            .setTorchModeOn(level: level)
+            .with(returnType: Void.self)
+    }
 }
 
 class MockDevice: AVCaptureDevice {

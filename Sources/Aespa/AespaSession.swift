@@ -307,7 +307,30 @@ open class AespaSession {
         
         return self
     }
-
+    
+    /// Sets the torch mode and level for the video recording session.
+    ///
+    /// If an error occurs during the operation, the error is logged.
+    ///
+    /// - Parameters:
+    ///     - mode: The desired torch mode (AVCaptureDevice.TorchMode).
+    ///     - level: The desired torch level as a Float between 0.0 and 1.0.
+    ///
+    /// - Returns: Returns self, allowing additional settings to be configured.
+    ///
+    /// - Note: This function might throw an error if the torch mode is not supported,
+    ///     or the specified level is not within the acceptable range.
+    @discardableResult
+    public func setTorch(mode: AVCaptureDevice.TorchMode, level: Float) -> AespaSession {
+        do {
+            try self.setTorchWitherror(mode: mode, level: level)
+        } catch let error {
+            Logger.log(error: error) // Logs any errors encountered during the operation
+        }
+        
+        return self
+    }
+    
     // MARK: - Throwing/// Starts the recording of a video session.
     ///
     /// - Throws: `AespaError` if the video file path request fails, orientation setting fails, or starting the recording fails.
@@ -460,7 +483,25 @@ open class AespaSession {
         return self
     }
 
-
+    /// Sets the torch mode and level for the video recording session.
+    ///
+    /// - Parameters:
+    ///     - mode: The desired torch mode (AVCaptureDevice.TorchMode).
+    ///     - level: The desired torch level as a Float between 0.0 and 1.0.
+    ///
+    /// - Returns: Returns self, allowing additional settings to be configured.
+    ///
+    /// - Throws: Throws an error if setting the torch mode or level fails.
+    ///
+    /// - Note: This function might throw an error if the torch mode is not supported,
+    ///     or the specified level is not within the acceptable range.
+    @discardableResult
+    public func setTorchWitherror(mode: AVCaptureDevice.TorchMode, level: Float) throws -> AespaSession {
+        let tuner = TorchTuner(level: level, torchMode: mode)
+        try coreSession.run(tuner)
+        return self
+    }
+    
     // MARK: - Customizable
     /// This function provides a way to use a custom tuner to modify the current session. The tuner must conform to `AespaSessionTuning`.
     ///
