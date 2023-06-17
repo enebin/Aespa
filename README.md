@@ -79,8 +79,6 @@ graph LR;
 ## Functionality
 Aespa offers the following functionalities for managing a video recording session:
 
-Sure, here is the updated version of the table without the "logs any errors that occur during the operation" sentences:
-
 | Function                     | Description                                       |
 |------------------------------|---------------------------------------------------|
 | `startRecording`             | Initiates the recording of a video session.       |
@@ -101,11 +99,14 @@ Sure, here is the updated version of the table without the "logs any errors that
 Follow these steps to install **Aespa** using SPM:
 
 1. From within Xcode 13 or later, choose `File` > `Swift Packages` > `Add Package Dependency`.
-2. At the next screen, enter the URL for the **Aespa** repository in the search bar (https://github.com/enebin/Aespa.git) then click `Next`.
+2. At the next screen, enter the URL for the **Aespa** repository in the search bar then click `Next`.
+    ``` Text
+    https://github.com/enebin/Aespa.git
+    ```
 3. For the `Version rule`, select `Up to Next Minor` and specify the current Aespa version then click `Next`.
 4. On the final screen, select the `Aespa` library and then click `Finish`.
 
-**Aespa** should now be integrated into your project.
+**Aespa** should now be integrated into your project 🚀
 
 ## Usage
 ### Requirements
