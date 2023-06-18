@@ -12,10 +12,8 @@ struct StartRecordProcessor: AespaFileOutputProcessing {
     let filePath: URL
     let delegate: AVCaptureFileOutputRecordingDelegate
     
-    func process(_ output: AVCaptureFileOutput) throws {
-        guard
-            output.connection(with: .video) != nil
-        else {
+    func process<T: AespaFileOutputRepresentable>(_ output: T) throws {
+        guard output.getConnection(with: .video) != nil else {
             throw AespaError.session(reason: .cannotFindConnection)
         }
         

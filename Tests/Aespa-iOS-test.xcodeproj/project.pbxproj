@@ -14,18 +14,20 @@
 		07F359B82A347CA400F4EF16 /* Cuckoo in Frameworks */ = {isa = PBXBuildFile; productRef = 07F359B72A347CA400F4EF16 /* Cuckoo */; };
 		07F359BA2A347DF600F4EF16 /* GeneratedMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F359B92A347DF600F4EF16 /* GeneratedMocks.swift */; };
 		07F359BE2A3489C000F4EF16 /* SessionTunerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F359BD2A3489C000F4EF16 /* SessionTunerTests.swift */; };
-		9CA7CFF82A380673000B11B3 /* Aespa in Frameworks */ = {isa = PBXBuildFile; productRef = 9CA7CFF72A380673000B11B3 /* Aespa */; };
+		07FBEE722A3DA67E003CC5FD /* Aespa in Frameworks */ = {isa = PBXBuildFile; productRef = 07FBEE712A3DA67E003CC5FD /* Aespa */; };
+		07FBEE762A3DD55C003CC5FD /* AlbumUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FBEE752A3DD55C003CC5FD /* AlbumUtilTests.swift */; };
+		07FBEE782A3E7500003CC5FD /* FileUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FBEE772A3E7500003CC5FD /* FileUtilTests.swift */; };
+		07FBEE7A2A3E77B5003CC5FD /* video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 07FBEE792A3E77B5003CC5FD /* video.mp4 */; };
+		07FBEE7D2A3E77D8003CC5FD /* MockVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FBEE7C2A3E77D8003CC5FD /* MockVideo.swift */; };
+		07FBEE822A3E7F95003CC5FD /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FBEE812A3E7F95003CC5FD /* MockFileManager.swift */; };
+		9B24721A2A3C212500D82A2E /* DeviceTunerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B2472192A3C212500D82A2E /* DeviceTunerTests.swift */; };
+		9B24721C2A3C310D00D82A2E /* ConnectionTunerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B24721B2A3C310D00D82A2E /* ConnectionTunerTests.swift */; };
+		9B4975BD2A3C8C0C0068FA35 /* FileOutputProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4975BC2A3C8C0C0068FA35 /* FileOutputProcessorTests.swift */; };
+		9B4975BF2A3CA0BF0068FA35 /* AssetProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4975BE2A3CA0BF0068FA35 /* AssetProcessorTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		07939F9E2A343B8E00DFA8BB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 07939F852A343B8D00DFA8BB /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 07939F8C2A343B8D00DFA8BB;
-			remoteInfo = "Aespa-iOS-test";
-		};
-		07939FA82A343B8E00DFA8BB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 07939F852A343B8D00DFA8BB /* Project object */;
 			proxyType = 1;
@@ -41,10 +43,19 @@
 		07939F942A343B8E00DFA8BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		07939F972A343B8E00DFA8BB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		07939F9D2A343B8E00DFA8BB /* Aespa-iOS-testTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Aespa-iOS-testTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		07939FA72A343B8E00DFA8BB /* Aespa-iOS-testUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Aespa-iOS-testUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07F359B92A347DF600F4EF16 /* GeneratedMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratedMocks.swift; sourceTree = "<group>"; };
 		07F359BD2A3489C000F4EF16 /* SessionTunerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTunerTests.swift; sourceTree = "<group>"; };
-		9CA7CFFA2A38069C000B11B3 /* Aespa */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Aespa; path = ..; sourceTree = "<group>"; };
+		07FBEE742A3DA69A003CC5FD /* Aespa */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Aespa; path = ..; sourceTree = "<group>"; };
+		07FBEE752A3DD55C003CC5FD /* AlbumUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumUtilTests.swift; sourceTree = "<group>"; };
+		07FBEE772A3E7500003CC5FD /* FileUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtilTests.swift; sourceTree = "<group>"; };
+		07FBEE792A3E77B5003CC5FD /* video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = video.mp4; sourceTree = "<group>"; };
+		07FBEE7C2A3E77D8003CC5FD /* MockVideo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockVideo.swift; sourceTree = "<group>"; };
+		07FBEE812A3E7F95003CC5FD /* MockFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileManager.swift; sourceTree = "<group>"; };
+		9B2472192A3C212500D82A2E /* DeviceTunerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceTunerTests.swift; sourceTree = "<group>"; };
+		9B24721B2A3C310D00D82A2E /* ConnectionTunerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionTunerTests.swift; sourceTree = "<group>"; };
+		9B24721E2A3C366100D82A2E /* Aespa-iOS-testTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Aespa-iOS-testTests.xctestplan"; sourceTree = "<group>"; };
+		9B4975BC2A3C8C0C0068FA35 /* FileOutputProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOutputProcessorTests.swift; sourceTree = "<group>"; };
+		9B4975BE2A3CA0BF0068FA35 /* AssetProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetProcessorTests.swift; sourceTree = "<group>"; };
 		9CA7CFFB2A380754000B11B3 /* Aespa-iOS-test.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Aespa-iOS-test.xctestplan"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -54,18 +65,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				07F359B82A347CA400F4EF16 /* Cuckoo in Frameworks */,
-				9CA7CFF82A380673000B11B3 /* Aespa in Frameworks */,
+				07FBEE722A3DA67E003CC5FD /* Aespa in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		07939F9A2A343B8E00DFA8BB /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		07939FA42A343B8E00DFA8BB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -78,8 +82,9 @@
 		07939F842A343B8D00DFA8BB = {
 			isa = PBXGroup;
 			children = (
+				07FBEE732A3DA69A003CC5FD /* Packages */,
+				9B24721E2A3C366100D82A2E /* Aespa-iOS-testTests.xctestplan */,
 				9CA7CFFB2A380754000B11B3 /* Aespa-iOS-test.xctestplan */,
-				9CA7CFF92A38069C000B11B3 /* Packages */,
 				07939F8F2A343B8D00DFA8BB /* Aespa-iOS-test */,
 				07939FA02A343B8E00DFA8BB /* Aespa-iOS-testTests */,
 				07939F8E2A343B8D00DFA8BB /* Products */,
@@ -92,7 +97,6 @@
 			children = (
 				07939F8D2A343B8D00DFA8BB /* Aespa-iOS-test.app */,
 				07939F9D2A343B8E00DFA8BB /* Aespa-iOS-testTests.xctest */,
-				07939FA72A343B8E00DFA8BB /* Aespa-iOS-testUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -119,6 +123,8 @@
 		07939FA02A343B8E00DFA8BB /* Aespa-iOS-testTests */ = {
 			isa = PBXGroup;
 			children = (
+				07FBEE6E2A3D9C02003CC5FD /* Util */,
+				9B4975BB2A3C8BA50068FA35 /* Processor */,
 				0795E11F2A35A2FC001AD4DC /* Tuner */,
 				07F359AA2A3443EC00F4EF16 /* Mock */,
 			);
@@ -129,6 +135,8 @@
 			isa = PBXGroup;
 			children = (
 				07F359BD2A3489C000F4EF16 /* SessionTunerTests.swift */,
+				9B2472192A3C212500D82A2E /* DeviceTunerTests.swift */,
+				9B24721B2A3C310D00D82A2E /* ConnectionTunerTests.swift */,
 			);
 			path = Tuner;
 			sourceTree = "<group>";
@@ -136,7 +144,9 @@
 		07F359AA2A3443EC00F4EF16 /* Mock */ = {
 			isa = PBXGroup;
 			children = (
+				07FBEE7B2A3E77CF003CC5FD /* Video */,
 				07F359B92A347DF600F4EF16 /* GeneratedMocks.swift */,
+				07FBEE812A3E7F95003CC5FD /* MockFileManager.swift */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -148,12 +158,39 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		9CA7CFF92A38069C000B11B3 /* Packages */ = {
+		07FBEE6E2A3D9C02003CC5FD /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				9CA7CFFA2A38069C000B11B3 /* Aespa */,
+				07FBEE752A3DD55C003CC5FD /* AlbumUtilTests.swift */,
+				07FBEE772A3E7500003CC5FD /* FileUtilTests.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		07FBEE732A3DA69A003CC5FD /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				07FBEE742A3DA69A003CC5FD /* Aespa */,
 			);
 			name = Packages;
+			sourceTree = "<group>";
+		};
+		07FBEE7B2A3E77CF003CC5FD /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				07FBEE792A3E77B5003CC5FD /* video.mp4 */,
+				07FBEE7C2A3E77D8003CC5FD /* MockVideo.swift */,
+			);
+			path = Video;
+			sourceTree = "<group>";
+		};
+		9B4975BB2A3C8BA50068FA35 /* Processor */ = {
+			isa = PBXGroup;
+			children = (
+				9B4975BC2A3C8C0C0068FA35 /* FileOutputProcessorTests.swift */,
+				9B4975BE2A3CA0BF0068FA35 /* AssetProcessorTests.swift */,
+			);
+			path = Processor;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -174,7 +211,7 @@
 			name = "Aespa-iOS-test";
 			packageProductDependencies = (
 				07F359B72A347CA400F4EF16 /* Cuckoo */,
-				9CA7CFF72A380673000B11B3 /* Aespa */,
+				07FBEE712A3DA67E003CC5FD /* Aespa */,
 			);
 			productName = "Aespa-iOS-test";
 			productReference = 07939F8D2A343B8D00DFA8BB /* Aespa-iOS-test.app */;
@@ -198,24 +235,6 @@
 			productReference = 07939F9D2A343B8E00DFA8BB /* Aespa-iOS-testTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		07939FA62A343B8E00DFA8BB /* Aespa-iOS-testUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 07939FB72A343B8E00DFA8BB /* Build configuration list for PBXNativeTarget "Aespa-iOS-testUITests" */;
-			buildPhases = (
-				07939FA32A343B8E00DFA8BB /* Sources */,
-				07939FA42A343B8E00DFA8BB /* Frameworks */,
-				07939FA52A343B8E00DFA8BB /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				07939FA92A343B8E00DFA8BB /* PBXTargetDependency */,
-			);
-			name = "Aespa-iOS-testUITests";
-			productName = "Aespa-iOS-testUITests";
-			productReference = 07939FA72A343B8E00DFA8BB /* Aespa-iOS-testUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -230,10 +249,6 @@
 						CreatedOnToolsVersion = 14.3;
 					};
 					07939F9C2A343B8E00DFA8BB = {
-						CreatedOnToolsVersion = 14.3;
-						TestTargetID = 07939F8C2A343B8D00DFA8BB;
-					};
-					07939FA62A343B8E00DFA8BB = {
 						CreatedOnToolsVersion = 14.3;
 						TestTargetID = 07939F8C2A343B8D00DFA8BB;
 					};
@@ -257,7 +272,6 @@
 			targets = (
 				07939F8C2A343B8D00DFA8BB /* Aespa-iOS-test */,
 				07939F9C2A343B8E00DFA8BB /* Aespa-iOS-testTests */,
-				07939FA62A343B8E00DFA8BB /* Aespa-iOS-testUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -276,13 +290,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		07939FA52A343B8E00DFA8BB /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				07FBEE7A2A3E77B5003CC5FD /* video.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,15 +310,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B24721A2A3C212500D82A2E /* DeviceTunerTests.swift in Sources */,
+				9B4975BF2A3CA0BF0068FA35 /* AssetProcessorTests.swift in Sources */,
 				07F359BE2A3489C000F4EF16 /* SessionTunerTests.swift in Sources */,
+				9B4975BD2A3C8C0C0068FA35 /* FileOutputProcessorTests.swift in Sources */,
+				07FBEE762A3DD55C003CC5FD /* AlbumUtilTests.swift in Sources */,
+				07FBEE782A3E7500003CC5FD /* FileUtilTests.swift in Sources */,
+				9B24721C2A3C310D00D82A2E /* ConnectionTunerTests.swift in Sources */,
+				07FBEE7D2A3E77D8003CC5FD /* MockVideo.swift in Sources */,
 				07F359BA2A347DF600F4EF16 /* GeneratedMocks.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		07939FA32A343B8E00DFA8BB /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				07FBEE822A3E7F95003CC5FD /* MockFileManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,11 +330,6 @@
 			isa = PBXTargetDependency;
 			target = 07939F8C2A343B8D00DFA8BB /* Aespa-iOS-test */;
 			targetProxy = 07939F9E2A343B8E00DFA8BB /* PBXContainerItemProxy */;
-		};
-		07939FA92A343B8E00DFA8BB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 07939F8C2A343B8D00DFA8BB /* Aespa-iOS-test */;
-			targetProxy = 07939FA82A343B8E00DFA8BB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -380,7 +384,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -434,7 +438,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -519,7 +523,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W6QHM4Y43Z;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.enebin.Aespa-iOS-testTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -539,7 +543,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W6QHM4Y43Z;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.enebin.Aespa-iOS-testTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -547,42 +551,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Aespa-iOS-test.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Aespa-iOS-test";
-			};
-			name = Release;
-		};
-		07939FB82A343B8E00DFA8BB /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = W6QHM4Y43Z;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.enebin.Aespa-iOS-testUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Aespa-iOS-test";
-			};
-			name = Debug;
-		};
-		07939FB92A343B8E00DFA8BB /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = W6QHM4Y43Z;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.enebin.Aespa-iOS-testUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Aespa-iOS-test";
 			};
 			name = Release;
 		};
@@ -616,15 +584,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		07939FB72A343B8E00DFA8BB /* Build configuration list for PBXNativeTarget "Aespa-iOS-testUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				07939FB82A343B8E00DFA8BB /* Debug */,
-				07939FB92A343B8E00DFA8BB /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -644,7 +603,7 @@
 			package = 07F359B62A347CA400F4EF16 /* XCRemoteSwiftPackageReference "Cuckoo" */;
 			productName = Cuckoo;
 		};
-		9CA7CFF72A380673000B11B3 /* Aespa */ = {
+		07FBEE712A3DA67E003CC5FD /* Aespa */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Aespa;
 		};

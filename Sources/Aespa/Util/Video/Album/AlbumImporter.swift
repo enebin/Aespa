@@ -11,23 +11,28 @@ import Photos
 import UIKit
 
 struct AlbumImporter {
-    static func getAlbum(name: String, in photoLibrary: PHPhotoLibrary) throws -> PHAssetCollection {
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.predicate = NSPredicate(format: "title = %@", name)
-        
-        let collection = PHAssetCollection.fetchAssetCollections(
-            with: .album, subtype: .any, options: fetchOptions
-        )
+    static func getAlbum<Library: AespaAssetLibraryRepresentable, Collection: AespaAssetCollectionRepresentable>(
+        name: String,
+        in photoLibrary: Library,
+        retry: Bool = true,
+        _ fetchOptions: PHFetchOptions = .init()
+    ) throws -> Collection {
+        let album: Collection? = photoLibrary.fetchAlbum(title: name, fetchOptions: fetchOptions)
 
-        if let album = collection.firstObject {
+        if let album {
             return album
-        } else {
+        } else if retry {
             try createAlbum(name: name, in: photoLibrary)
-            return try getAlbum(name: name, in: photoLibrary)
+            return try getAlbum(name: name, in: photoLibrary, retry: false, fetchOptions)
+        } else {
+            throw AespaError.album(reason: .unabledToAccess)
         }
     }
     
-    static private func createAlbum(name: String, in photoLibrary: PHPhotoLibrary) throws {
+    static private func createAlbum<Library: AespaAssetLibraryRepresentable>(
+        name: String,
+        in photoLibrary: Library
+    ) throws {
         try photoLibrary.performChangesAndWait {
             PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: name)
         }

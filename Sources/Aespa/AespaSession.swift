@@ -319,7 +319,8 @@ open class AespaSession {
         let filePath = try VideoFilePathProvider.requestFilePath(
             from: fileManager.systemFileManager,
             directoryName: option.asset.albumName,
-            fileName: fileName)
+            fileName: fileName,
+            extension: "mp4")
         
         if option.session.autoVideoOrientationEnabled {
             try setOrientationWithError(to: UIDevice.current.orientation.toVideoOrientation)

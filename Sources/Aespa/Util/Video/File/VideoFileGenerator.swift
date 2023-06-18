@@ -9,7 +9,6 @@ import UIKit
 import AVFoundation
 
 struct VideoFileGenerator {
-    
     static func generate(with path: URL, date: Date) -> VideoFile {
         return VideoFile(
             generatedDate: date,
@@ -19,6 +18,7 @@ struct VideoFileGenerator {
     
     static func generateThumbnail(for path: URL) -> UIImage? {
         let asset = AVURLAsset(url: path, options: nil)
+        
         let imageGenerator = AVAssetImageGenerator(asset: asset)
         imageGenerator.appliesPreferredTrackTransform = true
         imageGenerator.maximumSize = .init(width: 250, height: 250)

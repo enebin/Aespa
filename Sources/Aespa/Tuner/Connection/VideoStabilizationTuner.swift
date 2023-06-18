@@ -10,7 +10,7 @@ import AVFoundation
 struct VideoStabilizationTuner: AespaConnectionTuning {
     var stabilzationMode: AVCaptureVideoStabilizationMode
     
-    func tune(_ connection: AVCaptureConnection) {
+    func tune<T: AespaCaptureConnectionRepresentable>(_ connection: T) {
         connection.setStabilizationMode(to: stabilzationMode)
     }
 }

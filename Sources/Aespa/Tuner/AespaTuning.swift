@@ -20,9 +20,9 @@ public extension AespaSessionTuning {
     var needTransaction: Bool { true }
 }
 
-
+/// AespaConnectionTuning
 protocol AespaConnectionTuning {
-    func tune(_ connection: AVCaptureConnection) throws
+    func tune<T: AespaCaptureConnectionRepresentable>(_ connection: T) throws
 }
 
 
@@ -30,5 +30,5 @@ protocol AespaConnectionTuning {
 ///     Instead, use `needLock` flag
 protocol AespaDeviceTuning {
     var needLock: Bool { get }
-    func tune(_ device: AVCaptureDevice) throws
+    func tune<T: AespaCaptureDeviceRepresentable>(_ device: T) throws
 }

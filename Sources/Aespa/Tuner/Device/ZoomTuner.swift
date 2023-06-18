@@ -11,7 +11,7 @@ struct ZoomTuner: AespaDeviceTuning {
     var needLock = true
     var zoomFactor: CGFloat
 
-    func tune(_ device: AVCaptureDevice) {
-        device.setZoomFactor(factor: zoomFactor)
+    func tune<T: AespaCaptureDeviceRepresentable>(_ device: T) {
+        device.setZoomFactor(zoomFactor)
     }
 }

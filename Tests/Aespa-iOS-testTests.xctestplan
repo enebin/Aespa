@@ -1,8 +1,8 @@
 {
   "configurations" : [
     {
-      "id" : "1D1026B7-1AE7-47C9-A8DE-7047D3049461",
-      "name" : "Configuration 1",
+      "id" : "F430D1B4-52B5-4C85-8BEB-263A506AFE77",
+      "name" : "Test Scheme Action",
       "options" : {
 
       }
@@ -21,6 +21,7 @@
   },
   "testTargets" : [
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Aespa-iOS-test.xcodeproj",
         "identifier" : "07939F9C2A343B8E00DFA8BB",

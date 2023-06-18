@@ -13,18 +13,15 @@ import Cuckoo
 @testable import Aespa
 
 final class SessionTunerTests: XCTestCase {
-    var mockSession: MockAespaCoreSession!
     var mockSessionProtocol: MockAespaCoreSessionRepresentable!
 
     
     override func setUpWithError() throws {
-        let option = AespaOption(albumName: "test")
-        mockSession = MockAespaCoreSession(option: option)
         mockSessionProtocol = MockAespaCoreSessionRepresentable()
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        mockSessionProtocol = nil
     }
     
     func testQualityTuner() throws {

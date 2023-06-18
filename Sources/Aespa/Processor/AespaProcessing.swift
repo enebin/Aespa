@@ -10,9 +10,12 @@ import Foundation
 import AVFoundation
 
 protocol AespaFileOutputProcessing {
-    func process(_ output: AVCaptureFileOutput) throws
+    func process<T: AespaFileOutputRepresentable>(_ output: T) throws
 }
 
 protocol AespaAssetProcessing {
-    func process(_ photoLibrary: PHPhotoLibrary, _ assetCollection: PHAssetCollection) async throws
+    func process<T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable>(
+        _ photoLibrary: T, _ assetCollection: U
+    ) async throws
+    where T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable
 }

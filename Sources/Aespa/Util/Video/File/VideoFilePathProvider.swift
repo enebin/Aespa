@@ -8,11 +8,16 @@
 import UIKit
 
 struct VideoFilePathProvider {
-    static func requestFilePath(from fileManager: FileManager, directoryName: String, fileName: String) throws -> URL {
+    static func requestFilePath(
+        from fileManager: FileManager,
+        directoryName: String,
+        fileName: String,
+        extension: String
+    ) throws -> URL {
         let directoryPath = try requestDirectoryPath(from: fileManager, name: directoryName)
         let filePath = directoryPath
             .appendingPathComponent(fileName)
-            .appendingPathExtension("mp4")
+            .appendingPathExtension(`extension`)
         
         return filePath
     }

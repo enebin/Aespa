@@ -12,11 +12,11 @@ struct AutoFocusTuner: AespaDeviceTuning {
     let needLock = true
     let mode: AVCaptureDevice.FocusMode
     
-    func tune(_ device: AVCaptureDevice) throws {
+    func tune<T: AespaCaptureDeviceRepresentable>(_ device: T) throws {
         guard device.isFocusModeSupported(mode) else {
             throw AespaError.device(reason: .unsupported)
         }
         
-        device.focusMode = mode
+        try device.setFocusMode(mode)
     }
 }
