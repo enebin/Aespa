@@ -10,7 +10,9 @@ import AVFoundation
 
 protocol AespaFileOutputRepresentable {
     func stopRecording()
-    func startRecording(to outputFileURL: URL, recordingDelegate delegate: AVCaptureFileOutputRecordingDelegate)
+    func startRecording(
+        to outputFileURL: URL,
+        recordingDelegate delegate: AVCaptureFileOutputRecordingDelegate)
     func getConnection(with mediaType: AVMediaType) -> AespaCaptureConnectionRepresentable?
 }
 

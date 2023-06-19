@@ -11,12 +11,12 @@ import AVFoundation
 struct TorchTuner: AespaDeviceTuning {
     let level: Float
     let torchMode: AVCaptureDevice.TorchMode
-    
-    func tune<T>(_ device: T) throws where T : AespaCaptureDeviceRepresentable {
+
+    func tune<T>(_ device: T) throws where T: AespaCaptureDeviceRepresentable {
         guard device.hasTorch else {
             throw AespaError.device(reason: .unsupported)
         }
-        
+
         device.setTorchMode(torchMode)
         try device.setTorchModeOn(level: level)
     }

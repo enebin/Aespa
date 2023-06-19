@@ -18,10 +18,10 @@ struct VideoFilePathProvider {
         let filePath = directoryPath
             .appendingPathComponent(fileName)
             .appendingPathExtension(`extension`)
-        
+
         return filePath
     }
-    
+
     static func requestDirectoryPath(from fileManager: FileManager, name: String) throws -> URL {
         guard
             let albumPath = fileManager.urls(for: .documentDirectory,
@@ -29,9 +29,9 @@ struct VideoFilePathProvider {
         else {
             throw AespaError.album(reason: .unabledToAccess)
         }
-        
+
         let directoryPathURL = albumPath.appendingPathComponent(name, isDirectory: true)
-        
+
         // Set directory if doesn't exist
         if fileManager.fileExists(atPath: directoryPathURL.path) == false {
             try fileManager.createDirectory(
@@ -39,7 +39,7 @@ struct VideoFilePathProvider {
                 withIntermediateDirectories: true,
                 attributes: nil)
         }
-        
+
         return directoryPathURL
     }
 }

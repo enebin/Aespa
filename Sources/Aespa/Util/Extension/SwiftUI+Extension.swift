@@ -12,7 +12,8 @@ import AVFoundation
 public extension AespaSession {
     /// A `SwiftUI` `View` that you use to display video as it is being captured by an input device.
     ///
-    /// - Parameter gravity: Define `AVLayerVideoGravity` for preview's orientation. `.resizeAspectFill` by default.
+    /// - Parameter gravity: Define `AVLayerVideoGravity` for preview's orientation.
+    ///     .resizeAspectFill` by default.
     ///
     /// - Returns: `some UIViewRepresentable` which can coordinate other `View` components
     func preview(gravity: AVLayerVideoGravity = .resizeAspectFill) -> some UIViewControllerRepresentable {
@@ -20,7 +21,7 @@ public extension AespaSession {
     }
 }
 
-fileprivate struct Preview: UIViewControllerRepresentable {
+private struct Preview: UIViewControllerRepresentable {
     let previewLayer: AVCaptureVideoPreviewLayer
     let gravity: AVLayerVideoGravity
 
@@ -35,14 +36,14 @@ fileprivate struct Preview: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         let viewController = UIViewController()
         viewController.view.backgroundColor = .clear
-        
+
         return viewController
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         previewLayer.videoGravity = gravity
         uiViewController.view.layer.addSublayer(previewLayer)
-        
+
         previewLayer.frame = uiViewController.view.bounds
     }
 

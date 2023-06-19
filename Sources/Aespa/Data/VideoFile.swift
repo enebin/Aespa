@@ -17,10 +17,10 @@ import AVFoundation
 public struct VideoFile: Equatable {
     /// A `Date` value keeps the date it's generated
     public let generatedDate: Date
-    
+
     /// The path to the video file.
     public let path: URL
-    
+
     /// An optional thumbnail generated from the video with `UIImage` type.
     /// This will be `nil` if the thumbnail could not be generated for some reason.
     public var thumbnail: UIImage?
@@ -34,7 +34,7 @@ public extension VideoFile {
         if let thumbnail {
             return Image(uiImage: thumbnail)
         }
-        
+
         return nil
     }
 }

@@ -205,6 +205,7 @@
 				9C727D012A3FEF9600EF9472 /* Frameworks */,
 				9C727D022A3FEF9600EF9472 /* Resources */,
 				9C727D582A3FF18500EF9472 /* Generate mock file */,
+				9CFF96C02A401CDB003EF921 /* Lint files */,
 			);
 			buildRules = (
 			);
@@ -312,11 +313,30 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(PROJECT_DIR)/$(PRODUCT_NAME)Tests/Mock/GeneratedMocks.swift",
+				"$(PROJECT_DIR)/Tests/Mock/GeneratedMocks.swift",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cd ../Scripts\n./gen-mocks.sh\n";
+		};
+		9CFF96C02A401CDB003EF921 /* Lint files */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Lint files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd ../\n\nif [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftlint > /dev/null; then\n    swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

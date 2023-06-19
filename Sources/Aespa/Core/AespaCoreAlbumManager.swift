@@ -8,18 +8,19 @@
 import Photos
 import AVFoundation
 
-/// Retreive the video(url) from `FileManager` based local storage and add the video to the pre-defined album roll
+/// Retreive the video(url) from `FileManager` based local storage
+/// and add the video to the pre-defined album roll
 class AespaCoreAlbumManager {
     // Dependencies
     private let photoLibrary: PHPhotoLibrary
     private let albumName: String
     private var album: PHAssetCollection?
-    
+
     convenience init(albumName: String) {
         let photoLibrary = PHPhotoLibrary.shared()
         self.init(albumName: albumName, photoLibrary)
     }
-    
+
     init(
         albumName: String,
         _ photoLibrary: PHPhotoLibrary
@@ -27,7 +28,7 @@ class AespaCoreAlbumManager {
         self.albumName = albumName
         self.photoLibrary = photoLibrary
     }
-    
+
     func run<T: AespaAssetProcessing>(processor: T) async throws {
         if let album {
             try await processor.process(photoLibrary, album)
@@ -43,7 +44,7 @@ extension AespaCoreAlbumManager {
         let processor = VideoAssetAdditionProcessor(filePath: filePath)
         try await run(processor: processor)
     }
-    
+
     func addToAlbum(imageData: Data) async throws {
         let processor = PhotoAssetAdditionProcessor(imageData: imageData)
         try await run(processor: processor)

@@ -13,7 +13,7 @@ public enum AespaError: LocalizedError {
     case permission(reason: PermissionErrorReason)
     case album(reason: AlbumErrorReason)
     case file(reason: FileErrorReason)
-    
+
     public var errorDescription: String? {
         switch self {
         case .session(reason: let reason):
@@ -43,7 +43,7 @@ public extension AespaError {
         case cannotFindDevice =
                 "Couldn't find device. Check if you've added device properly"
     }
-    
+
     enum DeviceErrorReason: String {
         case invalid =
                 "Unable to set up camera device. Please check camera usage permission."
@@ -56,12 +56,12 @@ public extension AespaError {
         case unsupported =
                 "Unsupported device (supported on iPhone XR and later devices)"
     }
-    
+
     enum PermissionErrorReason: String {
         case denied =
                 "Cannot take a video because camera permissions are denied."
     }
-    
+
     enum AlbumErrorReason: String {
         case unabledToAccess =
                 "Unable to access album"
@@ -70,7 +70,7 @@ public extension AespaError {
         case notVideoURL =
                 "Received URL is not a video type."
     }
-    
+
     enum FileErrorReason: String {
         case unableToFlatten =
                 "Cannot take a video because camera permissions are denied."

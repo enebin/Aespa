@@ -12,7 +12,7 @@ extension UIDeviceOrientation {
     var toVideoOrientation: AVCaptureVideoOrientation {
         let currentOrientation = UIDevice.current.orientation
         let previewOrientation: AVCaptureVideoOrientation
-        
+
         switch currentOrientation {
         case .portrait:
             previewOrientation = .portrait
@@ -25,7 +25,7 @@ extension UIDeviceOrientation {
         default:
             previewOrientation = .portrait
         }
-        
+
         return previewOrientation
     }
 }

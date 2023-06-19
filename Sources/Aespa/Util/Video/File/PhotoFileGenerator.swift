@@ -11,7 +11,7 @@ import Foundation
 struct PhotoFileGenerator {
     static func generate(data: Data, date: Date) -> PhotoFile {
         return PhotoFile(
-            data: data, 
+            data: data,
             generatedDate: date,
             thumbnail: UIImage(data: data))
     }

@@ -13,7 +13,7 @@ struct AuthorizationChecker {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             return .permitted
-            
+
         case .notDetermined:
             let isPermissionGranted = await AVCaptureDevice.requestAccess(for: .video)
             if isPermissionGranted {
@@ -21,13 +21,13 @@ struct AuthorizationChecker {
             } else {
                 fallthrough
             }
-            
+
         case .denied:
             fallthrough
-            
+
         case .restricted:
             fallthrough
-            
+
         @unknown default:
             return .notPermitted
         }

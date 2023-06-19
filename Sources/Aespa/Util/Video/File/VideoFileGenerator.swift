@@ -15,18 +15,19 @@ struct VideoFileGenerator {
             path: path,
             thumbnail: VideoFileGenerator.generateThumbnail(for: path))
     }
-    
+
     static func generateThumbnail(for path: URL) -> UIImage? {
         let asset = AVURLAsset(url: path, options: nil)
-        
+
         let imageGenerator = AVAssetImageGenerator(asset: asset)
         imageGenerator.appliesPreferredTrackTransform = true
         imageGenerator.maximumSize = .init(width: 250, height: 250)
-        
+
         do {
-            let cgImage = try imageGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1), actualTime: nil)
+            let cgImage = try imageGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1),
+                                                         actualTime: nil)
             let thumbnail = UIImage(cgImage: cgImage)
-            
+
             return thumbnail
         } catch let error {
             Logger.log(error: error)

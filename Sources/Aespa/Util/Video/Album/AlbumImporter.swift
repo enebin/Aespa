@@ -11,7 +11,10 @@ import Photos
 import UIKit
 
 struct AlbumImporter {
-    static func getAlbum<Library: AespaAssetLibraryRepresentable, Collection: AespaAssetCollectionRepresentable>(
+    static func getAlbum<
+        Library: AespaAssetLibraryRepresentable,
+        Collection: AespaAssetCollectionRepresentable
+    >(
         name: String,
         in photoLibrary: Library,
         retry: Bool = true,
@@ -28,7 +31,7 @@ struct AlbumImporter {
             throw AespaError.album(reason: .unabledToAccess)
         }
     }
-    
+
     static private func createAlbum<Library: AespaAssetLibraryRepresentable>(
         name: String,
         in photoLibrary: Library

@@ -38,7 +38,7 @@ final class AssetProcessorTests: XCTestCase {
         }
         
         stub(collection) { proxy in
-            when(proxy.canAdd(any())).thenReturn(true)
+            when(proxy.canAdd(video: any())).thenReturn(true)
         }
         
         try await processor.process(library, collection)

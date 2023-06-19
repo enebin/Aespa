@@ -11,7 +11,12 @@ import Foundation
 struct VideoAssetAdditionProcessor: AespaAssetProcessing {
     let filePath: URL
 
-    func process<T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable>(_ photoLibrary: T, _ assetCollection: U) async throws {
+    func process<
+        T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable
+    >(
+        _ photoLibrary: T,
+        _ assetCollection: U
+    ) async throws {
         guard
             case .authorized = await photoLibrary.requestAuthorization(for: .addOnly)
         else {
@@ -25,14 +30,20 @@ struct VideoAssetAdditionProcessor: AespaAssetProcessing {
     }
 
     /// Add the video to the app's album roll
-    func add<T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable>(video path: URL, to album: U, _ photoLibrary: T) async throws -> Void {
+    func add<
+        T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable
+    >(video path: URL,
+      to album: U,
+      _ photoLibrary: T
+    ) async throws {
         guard album.canAdd(video: path) else {
             throw AespaError.album(reason: .notVideoURL)
         }
 
         return try await photoLibrary.performChanges {
             guard
-                let assetChangeRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: path),
+                let assetChangeRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(
+                    atFileURL: path),
                 let placeholder = assetChangeRequest.placeholderForCreatedAsset,
                 let albumChangeRequest = PHAssetCollectionChangeRequest(for: album.underlyingAssetCollection)
             else {

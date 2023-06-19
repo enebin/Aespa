@@ -11,7 +11,12 @@ import Foundation
 struct PhotoAssetAdditionProcessor: AespaAssetProcessing {
     let imageData: Data
 
-    func process<T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable>(_ photoLibrary: T, _ assetCollection: U) async throws {
+    func process<
+        T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable
+    >(
+        _ photoLibrary: T,
+        _ assetCollection: U
+    ) async throws {
         guard
             case .authorized = await photoLibrary.requestAuthorization(for: .addOnly)
         else {
@@ -25,7 +30,13 @@ struct PhotoAssetAdditionProcessor: AespaAssetProcessing {
     }
 
     /// Add the video to the app's album roll
-    func add<T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable>(imageData: Data, to album: U, _ photoLibrary: T) async throws -> Void {
+    func add<
+        T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable
+    >(
+        imageData: Data,
+        to album: U,
+        _ photoLibrary: T
+    ) async throws {
         try await photoLibrary.performChanges {
             // Request creating an asset from the image.
             let creationRequest = PHAssetCreationRequest.forAsset()

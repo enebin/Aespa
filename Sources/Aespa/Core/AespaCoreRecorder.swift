@@ -12,20 +12,20 @@ import AVFoundation
 /// Start, stop recording and responsible for notifying the result of recording
 class AespaCoreRecorder: NSObject {
     private let core: AespaCoreSession
-    
+
     /// Notify the end of recording
     private let fileIOResultSubject = PassthroughSubject<Result<URL, Error>, Never>()
     private var fileIOResultSubsciption: Cancellable?
-    
+
     init(core: AespaCoreSession) {
         self.core = core
     }
-    
+
     func run<T: AespaMovieFileOutputProcessing>(processor: T) throws {
         guard let output = core.movieFileOutput else {
             throw AespaError.session(reason: .cannotFindConnection)
         }
-        
+
         try processor.process(output)
     }
 }
@@ -34,10 +34,10 @@ extension AespaCoreRecorder {
     func startRecording(in filePath: URL) throws {
         try run(processor: StartRecordProcessor(filePath: filePath, delegate: self))
     }
-    
+
     func stopRecording() async throws -> URL {
         try run(processor: FinishRecordProcessor())
-        
+
         return try await withCheckedThrowingContinuation { continuation in
             fileIOResultSubsciption = fileIOResultSubject.sink { _ in
                 // Do nothing on completion; we're only interested in values.
@@ -54,7 +54,11 @@ extension AespaCoreRecorder {
 }
 
 extension AespaCoreRecorder: AVCaptureFileOutputRecordingDelegate {
-    func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
+    func fileOutput(
+        _ output: AVCaptureFileOutput,
+        didStartRecordingTo fileURL: URL,
+        from connections: [AVCaptureConnection]
+    ) {
         Logger.log(message: "Recording started")
     }
 
