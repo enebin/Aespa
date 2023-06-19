@@ -47,7 +47,7 @@ class AespaCoreSession: AVCaptureSession {
         try tuner.tune(connection)
     }
     
-    func run<T: AespaFileOutputProcessing>(_ processor: T) throws {
+    func run<T: AespaMovieFileOutputProcessing>(_ processor: T) throws {
         guard let output = self.movieFileOutput else {
             throw AespaError.session(reason: .cannotFindConnection)
         }

@@ -17,6 +17,6 @@ struct AutoFocusTuner: AespaDeviceTuning {
             throw AespaError.device(reason: .unsupported)
         }
         
-        try device.setFocusMode(mode)
+        device.setFocusMode(mode)
     }
 }

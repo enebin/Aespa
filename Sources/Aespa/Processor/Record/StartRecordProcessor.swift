@@ -5,10 +5,9 @@
 //  Created by 이영빈 on 2023/06/02.
 //
 
-import Combine
 import AVFoundation
 
-struct StartRecordProcessor: AespaFileOutputProcessing {
+struct StartRecordProcessor: AespaMovieFileOutputProcessing {
     let filePath: URL
     let delegate: AVCaptureFileOutputRecordingDelegate
     

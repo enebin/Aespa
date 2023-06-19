@@ -8,7 +8,7 @@
 
 import AVFoundation
 
-struct FinishRecordProcessor: AespaFileOutputProcessing {
+struct FinishRecordProcessor: AespaMovieFileOutputProcessing {
     func process<T: AespaFileOutputRepresentable>(_ output: T) throws {
         output.stopRecording()
     }

@@ -28,7 +28,6 @@ public struct VideoFile: Equatable {
 
 /// UI related extension methods
 public extension VideoFile {
-    
     /// An optional thumbnail generated from the video with SwiftUI `Image` type.
     /// This will be `nil` if the thumbnail could not be generated for some reason.
     var thumbnailImage: Image? {

@@ -9,7 +9,11 @@ import Photos
 import Foundation
 import AVFoundation
 
-protocol AespaFileOutputProcessing {
+protocol AespaCapturePhotoOutputProcessing {
+    func process<T: AespaPhotoOutputRepresentable>(_ output: T) throws
+}
+
+protocol AespaMovieFileOutputProcessing {
     func process<T: AespaFileOutputRepresentable>(_ output: T) throws
 }
 

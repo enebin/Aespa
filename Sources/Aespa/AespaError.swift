@@ -12,6 +12,7 @@ public enum AespaError: LocalizedError {
     case device(reason: DeviceErrorReason)
     case permission(reason: PermissionErrorReason)
     case album(reason: AlbumErrorReason)
+    case file(reason: FileErrorReason)
     
     public var errorDescription: String? {
         switch self {
@@ -22,6 +23,8 @@ public enum AespaError: LocalizedError {
         case .permission(reason: let reason):
             return reason.rawValue
         case .album(reason: let reason):
+            return reason.rawValue
+        case .file(reason: let reason):
             return reason.rawValue
         }
     }
@@ -66,5 +69,10 @@ public extension AespaError {
                 "Trying to delete or fetch the video that does not exist."
         case notVideoURL =
                 "Received URL is not a video type."
+    }
+    
+    enum FileErrorReason: String {
+        case unableToFlatten =
+                "Cannot take a video because camera permissions are denied."
     }
 }

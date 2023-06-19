@@ -22,6 +22,7 @@ open class AespaSession {
     private let option: AespaOption
     private let coreSession: AespaCoreSession
     private let recorder: AespaCoreRecorder
+    private let camera: AespaCoreCamera
     private let fileManager: AespaCoreFileManager
     private let albumManager: AespaCoreAlbumManager
     
@@ -40,6 +41,7 @@ open class AespaSession {
             option: option,
             session: session,
             recorder: .init(core: session),
+            camera: .init(core: session),
             fileManager: .init(enableCaching: option.asset.useVideoFileCache),
             albumManager: .init(albumName: option.asset.albumName)
         )
@@ -49,12 +51,14 @@ open class AespaSession {
         option: AespaOption,
         session: AespaCoreSession,
         recorder: AespaCoreRecorder,
+        camera: AespaCoreCamera,
         fileManager: AespaCoreFileManager,
         albumManager: AespaCoreAlbumManager
     ) {
         self.option = option
         self.coreSession = session
         self.recorder = recorder
+        self.camera = camera
         self.fileManager = fileManager
         self.albumManager = albumManager
         
@@ -155,7 +159,7 @@ open class AespaSession {
     ) {
         Task(priority: .utility) {
             do {
-                let videoFile = try await self.stopRecording()
+                let videoFile = try await self.stopRecordingWithError()
                 return completionHandler(.success(videoFile))
             } catch let error {
                 Logger.log(error: error)
@@ -352,15 +356,28 @@ open class AespaSession {
         try recorder.startRecording(in: filePath)
     }
     
-    
     /// Stops the ongoing video recording session and attempts to add the video file to the album.
     ///
     /// Supporting `async`, you can use this method in Swift Concurrency's context
     ///
     /// - Throws: `AespaError` if stopping the recording fails.
-    public func stopRecording() async throws -> VideoFile {
+    public func stopRecordingWithError() async throws -> VideoFile {
         let videoFilePath = try await recorder.stopRecording()
         let videoFile = VideoFileGenerator.generate(with: videoFilePath, date: Date())
+        
+        try await albumManager.addToAlbum(filePath: videoFilePath)
+        videoFileBufferSubject.send(.success(videoFile))
+        
+        return videoFile
+    }
+    
+    public func captureWithError(setting: AVCapturePhotoSettings) async throws -> PhotoFile {
+        let rawPhotoAsset = try await camera.capture(setting: setting)
+        guard let rawPhotoData = rawPhotoAsset.fileDataRepresentation() else {
+            throw AespaError.file(reason: .unableToFlatten)
+        }
+        
+        let photoFile = PhotoFileGenerator.generate(data: rawPhotoData, date: Date())
         
         try await albumManager.addToAlbum(filePath: videoFilePath)
         videoFileBufferSubject.send(.success(videoFile))

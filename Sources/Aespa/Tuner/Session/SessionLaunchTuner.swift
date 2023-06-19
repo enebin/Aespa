@@ -15,6 +15,7 @@ struct SessionLaunchTuner: AespaSessionTuning {
         
         try session.addMovieInput()
         try session.addMovieFileOutput()
+        try session.addCapturePhotoOutput()
         session.startRunning()
     }
 }

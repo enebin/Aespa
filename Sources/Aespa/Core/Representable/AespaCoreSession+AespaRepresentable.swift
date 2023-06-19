@@ -53,6 +53,10 @@ public protocol AespaCoreSessionRepresentable {
     /// Throws an error if the operation fails.
     func addMovieFileOutput() throws
     
+    /// Adds photo file output to the session.
+    /// Throws an error if the operation fails.
+    func addCapturePhotoOutput() throws
+    
     /// Sets the position of the camera.
     /// Throws an error if the operation fails.
     func setCameraPosition(to position: AVCaptureDevice.Position, device deviceType: AVCaptureDevice.DeviceType?) throws
@@ -80,9 +84,20 @@ extension AespaCoreSession: AespaCoreSessionRepresentable {
     }
     
     var movieFileOutput: AVCaptureMovieFileOutput? {
-        let output = self.outputs.first as? AVCaptureMovieFileOutput
+        let output = self.outputs.first {
+            $0 as? AVCaptureMovieFileOutput != nil
+        }
+
         
-        return output
+        return output as? AVCaptureMovieFileOutput
+    }
+    
+    var photoOutput: AVCapturePhotoOutput? {
+        let output = self.outputs.first {
+            $0 as? AVCapturePhotoOutput != nil
+        }
+        
+        return output as? AVCapturePhotoOutput
     }
     
     var previewLayer: AVCaptureVideoPreviewLayer {
@@ -143,7 +158,6 @@ extension AespaCoreSession: AespaCoreSessionRepresentable {
         }
     }
     
-    
     func addMovieFileOutput() throws {
         guard self.movieFileOutput == nil else {
             // return itself if output is already set
@@ -156,6 +170,20 @@ extension AespaCoreSession: AespaCoreSessionRepresentable {
         }
         
         self.addOutput(fileOutput)
+    }
+    
+    func addCapturePhotoOutput() throws {
+        guard self.photoOutput == nil else {
+            // return itself if output is already set
+           return
+        }
+        
+        let photoOutput = AVCapturePhotoOutput()
+        guard self.canAddOutput(photoOutput) else {
+            throw AespaError.device(reason: .unableToSetOutput)
+        }
+        
+        self.addOutput(photoOutput)
     }
     
     // MARK: - Option related
