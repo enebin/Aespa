@@ -39,11 +39,12 @@ jobs:
 
         # Now do test
         DERIVED_DATA_PATH="./DerivedData"
-        TEST_SCHEME="Aespa-iOS-test-scheme"
+        PROJECT_NAME="TestHostApp"
+        TEST_SCHEME="Test"
 
         xcodebuild test \
         -verbose \
-        -project ${ROOT_PATH}/Tests/Aespa-iOS-test.xcodeproj \
+        -project ${ROOT_PATH}/Tests/${PROJECT_NAME}.xcodeproj \
         -scheme ${TEST_SCHEME} \
         -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=latest' \
         -derivedDataPath ${DERIVED_DATA_PATH} \

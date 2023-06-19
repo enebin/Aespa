@@ -26,6 +26,7 @@ open class AespaSession {
     private let fileManager: AespaCoreFileManager
     private let albumManager: AespaCoreAlbumManager
     
+    private let photoFileBufferSubject: CurrentValueSubject<Result<PhotoFile, Error>?, Never>
     private let videoFileBufferSubject: CurrentValueSubject<Result<VideoFile, Error>?, Never>
     private let previewLayerSubject: CurrentValueSubject<AVCaptureVideoPreviewLayer?, Never>
     
@@ -63,6 +64,7 @@ open class AespaSession {
         self.albumManager = albumManager
         
         self.videoFileBufferSubject = .init(nil)
+        self.photoFileBufferSubject = .init(nil)
         self.previewLayerSubject = .init(nil)
         
         self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
@@ -117,7 +119,17 @@ open class AespaSession {
         .compactMap({ $0 })
         .eraseToAnyPublisher()
     }
-
+    
+    public var photoFilePublisher: AnyPublisher<Result<PhotoFile, Error>, Never> {
+        photoFileBufferSubject.handleEvents(receiveOutput: { status in
+            if case .failure(let error) = status {
+                Logger.log(error: error)
+            }
+        })
+        .compactMap({ $0 })
+        .eraseToAnyPublisher()
+    }
+    
     /// This publisher is responsible for emitting updates to the preview layer.
     ///
     /// A log message is printed to the console every time a new layer is pushed.
@@ -161,6 +173,21 @@ open class AespaSession {
             do {
                 let videoFile = try await self.stopRecordingWithError()
                 return completionHandler(.success(videoFile))
+            } catch let error {
+                Logger.log(error: error)
+                return completionHandler(.failure(error))
+            }
+        }
+    }
+    
+    public func capturePhoto(
+        setting: AVCapturePhotoSettings,
+        _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void = { _ in }
+    ) {
+        Task(priority: .utility) {
+            do {
+                let photoFile = try await self.captureWithError(setting: setting)
+                return completionHandler(.success(photoFile))
             } catch let error {
                 Logger.log(error: error)
                 return completionHandler(.failure(error))
@@ -377,12 +404,12 @@ open class AespaSession {
             throw AespaError.file(reason: .unableToFlatten)
         }
         
+        try await albumManager.addToAlbum(imageData: rawPhotoData)
+        
         let photoFile = PhotoFileGenerator.generate(data: rawPhotoData, date: Date())
+        photoFileBufferSubject.send(.success(photoFile))
         
-        try await albumManager.addToAlbum(filePath: videoFilePath)
-        videoFileBufferSubject.send(.success(videoFile))
-        
-        return videoFile
+        return photoFile
     }
     
     /// Mutes the audio input for the video recording session.

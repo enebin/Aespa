@@ -71,8 +71,11 @@ final class SessionTunerTests: XCTestCase {
     func testSessionLaunchTuner_whenNotRunning() throws {
         stub(mockSessionProtocol) { proxy in
             when(proxy.isRunning.get).thenReturn(false)
+            
             when(proxy.addMovieInput()).thenDoNothing()
             when(proxy.addMovieFileOutput()).thenDoNothing()
+            when(proxy.addCapturePhotoOutput()).thenDoNothing()
+            
             when(proxy.startRunning()).thenDoNothing()
         }
 
@@ -85,6 +88,10 @@ final class SessionTunerTests: XCTestCase {
         
         verify(mockSessionProtocol)
             .addMovieFileOutput()
+            .with(returnType: Void.self)
+        
+        verify(mockSessionProtocol)
+            .addCapturePhotoOutput()
             .with(returnType: Void.self)
         
         verify(mockSessionProtocol)
@@ -106,6 +113,10 @@ final class SessionTunerTests: XCTestCase {
         
         verify(mockSessionProtocol, never())
             .addMovieFileOutput()
+            .with(returnType: Void.self)
+        
+        verify(mockSessionProtocol, never())
+            .addCapturePhotoOutput()
             .with(returnType: Void.self)
         
         verify(mockSessionProtocol, never())

@@ -30,7 +30,7 @@ final class AssetProcessorTests: XCTestCase {
     func testAddition() async throws {
         let url = URL(string: "/here/there.mp4")!
         let accessLevel = PHAccessLevel.addOnly
-        let processor = AssetAdditionProcessor(filePath: url)
+        let processor = VideoAssetAdditionProcessor(filePath: url)
         
         stub(library) { proxy in
             when(proxy.performChanges(anyClosure())).thenDoNothing()

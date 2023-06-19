@@ -34,7 +34,7 @@ struct VideoFilePathProvider {
         
         // Set directory if doesn't exist
         if fileManager.fileExists(atPath: directoryPathURL.path) == false {
-            try FileManager.default.createDirectory(
+            try fileManager.createDirectory(
                 atPath: directoryPathURL.path,
                 withIntermediateDirectories: true,
                 attributes: nil)

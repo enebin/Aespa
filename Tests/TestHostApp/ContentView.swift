@@ -1,8 +1,8 @@
 //
 //  ContentView.swift
-//  Aespa-iOS-test
+//  TestHostApp
 //
-//  Created by Young Bin on 2023/06/10.
+//  Created by 이영빈 on 2023/06/19.
 //
 
 import SwiftUI

@@ -1,5 +1,5 @@
 //
-//  AssetAddingProcessor.swift
+//  VideoAssetAdditionProcessor.swift
 //  
 //
 //  Created by 이영빈 on 2023/06/02.
@@ -8,7 +8,7 @@
 import Photos
 import Foundation
 
-struct AssetAdditionProcessor: AespaAssetProcessing {
+struct VideoAssetAdditionProcessor: AespaAssetProcessing {
     let filePath: URL
 
     func process<T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable>(_ photoLibrary: T, _ assetCollection: U) async throws {

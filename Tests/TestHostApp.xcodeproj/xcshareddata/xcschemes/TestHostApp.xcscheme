@@ -8,16 +8,16 @@
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "Aespa"
-               BuildableName = "Aespa"
-               BlueprintName = "Aespa"
-               ReferencedContainer = "container:..">
+               BlueprintIdentifier = "9C727D032A3FEF9600EF9472"
+               BuildableName = "TestHostApp.app"
+               BlueprintName = "TestHostApp"
+               ReferencedContainer = "container:TestHostApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -26,23 +26,18 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <TestPlans>
-         <TestPlanReference
-            reference = "container:Aespa-iOS-testTests.xctestplan"
-            default = "YES">
-         </TestPlanReference>
-      </TestPlans>
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldAutocreateTestPlan = "YES">
       <Testables>
          <TestableReference
             skipped = "NO"
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "07939F9C2A343B8E00DFA8BB"
-               BuildableName = "Aespa-iOS-testTests.xctest"
-               BlueprintName = "Aespa-iOS-testTests"
-               ReferencedContainer = "container:Aespa-iOS-test.xcodeproj">
+               BlueprintIdentifier = "9C727D132A3FEF9900EF9472"
+               BuildableName = "TestHostAppTests.xctest"
+               BlueprintName = "TestHostAppTests"
+               ReferencedContainer = "container:TestHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,6 +52,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "9C727D032A3FEF9600EF9472"
+            BuildableName = "TestHostApp.app"
+            BlueprintName = "TestHostApp"
+            ReferencedContainer = "container:TestHostApp.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -64,6 +69,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "9C727D032A3FEF9600EF9472"
+            BuildableName = "TestHostApp.app"
+            BlueprintName = "TestHostApp"
+            ReferencedContainer = "container:TestHostApp.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

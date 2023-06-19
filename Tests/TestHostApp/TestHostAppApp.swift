@@ -1,14 +1,14 @@
 //
-//  Aespa_iOS_testApp.swift
-//  Aespa-iOS-test
+//  TestHostAppApp.swift
+//  TestHostApp
 //
-//  Created by Young Bin on 2023/06/10.
+//  Created by 이영빈 on 2023/06/19.
 //
 
 import SwiftUI
 
 @main
-struct Aespa_iOS_testApp: App {
+struct TestHostAppApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
