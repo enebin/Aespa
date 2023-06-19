@@ -26,7 +26,7 @@ struct VideoAssetAdditionProcessor: AespaAssetProcessing {
 
     /// Add the video to the app's album roll
     func add<T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable>(video path: URL, to album: U, _ photoLibrary: T) async throws -> Void {
-        guard album.canAdd(path) else {
+        guard album.canAdd(video: path) else {
             throw AespaError.album(reason: .notVideoURL)
         }
 

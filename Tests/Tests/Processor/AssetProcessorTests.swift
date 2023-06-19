@@ -27,7 +27,7 @@ final class AssetProcessorTests: XCTestCase {
         collection = nil
     }
 
-    func testAddition() async throws {
+    func testVideoAddition() async throws {
         let url = URL(string: "/here/there.mp4")!
         let accessLevel = PHAccessLevel.addOnly
         let processor = VideoAssetAdditionProcessor(filePath: url)
@@ -39,6 +39,27 @@ final class AssetProcessorTests: XCTestCase {
         
         stub(collection) { proxy in
             when(proxy.canAdd(any())).thenReturn(true)
+        }
+        
+        try await processor.process(library, collection)
+        
+        verify(library)
+            .performChanges(anyClosure())
+            .with(returnType: Void.self)
+        
+        verify(library)
+            .requestAuthorization(for: equal(to: accessLevel))
+            .with(returnType: PHAuthorizationStatus.self)
+    }
+
+    func testPhotoAddition() async throws {
+        let imageData = try XCTUnwrap(UIImage(systemName: "person")?.pngData())
+        let accessLevel = PHAccessLevel.addOnly
+        let processor = PhotoAssetAdditionProcessor(imageData: imageData)
+        
+        stub(library) { proxy in
+            when(proxy.performChanges(anyClosure())).thenDoNothing()
+            when(proxy.requestAuthorization(for: equal(to: accessLevel))).thenReturn(.authorized)
         }
         
         try await processor.process(library, collection)

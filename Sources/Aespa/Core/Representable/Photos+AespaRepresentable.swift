@@ -19,7 +19,7 @@ protocol AespaAssetCollectionRepresentable {
     var underlyingAssetCollection: PHAssetCollection { get }
     var localizedTitle: String? { get }
     
-    func canAdd(_ filePath: URL) -> Bool
+    func canAdd(video filePath: URL) -> Bool
 }
 
 extension PHPhotoLibrary: AespaAssetLibraryRepresentable {
@@ -41,7 +41,7 @@ extension PHPhotoLibrary: AespaAssetLibraryRepresentable {
 extension PHAssetCollection: AespaAssetCollectionRepresentable {
     var underlyingAssetCollection: PHAssetCollection { self }
     
-    func canAdd(_ filePath: URL) -> Bool {
+    func canAdd(video filePath: URL) -> Bool {
         let asset = AVAsset(url: filePath)
         let tracks = asset.tracks(withMediaType: AVMediaType.video)
         
