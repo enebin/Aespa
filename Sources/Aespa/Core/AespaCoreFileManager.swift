@@ -8,7 +8,7 @@
 import Foundation
 
 class AespaCoreFileManager {
-    private var videoFileProxyDictionary: [String: VideoFileCachingProxy]
+    private var videoFileProxyDictionary: [String: VideoFileCachingProxy<URLCacheStorage<VideoFile>>]
     private let enableCaching: Bool
 
     let systemFileManager: FileManager
@@ -35,7 +35,7 @@ class AespaCoreFileManager {
 
         guard let proxy = videoFileProxyDictionary[albumName] else {
             videoFileProxyDictionary[albumName] = VideoFileCachingProxy(
-                albumDirectory: albumDirectory, 
+                albumDirectory: albumDirectory,
                 enableCaching: enableCaching,
                 fileManager: systemFileManager)
 

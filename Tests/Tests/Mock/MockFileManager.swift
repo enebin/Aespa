@@ -10,7 +10,9 @@ import Foundation
 class MockFileManager: FileManager {
     var urlsStub: [URL]?
     var attributesOfItemStub: [FileAttributeKey: Any]?
+    
     var contentsOfDirectoryStub: [String]?
+    var contentsOfDirectoryCalled: Bool = false
     
     override func urls(
         for directory: FileManager.SearchPathDirectory,
@@ -46,7 +48,10 @@ class MockFileManager: FileManager {
     }
     
     override func contentsOfDirectory(atPath path: String) throws -> [String] {
-        try contentsOfDirectoryStubMethod(atPath: path)
+        let result = try contentsOfDirectoryStubMethod(atPath: path)
+        contentsOfDirectoryCalled = true
+        
+        return result
     }
     
     private func contentsOfDirectoryStubMethod(atPath path: String) throws -> [String] {

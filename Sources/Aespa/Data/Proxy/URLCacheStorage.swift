@@ -7,18 +7,17 @@
 
 import Foundation
 
-protocol URLCache {
+protocol URLCaching<File> {
     associatedtype File
     
     func get(_ url: URL) -> File?
     func store(_ file: File, at filePath: URL)
-    func renew(with filePair: [URL: File])
     func empty()
     
     var all: [File] { get }
 }
 
-class URLCacheStorage<File>: URLCache {
+final class URLCacheStorage<File>: URLCaching {
     private var storage: [URL: File]
     
     init() {
@@ -31,10 +30,6 @@ class URLCacheStorage<File>: URLCache {
     
     func store(_ file: File, at filePath: URL) {
         storage[filePath] = file
-    }
-    
-    func renew(with filePair: [URL: File]) {
-        storage = filePair
     }
     
     func empty() {
