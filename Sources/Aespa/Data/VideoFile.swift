@@ -14,7 +14,7 @@ import AVFoundation
 /// This struct holds information about the video file, including a unique identifier (`id`),
 /// the path to the video file (`path`), and an optional thumbnail image (`thumbnail`)
 /// generated from the video.
-public struct VideoFile: Equatable {
+public struct VideoFile {
     /// A `Date` value keeps the date it's generated
     public let generatedDate: Date
 
@@ -36,6 +36,12 @@ public extension VideoFile {
         }
 
         return nil
+    }
+}
+
+extension VideoFile: Equatable {
+    public static func == (lhs: VideoFile, rhs: VideoFile ) -> Bool {
+        lhs.path == rhs.path
     }
 }
 

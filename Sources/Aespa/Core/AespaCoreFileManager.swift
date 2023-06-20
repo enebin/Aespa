@@ -25,10 +25,17 @@ class AespaCoreFileManager {
     /// If `count` is `0`, return all existing files
     func fetch(albumName: String, count: Int) -> [VideoFile] {
         guard count >= 0 else { return [] }
+        
+        guard let albumDirectory = try? VideoFilePathProvider.requestDirectoryPath(from: systemFileManager,
+                                                                                   name: albumName)
+        else {
+            Logger.log(message: "Cannot fetch album directory so `fetch` will return empty array.")
+            return []
+        }
 
         guard let proxy = videoFileProxyDictionary[albumName] else {
             videoFileProxyDictionary[albumName] = VideoFileCachingProxy(
-                albumName: albumName,
+                albumDirectory: albumDirectory, 
                 enableCaching: enableCaching,
                 fileManager: systemFileManager)
 
