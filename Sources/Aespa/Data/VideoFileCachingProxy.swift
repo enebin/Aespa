@@ -48,8 +48,7 @@ class VideoFileCachingProxy {
         }
 
         // Check if the directory has been modified since last fetch
-        if let lastModificationDate = self.lastModificationDate,
-           lastModificationDate == currentModificationDate {
+        if let lastModificationDate, lastModificationDate == currentModificationDate {
             return fetchSortedFiles(count: count)
         }
 
