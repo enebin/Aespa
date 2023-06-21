@@ -14,8 +14,16 @@ public typealias FileNamingRule = () -> String
 /// `AespaOption` allows customization of various aspects of the video recording process,
 /// such as the video asset configuration, session settings and logging preferences.
 public struct AespaOption {
+    /// `Asset` configuration object which encapsulates options related to the media assets such as
+    /// the album name, file extension and naming convention for the files.
     public let asset: Asset
+    
+    /// `Session` configuration object which holds the settings to be applied for the `Aespa` session,
+    /// such as auto video orientation.
     public let session: Session
+    
+    /// `Log` configuration object which determines the logging behaviour during the session,
+    /// such as enabling or disabling logging.
     public let log: Log
     
     /// Creates an `AespaOption` with specified album name and an option to enable logging.
@@ -29,7 +37,7 @@ public struct AespaOption {
             session: Session(),
             log: Log(loggingEnabled: enableLogging))
     }
-    
+
     /// Creates an `AespaOption` with specified asset, session and log options.
     ///
     /// - Parameters:
@@ -44,22 +52,23 @@ public struct AespaOption {
 }
 
 public extension AespaOption {
-    /// `Asset` provides options for configuring the video assets, such as the album name, file naming rule, and file extension.
+    /// `Asset` provides options for configuring the video assets,
+    /// such as the album name, file naming rule, and file extension.
     struct Asset {
         /// The name of the album where recorded videos will be saved.
         let albumName: String
-        
+
         /// A `Boolean` flag that determines to use in-memory cache for `VideoFile`
         ///
         /// It's set `true` by default.
         let useVideoFileCache: Bool
-        
+
         /// The file extension for the recorded videos.
         let fileNameHandler: FileNamingRule
-        
+
         /// The rule for naming video files.
         let fileExtension: String
-        
+
         init(
             albumName: String,
             useVideoFileCache: Bool = true,
@@ -72,15 +81,17 @@ public extension AespaOption {
             self.fileNameHandler = fileNameHandler
         }
     }
-    
-    /// `Session` provides options for configuring the video recording session, such as automatic video orientation.
+
+    /// `Session` provides options for configuring the video recording session,
+    /// such as automatic video orientation.
     struct Session {
         /// A Boolean value that determines whether video orientation should be automatic.
         var autoVideoOrientationEnabled: Bool = true
-        /// An `AVCaptureDevice.DeviceType` value that determines camera device. If not specified, the device is automatically selected.
+        /// An `AVCaptureDevice.DeviceType` value that determines camera device.
+        /// If not specified, the device is automatically selected.
         var cameraDevicePreference: AVCaptureDevice.DeviceType?
     }
-    
+
     /// `Log` provides an option for enabling or disabling logging.
     struct Log {
         var loggingEnabled: Bool = true
@@ -96,19 +107,19 @@ public extension AespaOption {
             var rule: FileNamingRule {
                 return { formatter.string(from: Date()) }
             }
-            
+
             /// Creates a `Timestamp` file naming rule.
             init() {
                 formatter = DateFormatter()
                 formatter.dateFormat = "yyyy_MM_dd_HH_mm_ss"
             }
         }
-        
+
         struct Random {
             let rule: FileNamingRule = { UUID().uuidString }
         }
     }
-    
+
     /// `FileExtension` provides supported file extensions.
     enum FileExtension: String {
         case mp4

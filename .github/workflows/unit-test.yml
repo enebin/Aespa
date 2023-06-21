@@ -1,0 +1,59 @@
+name: Unit testing and collect result infomations
+
+on:
+  pull_request:
+    types: [synchronize]
+
+concurrency: 
+  group: unit-test-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: macOS-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Select Xcode
+      run: sudo xcode-select -s '/Applications/Xcode.app/Contents/Developer'
+
+    - name: Prepare test
+      run: |
+        cd ./Scripts
+        ROOT_PATH="../"
+
+        ROOT_DIR_NAME=$(basename "$(cd "$ROOT_PATH" && pwd)")
+        if [ "$ROOT_DIR_NAME" != "Aespa" ]; then
+            echo "❌ Error: Script's not called in proper path."
+            exit 1
+        fi
+
+        # Generate mocks
+        chmod +x ./gen-mocks.sh
+        ./gen-mocks.sh
+
+    - name: Test
+      run: |
+        ROOT_PATH="./"
+
+        # Now do test
+        DERIVED_DATA_PATH="./DerivedData"
+        PROJECT_NAME="TestHostApp"
+        TEST_SCHEME="Test"
+
+        xcodebuild test \
+        -verbose \
+        -project ${ROOT_PATH}/Tests/${PROJECT_NAME}.xcodeproj \
+        -scheme ${TEST_SCHEME} \
+        -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=latest' \
+        -derivedDataPath ${DERIVED_DATA_PATH} \
+        -enableCodeCoverage YES \
+        | xcpretty --color \
+        || exit 1
+
+        # Check if the tests failed
+        if [ $? -ne 0 ]; then
+            echo "❌ Error: Tests failed."
+            exit 1
+        fi

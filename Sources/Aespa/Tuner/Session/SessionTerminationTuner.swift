@@ -9,10 +9,10 @@ import AVFoundation
 
 struct SessionTerminationTuner: AespaSessionTuning {
     let needTransaction = false
-    
+
     func tune<T: AespaCoreSessionRepresentable>(_ session: T) {
         guard session.isRunning else { return }
-        
+
         session.removeAudioInput()
         session.removeMovieInput()
         session.stopRunning()

@@ -12,50 +12,42 @@ import AVFoundation
 public extension AespaSession {
     /// A `SwiftUI` `View` that you use to display video as it is being captured by an input device.
     ///
-    /// - Parameter gravity: Define `AVLayerVideoGravity` for preview's orientation. `.resizeAspectFill` by default.
+    /// - Parameter gravity: Define `AVLayerVideoGravity` for preview's orientation.
+    ///     .resizeAspectFill` by default.
     ///
     /// - Returns: `some UIViewRepresentable` which can coordinate other `View` components
-    func preview(gravity: AVLayerVideoGravity = .resizeAspectFill) -> some UIViewRepresentable {
-        AespaSwiftUIPreview(with: previewLayerPublisher, gravity: gravity)
+    func preview(gravity: AVLayerVideoGravity = .resizeAspectFill) -> some UIViewControllerRepresentable {
+        Preview(of: previewLayer, gravity: gravity)
     }
 }
 
-fileprivate struct AespaSwiftUIPreview: UIViewRepresentable {
-    @StateObject var viewModel: AespaSwiftUIPreviewViewModel
+private struct Preview: UIViewControllerRepresentable {
+    let previewLayer: AVCaptureVideoPreviewLayer
     let gravity: AVLayerVideoGravity
 
     init(
-        with publisher: AnyPublisher<AVCaptureVideoPreviewLayer, Never>,
+        of previewLayer: AVCaptureVideoPreviewLayer,
         gravity: AVLayerVideoGravity
     ) {
-        _viewModel = StateObject(
-            wrappedValue: AespaSwiftUIPreviewViewModel(previewLayerPublisher: publisher))
         self.gravity = gravity
+        self.previewLayer = previewLayer
     }
 
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView()
-        return view
+    func makeUIViewController(context: Context) -> UIViewController {
+        let viewController = UIViewController()
+        viewController.view.backgroundColor = .clear
+
+        return viewController
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {
-        guard let previewLayer = viewModel.previewLayer else { return }
-        
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         previewLayer.videoGravity = gravity
-        uiView.layer.addSublayer(previewLayer)
-        
-        previewLayer.frame = uiView.bounds
-    }
-}
+        uiViewController.view.layer.addSublayer(previewLayer)
 
-fileprivate class AespaSwiftUIPreviewViewModel: ObservableObject {
-    var subscription: Cancellable?
-    @Published var previewLayer: AVCaptureVideoPreviewLayer?
-    
-    init(previewLayerPublisher: AnyPublisher<AVCaptureVideoPreviewLayer, Never>) {
-        subscription = previewLayerPublisher
-            .subscribe(on: DispatchQueue.global())
-            .receive(on: DispatchQueue.main)
-            .sink { self.previewLayer = $0 }
+        previewLayer.frame = uiViewController.view.bounds
+    }
+
+    func dismantleUIViewController(_ uiViewController: UIViewController, coordinator: ()) {
+        previewLayer.removeFromSuperlayer()
     }
 }

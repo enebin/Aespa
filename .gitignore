@@ -8,10 +8,7 @@ DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
 
-Aespa-test-env/cuckoo_generator
+Scripts/cuckoo_generator
+Scripts/run
 
-Aespa-test-env/run
-
-Tests/Cuckoo/cuckoo_generator
-
-Tests/Cuckoo/run
+Tests/Tests/Mock/GeneratedMocks.swift

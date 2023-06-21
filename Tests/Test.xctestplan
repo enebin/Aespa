@@ -1,0 +1,32 @@
+{
+  "configurations" : [
+    {
+      "id" : "E98AB7E2-A5C9-449F-BC03-D7CEEAB04AB9",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:..",
+          "identifier" : "Aespa",
+          "name" : "Aespa"
+        }
+      ]
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:TestHostApp.xcodeproj",
+        "identifier" : "9C727D132A3FEF9900EF9472",
+        "name" : "TestHostAppTests"
+      }
+    }
+  ],
+  "version" : 1
+}

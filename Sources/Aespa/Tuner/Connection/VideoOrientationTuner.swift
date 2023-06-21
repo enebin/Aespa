@@ -9,8 +9,8 @@ import AVFoundation
 
 struct VideoOrientationTuner: AespaConnectionTuning {
     var orientation: AVCaptureVideoOrientation
-    
-    func tune(_ connection: AVCaptureConnection) {
-        connection.videoOrientation = orientation
+
+    func tune<T: AespaCaptureConnectionRepresentable>(_ connection: T) throws {
+        connection.setOrientation(to: orientation)
     }
 }
