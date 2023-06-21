@@ -27,12 +27,6 @@ class VideoFileCachingProxy<CacheStorage: URLCaching<VideoFile>> {
         
         self.cacheEnabled = enableCaching
         self.fileManager = fileManager
-
-        if enableCaching {
-            DispatchQueue.global().async {
-                self.update(cacheStorage)
-            }
-        }
     }
 
     /// If `count` is `0`, return all existing files
@@ -66,6 +60,10 @@ class VideoFileCachingProxy<CacheStorage: URLCaching<VideoFile>> {
     func invalidate() {
         lastModificationDate = nil
         cacheStroage.empty()
+    }
+    
+    func renew() {
+        update(cacheStroage)
     }
 }
 

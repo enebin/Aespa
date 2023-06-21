@@ -93,6 +93,30 @@ final class VideoFileCachingProxyTests: XCTestCase {
             .with(returnType: Void.self)
     }
     
+    func testRenew() {
+        sut = VideoFileCachingProxy(albumDirectory: givenAlbumDirectory,
+                                    enableCaching: true,
+                                    fileManager: mockFileManager,
+                                    cacheStorage: mockCache)
+        // Given a file
+        mockFileManager.contentsOfDirectoryStub = [givenVideoFile.path.lastPathComponent]
+
+        // Given empty cache
+        stub(mockCache) { proxy in
+            when(proxy.get(any(URL.self))).thenReturn(nil)
+            when(proxy.all.get).thenReturn([])
+        }
+        
+        // When renew is called
+        sut.renew()
+        
+        // Then cache should be updated...
+        let expectedFile = givenVideoFile
+        verify(mockCache)
+            .store(equal(to: expectedFile), at: equal(to: expectedFile.path))
+            .with(returnType: Void.self)
+    }
+    
     func testProxyCache() {
         let expectedVideoFile = givenVideoFile
         let expectedFilePath = givenVideoFile.path
@@ -108,25 +132,36 @@ final class VideoFileCachingProxyTests: XCTestCase {
                                     fileManager: mockFileManager,
                                     cacheStorage: mockCache)
         
-        // Assume empty cache
+        // Given empty cache
         stub(mockCache) { proxy in
             when(proxy.get(equal(to: expectedFilePath))).thenReturn(nil)
             when(proxy.all.get).thenReturn([])
         }
         
+        // When renew the cache
+        sut.renew()
+        
+        // Then...
         verify(mockCache)
             .get(equal(to: expectedFilePath))
             .with(returnType: VideoFile?.self)
         
-        // Assume cache filled
+        verify(mockCache)
+            .store(equal(to: expectedVideoFile), at: equal(to: expectedFilePath))
+            .with(returnType: Void.self)
+        
+        
+        // Given cache filled
         stub(mockCache) { proxy in
             when(proxy.get(equal(to: expectedFilePath))).thenReturn(expectedVideoFile)
             when(proxy.all.get).thenReturn([expectedVideoFile])
         }
         
+        // When fetch the files
         let fetchedFiles = sut.fetch(count: 1)
-
-        verify(mockCache, times(1)) // Only includes previous invoke
+        
+        // Then...
+        verify(mockCache, times(1)) // Only includes previous invoke - which means store's not called additionally
             .store(equal(to: expectedVideoFile), at: equal(to: expectedFilePath))
             .with(returnType: Void.self)
         
@@ -136,7 +171,6 @@ final class VideoFileCachingProxyTests: XCTestCase {
 
     func testProxyNotUsingCache() {
         let expectedVideoFile = givenVideoFile
-        let expectedFilePath = givenVideoFile.path
         
         // Cache shouldn't be filled with a data it has in the `FileManager`
         sut = VideoFileCachingProxy(albumDirectory: givenAlbumDirectory,
