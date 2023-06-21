@@ -1,12 +1,49 @@
-![Aespa. Ready-to-go package for easy and intuitive camera handling](Assets/header.jpg)
-
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fenebin%2FAespa%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/enebin/Aespa)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fenebin%2FAespa%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/enebin/Aespa)
 [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
+![Aespa. Ready-to-go package for easy and intuitive camera handling](Assets/header.jpg)
+
+<div align="center">
+
+### Add a camera in just 3 lines
+
+</div>
+
+``` Swift 
+let aespaOption = AespaOption(albumName: "YOUR_ALBUM_NAME")
+let aespaSession = Aespa.session(with: aespaOption)
+try await Aespa.configure()
+// Done!
+```
 
 ### Quick link
-- Latest documentation can be found in [here](https://enebin.github.io/Aespa/documentation/aespa/)
-- Demo app & usage example can be found in [here](https://github.com/enebin/Aespa-iOS/tree/main/Aespa-iOS)
+
+- **Demo app & usage example** can be found in [here](https://github.com/enebin/Aespa-iOS/tree/main/Aespa-iOS)
+- **Latest API documentation** can be found in [here](https://enebin.github.io/Aespa/documentation/aespa/)
+
+### Index
+
+- [Introduction](#Introduction)
+- [Features](#Features)
+    - [Super Easy to Use](#Super-Easy-to-Use)
+    - [Offer Essential Preset Configuration & Customization](#Offer-Essential-Preset-Configuration-&-Customization)
+    - [`Combine` & `async` Support](#Combine-&-async-Support)
+    - [Comprehensive Error Handling](#Comprehensive-Error-Handling)
+- [Functionality](#Functionality)
+- [Installation](#Installation)
+    - [Swift Package Manager (SPM)](#Swift-Package-Manager-(SPM))
+- [Usage](#Usage)
+    - [Requirements](#Requirements)
+    - [Getting Started](#Getting-Started)
+- [Implementation Examples](#Implementation-Examples)
+    - [Start & Stop Recording](#Start-&-Stop-Recording)
+    - [Subscribing Publisher](#Subscribing-Publisher)
+- [SwiftUI Integration](#SwiftUI-Integration)
+    - [Example Usage](#Example-Usage)
+- [Contributing](#Contributing)
+- [License](#License)
+
+---
 
 ## Introduction
 Aespa is a robust and intuitive Swift package for video capturing, built with a focus on the ease of setting up and usage. 
@@ -59,7 +96,7 @@ AS --> D["Fetching asset files"]
 </details>
 
 <details>
-<summary> ✅ `Combine` & `async` support </summary>
+<summary> ✅ Combine & async support </summary>
 
 ``` mermaid
 graph LR;
