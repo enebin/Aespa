@@ -30,6 +30,8 @@ open class AespaSession {
     private let photoFileBufferSubject: CurrentValueSubject<Result<PhotoFile, Error>?, Never>
     private let videoFileBufferSubject: CurrentValueSubject<Result<VideoFile, Error>?, Never>
     private let previewLayerSubject: CurrentValueSubject<AVCaptureVideoPreviewLayer?, Never>
+    
+    private var capturePhotoSetting: AVCapturePhotoSettings
 
     /// A `UIKit` layer that you use to display video as it is being captured by an input device.
     ///
@@ -67,6 +69,8 @@ open class AespaSession {
         self.videoFileBufferSubject = .init(nil)
         self.photoFileBufferSubject = .init(nil)
         self.previewLayerSubject = .init(nil)
+        
+        self.capturePhotoSetting = .init()
 
         self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
 
@@ -197,18 +201,16 @@ open class AespaSession {
     /// the completion handler.
     ///
     /// - Parameters:
-    ///   - setting: The `AVCapturePhotoSettings` to use when capturing the photo.
     ///   - completionHandler: A closure to be invoked once the photo capture process is completed. This
     ///     closure takes a `Result` type where `Success` contains a `PhotoFile` object and
     ///     `Failure` contains an `Error` object. By default, the closure does nothing.
     ///
     public func capturePhoto(
-        setting: AVCapturePhotoSettings,
         _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void = { _ in }
     ) {
         Task(priority: .utility) {
             do {
-                let photoFile = try await self.captureWithError(setting: setting)
+                let photoFile = try await self.captureWithError()
                 return completionHandler(.success(photoFile))
             } catch let error {
                 Logger.log(error: error)
@@ -429,12 +431,12 @@ open class AespaSession {
     ///
     /// If any part of this process fails, an `AespaError` is thrown.
     ///
-    /// - Parameter setting: The `AVCapturePhotoSettings` to use when capturing the photo.
     /// - Returns: A `PhotoFile` object representing the captured photo.
     /// - Throws: An `AespaError` if there is an issue capturing the photo,
     ///     flattening it into a `Data` object, or adding it to the album.
-    public func captureWithError(setting: AVCapturePhotoSettings) async throws -> PhotoFile {
-        let rawPhotoAsset = try await camera.capture(setting: setting)
+    public func captureWithError() async throws -> PhotoFile {
+        let rawPhotoAsset = try await camera.capture(setting: self.capturePhotoSetting)
+        
         guard let rawPhotoData = rawPhotoAsset.fileDataRepresentation() else {
             throw AespaError.file(reason: .unableToFlatten)
         }
