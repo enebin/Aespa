@@ -18,7 +18,7 @@ open class AespaPhotoContext {
     private let fileManager: AespaCoreFileManager
     private let option: AespaOption
     
-    private(set) var capturePhotoSetting: AVCapturePhotoSettings
+    private var capturePhotoSettingBuffer: CapturePhotoSettingBuffer
     private let photoFileBufferSubject: CurrentValueSubject<Result<PhotoFile, Error>?, Never>
     
     init(
@@ -34,7 +34,7 @@ open class AespaPhotoContext {
         self.fileManager = fileManager
         self.option = option
         
-        self.capturePhotoSetting = .init()
+        self.capturePhotoSettingBuffer = CapturePhotoSettingBuffer()
         self.photoFileBufferSubject = .init(nil)
     }
     
@@ -86,8 +86,9 @@ open class AespaPhotoContext {
     ///
     /// - Parameter mode: The `AVCaptureDevice.FlashMode` to set for the camera.
     /// - Returns: The updated `AespaPhotoContext` instance.
+    @discardableResult
     public func setFlashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
-        capturePhotoSetting.flashMode = mode
+        capturePhotoSettingBuffer.flashMode = mode
         return self
     }
     
@@ -96,8 +97,9 @@ open class AespaPhotoContext {
     ///
     /// - Parameter enabled: A boolean indicating whether the red eye reduction should be enabled or not.
     /// - Returns: The updated `AespaPhotoContext` instance.
-    public func redeyeReduction(enabled: Bool) -> AespaPhotoContext {
-        capturePhotoSetting.isAutoRedEyeReductionEnabled = enabled
+    @discardableResult
+    public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
+        capturePhotoSettingBuffer.isAutoRedEyeReductionEnabled = enabled
         return self
     }
 
@@ -114,7 +116,8 @@ open class AespaPhotoContext {
     /// - Throws: An `AespaError` if there is an issue capturing the photo,
     ///     flattening it into a `Data` object, or adding it to the album.
     public func captureWithError() async throws -> PhotoFile {
-        let rawPhotoAsset = try await camera.capture(setting: self.capturePhotoSetting)
+        let setting = capturePhotoSettingBuffer.toNativeType()
+        let rawPhotoAsset = try await camera.capture(setting: setting)
         
         guard let rawPhotoData = rawPhotoAsset.fileDataRepresentation() else {
             throw AespaError.file(reason: .unableToFlatten)
@@ -146,6 +149,18 @@ open class AespaPhotoContext {
     ///
     /// - Parameter setting: The `AVCapturePhotoSettings` to use for photo capturing.
     public func customize(_ setting: AVCapturePhotoSettings) {
-        capturePhotoSetting = setting
+        capturePhotoSettingBuffer = setting as! CapturePhotoSettingBuffer
+    }
+}
+
+private extension AespaPhotoContext {
+    class CapturePhotoSettingBuffer: AVCapturePhotoSettings {
+        func toNativeType() -> AVCapturePhotoSettings {
+            let settings = AVCapturePhotoSettings()
+            settings.flashMode = flashMode
+            settings.isAutoRedEyeReductionEnabled = isAutoRedEyeReductionEnabled
+            
+            return settings
+        }
     }
 }
