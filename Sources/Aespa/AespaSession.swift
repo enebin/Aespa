@@ -71,7 +71,11 @@ open class AespaSession {
         self.photoFileBufferSubject = .init(nil)
         self.previewLayerSubject = .init(nil)
         
-        self.videoContext = .init()
+        self.videoContext = AespaVideoContext(coreSession: coreSession,
+                                              recorder: recorder,
+                                              albumManager: albumManager,
+                                              fileManager: fileManager,
+                                              option: option)
         self.capturePhotoSetting = .init()
 
         self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
@@ -407,7 +411,7 @@ open class AespaSession {
             try setOrientationWithError(to: UIDevice.current.orientation.toVideoOrientation)
         }
 
-        try recorder.startRecording(in: filePath)
+        try videoContext.startRecording(filePath: filePath)
     }
 
     /// Stops the ongoing video recording session and attempts to add the video file to the album.
@@ -416,7 +420,7 @@ open class AespaSession {
     ///
     /// - Throws: `AespaError` if stopping the recording fails.
     public func stopRecordingWithError() async throws -> VideoFile {
-        let videoFilePath = try await recorder.stopRecording()
+        let videoFilePath = try await videoContext.stopRecording()
         let videoFile = VideoFileGenerator.generate(with: videoFilePath, date: Date())
 
         try await albumManager.addToAlbum(filePath: videoFilePath)
@@ -457,10 +461,8 @@ open class AespaSession {
     ///
     /// - Returns: `AespaSession`, for chaining calls.
     @discardableResult
-    public func muteWithError() throws -> AespaSession {
-        let tuner = AudioTuner(isMuted: true)
-        try coreSession.run(tuner)
-        return self
+    public func muteWithError() throws -> AespaVideoContext {
+        return try videoContext.then(.mute, for: coreSession)
     }
 
     /// Unmutes the audio input for the video recording session.

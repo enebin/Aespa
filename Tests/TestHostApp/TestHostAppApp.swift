@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import Aespa
 
 @main
 struct TestHostAppApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+//            let aespa = Aespa.session(with: AespaOption(albumName: "S")).muteWithError()
         }
     }
 }
