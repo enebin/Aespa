@@ -27,11 +27,10 @@ open class AespaSession {
     private let fileManager: AespaCoreFileManager
     private let albumManager: AespaCoreAlbumManager
 
-    private let photoFileBufferSubject: CurrentValueSubject<Result<PhotoFile, Error>?, Never>
-    private let videoFileBufferSubject: CurrentValueSubject<Result<VideoFile, Error>?, Never>
     private let previewLayerSubject: CurrentValueSubject<AVCaptureVideoPreviewLayer?, Never>
     
-    private var videoContext: AespaVideoContext
+    private let videoContext: AespaVideoContext
+    private let photoContext: AespaPhotoContext
 
     /// A `UIKit` layer that you use to display video as it is being captured by an input device.
     ///
@@ -66,8 +65,6 @@ open class AespaSession {
         self.fileManager = fileManager
         self.albumManager = albumManager
 
-        self.videoFileBufferSubject = .init(nil)
-        self.photoFileBufferSubject = .init(nil)
         self.previewLayerSubject = .init(nil)
         
         self.videoContext = AespaVideoContext(coreSession: coreSession,
@@ -75,17 +72,26 @@ open class AespaSession {
                                               albumManager: albumManager,
                                               fileManager: fileManager,
                                               option: option)
-        self.capturePhotoSetting = .init()
+        
+        self.photoContext = AespaPhotoContext(coreSession: coreSession,
+                                              camera: camera,
+                                              albumManager: albumManager,
+                                              fileManager: fileManager,
+                                              option: option)
 
         self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
-
-        // Add first video file to buffer if it exists
-        if let firstVideoFile = fileManager.fetch(albumName: option.asset.albumName, count: 1).first {
-            videoFileBufferSubject.send(.success(firstVideoFile))
-        }
     }
 
     // MARK: - vars
+    
+    public var video: AespaVideoContext {
+        videoContext
+    }
+    
+    public var photo: AespaPhotoContext {
+        photoContext
+    }
+    
     /// This property exposes the underlying `AVCaptureSession` that `Aespa` currently utilizes.
     ///
     /// While you can directly interact with this object, it is strongly recommended to avoid modifications
@@ -94,10 +100,6 @@ open class AespaSession {
     /// consider utilizing the `custom` function we offer whenever possible.
     public var captureSession: AVCaptureSession {
         return coreSession
-    }
-
-    public var video: AespaVideoContext {
-        videoContext
     }
 
     /// This property provides the maximum zoom factor supported by the active video device format.

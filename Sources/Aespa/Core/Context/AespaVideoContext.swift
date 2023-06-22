@@ -38,6 +38,11 @@ open class AespaVideoContext {
         self.videoFileBufferSubject = .init(nil)
 
         self.isRecording = false
+        
+        // Add first video file to buffer if it exists
+        if let firstVideoFile = fileManager.fetch(albumName: option.asset.albumName, count: 1).first {
+            videoFileBufferSubject.send(.success(firstVideoFile))
+        }
     }
     
     /// This property reflects the current state of audio input.
