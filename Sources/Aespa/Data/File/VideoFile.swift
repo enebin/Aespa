@@ -40,7 +40,7 @@ public extension VideoFile {
 }
 
 extension VideoFile: Equatable {
-    public static func == (lhs: VideoFile, rhs: VideoFile ) -> Bool {
+    public static func == (lhs: VideoFile, rhs: VideoFile) -> Bool {
         lhs.path == rhs.path
     }
 }

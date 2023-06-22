@@ -55,8 +55,14 @@ public extension AespaOption {
     /// `Asset` provides options for configuring the video assets,
     /// such as the album name, file naming rule, and file extension.
     struct Asset {
-        /// The name of the album where recorded videos will be saved.
+        /// The name of the album where recorded assets will be saved.
         let albumName: String
+        
+        /// The name of the album where recorded videos will be saved.
+        let videoDirectoryName: String
+        
+        /// The name of the album where recorded photos will be saved.
+        let photoDirectoryName: String
 
         /// A `Boolean` flag that determines to use in-memory cache for `VideoFile`
         ///
@@ -71,11 +77,16 @@ public extension AespaOption {
 
         init(
             albumName: String,
+            videoDirectoryName: String = "video",
+            photoDirectoryName: String = "photo",
             useVideoFileCache: Bool = true,
             fileExtension: FileExtension = .mp4,
             fileNameHandler: @escaping FileNamingRule = FileNamingRulePreset.Timestamp().rule
         ) {
             self.albumName = albumName
+            self.videoDirectoryName = videoDirectoryName
+            self.photoDirectoryName = photoDirectoryName
+            
             self.useVideoFileCache = useVideoFileCache
             self.fileExtension = fileExtension.rawValue
             self.fileNameHandler = fileNameHandler

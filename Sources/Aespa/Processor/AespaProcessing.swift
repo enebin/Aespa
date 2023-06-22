@@ -18,8 +18,10 @@ protocol AespaMovieFileOutputProcessing {
 }
 
 protocol AespaAssetProcessing {
-    func process<T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable>(
-        _ photoLibrary: T, _ assetCollection: U
+    func process<Library, Collection>(
+        _ library: Library,
+        _ collection: Collection
     ) async throws
-    where T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable
+    where Library: AespaAssetLibraryRepresentable,
+          Collection: AespaAssetCollectionRepresentable
 }

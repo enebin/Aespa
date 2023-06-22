@@ -12,10 +12,10 @@ protocol AespaAssetLibraryRepresentable {
     func performChanges(_ changes: @escaping () -> Void) async throws
     func performChangesAndWait(_ changeBlock: @escaping () -> Void) throws
     func requestAuthorization(for accessLevel: PHAccessLevel) async -> PHAuthorizationStatus
+    
     func fetchAlbum<Collection: AespaAssetCollectionRepresentable>(
         title: String,
-        fetchOptions:
-        PHFetchOptions
+        fetchOptions: PHFetchOptions
     ) -> Collection?
 }
 
@@ -39,7 +39,7 @@ extension PHPhotoLibrary: AespaAssetLibraryRepresentable {
 
         return collections.firstObject as? Collection
     }
-
+    
     func requestAuthorization(for accessLevel: PHAccessLevel) async -> PHAuthorizationStatus {
         await PHPhotoLibrary.requestAuthorization(for: accessLevel)
     }

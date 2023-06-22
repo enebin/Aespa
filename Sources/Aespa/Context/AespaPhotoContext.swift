@@ -120,9 +120,19 @@ open class AespaPhotoContext {
             throw AespaError.file(reason: .unableToFlatten)
         }
 
+        let filePath = try FilePathProvider.requestFilePath(
+            from: fileManager.systemFileManager,
+            directoryName: option.asset.albumName,
+            subDirectoryName: option.asset.photoDirectoryName,
+            fileName: option.asset.fileNameHandler())
+        
+        try fileManager.write(data: rawPhotoData, to: filePath)
         try await albumManager.addToAlbum(imageData: rawPhotoData)
 
-        let photoFile = PhotoFileGenerator.generate(data: rawPhotoData, date: Date())
+        let photoFile = PhotoFileGenerator.generate(
+            with: filePath,
+            date: Date())
+        
         photoFileBufferSubject.send(.success(photoFile))
 
         return photoFile
@@ -131,7 +141,7 @@ open class AespaPhotoContext {
     /// Updates the photo capturing settings for the `AespaPhotoContext` instance.
     ///
     /// - Note: This method can be potentially risky to use, as it overrides the existing capture settings.
-    ///  Not all `AVCapturePhotoSettings` are supported, for instance, live photos are not supported
+    ///  Not all `AVCapturePhotoSettings` are supported, for instance, live photos are not supported.
     ///  It's recommended to understand the implications of the settings before applying them.
     ///
     /// - Parameter setting: The `AVCapturePhotoSettings` to use for photo capturing.

@@ -42,7 +42,7 @@ open class AespaVideoContext {
         self.isRecording = false
         
         // Add first video file to buffer if it exists
-        if let firstVideoFile = fileManager.fetch(albumName: option.asset.albumName, count: 1).first {
+        if let firstVideoFile = fileManager.fetchVideo(albumName: option.asset.albumName, count: 1).first {
             videoFileBufferSubject.send(.success(firstVideoFile))
         }
     }

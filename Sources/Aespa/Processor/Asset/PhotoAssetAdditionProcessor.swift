@@ -12,10 +12,10 @@ struct PhotoAssetAdditionProcessor: AespaAssetProcessing {
     let imageData: Data
 
     func process<
-        T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable
+        Library: AespaAssetLibraryRepresentable, Collection: AespaAssetCollectionRepresentable
     >(
-        _ photoLibrary: T,
-        _ assetCollection: U
+        _ photoLibrary: Library,
+        _ assetCollection: Collection
     ) async throws {
         guard
             case .authorized = await photoLibrary.requestAuthorization(for: .addOnly)

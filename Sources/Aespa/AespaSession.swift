@@ -138,7 +138,11 @@ open class AespaSession {
     ///     If the limit is set to 0 (default), all recorded video files will be fetched.
     /// - Returns: An array of `VideoFile` instances.
     public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
-        return fileManager.fetch(albumName: option.asset.albumName, count: limit)
+        return fileManager.fetchVideo(albumName: option.asset.albumName, count: limit)
+    }
+    
+    public func fetchPhotoFiles(limit: Int = 0) -> [PhotoFile] {
+        return []
     }
 
     /// Checks if essential conditions to start recording are satisfied.

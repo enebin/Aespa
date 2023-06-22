@@ -6,7 +6,6 @@
 //
 
 import Photos
-import AVFoundation
 
 /// Retreive the video(url) from `FileManager` based local storage
 /// and add the video to the pre-defined album roll
