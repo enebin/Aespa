@@ -15,14 +15,14 @@ analyzer_rules:
   - explicit_self
 
 included:
-  - Sources/*
+  - Sources
 excluded:
-  - Tests/*
+  - Tests
 
 # If true, SwiftLint will not fail if no lintable files are found.
 allow_zero_lintable_files: false
 
-force_cast: warning # implicitly
+force_cast: error # implicitly
 force_try:
   severity: warning # explicitly
 # implicitly
@@ -38,6 +38,6 @@ identifier_name:
   allowed_symbols: ["_"]
 
 missing_docs:
-  included: Sources/*
+  severity: warning
 
 reporter: "xcode"

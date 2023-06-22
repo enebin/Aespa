@@ -31,6 +31,7 @@ open class AespaSession {
     private let videoFileBufferSubject: CurrentValueSubject<Result<VideoFile, Error>?, Never>
     private let previewLayerSubject: CurrentValueSubject<AVCaptureVideoPreviewLayer?, Never>
     
+    private var videoContext: AespaVideoContext
     private var capturePhotoSetting: AVCapturePhotoSettings
 
     /// A `UIKit` layer that you use to display video as it is being captured by an input device.
@@ -70,6 +71,7 @@ open class AespaSession {
         self.photoFileBufferSubject = .init(nil)
         self.previewLayerSubject = .init(nil)
         
+        self.videoContext = .init()
         self.capturePhotoSetting = .init()
 
         self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
@@ -635,7 +637,6 @@ open class AespaSession {
             throw AespaError.session(reason: .cannotFindDevice)
         }
     }
-
 }
 
 extension AespaSession {
