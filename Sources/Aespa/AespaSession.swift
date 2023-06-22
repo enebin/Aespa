@@ -82,24 +82,26 @@ open class AespaSession {
         self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
     }
 
-    // MARK: - vars
+    // MARK: - Public variables
+    /// This property exposes the underlying `AVCaptureSession` that `Aespa` currently utilizes.
+    ///
+    /// - Warning: While you can directly interact with this object, it is strongly recommended to avoid modifications
+    ///     that could yield unpredictable behavior.
+    ///     If you require custom configurations, consider utilizing the `custom` function we offer whenever possible.
+    public var avCaptureSession: AVCaptureSession {
+        coreSession
+    }
     
+    /// A property that provides access to the `AespaVideoContext` instance.
+    /// This instance allows to handle video capturing operations and settings.
     public var video: AespaVideoContext {
         videoContext
     }
-    
+
+    /// A property that provides access to the `AespaPhotoContext` instance.
+    /// This instance allows to handle photo capturing operations and settings.
     public var photo: AespaPhotoContext {
         photoContext
-    }
-    
-    /// This property exposes the underlying `AVCaptureSession` that `Aespa` currently utilizes.
-    ///
-    /// While you can directly interact with this object, it is strongly recommended to avoid modifications
-    /// that could yield unpredictable behavior.
-    /// If you require custom configurations,
-    /// consider utilizing the `custom` function we offer whenever possible.
-    public var captureSession: AVCaptureSession {
-        return coreSession
     }
 
     /// This property provides the maximum zoom factor supported by the active video device format.

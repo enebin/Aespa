@@ -11,6 +11,8 @@ import Combine
 import Foundation
 import AVFoundation
 
+/// `AespaVideoContext` is an open class that provides a context for video recording operations.
+/// It has methods and properties to handle the video recording and settings.
 open class AespaVideoContext {
     private let coreSession: AespaCoreSession
     private let recorder: AespaCoreRecorder

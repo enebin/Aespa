@@ -9,6 +9,8 @@ import Combine
 import Foundation
 import AVFoundation
 
+/// `AespaPhotoContext` is an open class that provides a context for photo capturing operations.
+/// It has methods and properties to handle the photo capturing and settings.
 open class AespaPhotoContext {
     private let coreSession: AespaCoreSession
     private let camera: AespaCoreCamera
@@ -16,7 +18,7 @@ open class AespaPhotoContext {
     private let fileManager: AespaCoreFileManager
     private let option: AespaOption
     
-    private var capturePhotoSetting: AVCapturePhotoSettings
+    private(set) var capturePhotoSetting: AVCapturePhotoSettings
     private let photoFileBufferSubject: CurrentValueSubject<Result<PhotoFile, Error>?, Never>
     
     init(
@@ -36,6 +38,7 @@ open class AespaPhotoContext {
         self.photoFileBufferSubject = .init(nil)
     }
     
+    // MARK: Computed variables
     /// The publisher that broadcasts the result of a photo file operation.
     /// It emits a `Result` object containing a `PhotoFile` on success or an `Error` on failure,
     /// and never fails itself. This can be used to observe the photo capturing process and handle
@@ -50,10 +53,10 @@ open class AespaPhotoContext {
         .eraseToAnyPublisher()
     }
     
+    // MARK: - Methods
     /// Asynchronously captures a photo using the specified `AVCapturePhotoSettings`.
     ///
-    /// This function utilizes the `captureWithError(setting:)` function to perform the actual photo capture,
-    /// while handling any errors that may occur. If the photo capture is successful, it will return a `PhotoFile`
+    /// If the photo capture is successful, it will return a `PhotoFile`
     /// object through the provided completion handler.
     ///
     /// In case of an error during the photo capture process, the error will be logged and also returned via
@@ -77,7 +80,28 @@ open class AespaPhotoContext {
             }
         }
     }
+    
+    /// Sets the flash mode for the camera and returns the updated `AespaPhotoContext` instance.
+    /// The returned instance can be used for chaining configuration.
+    ///
+    /// - Parameter mode: The `AVCaptureDevice.FlashMode` to set for the camera.
+    /// - Returns: The updated `AespaPhotoContext` instance.
+    public func setFlashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
+        capturePhotoSetting.flashMode = mode
+        return self
+    }
+    
+    /// Sets the red eye reduction mode for the camera and returns the updated `AespaPhotoContext` instance.
+    /// The returned instance can be used for chaining configuration.
+    ///
+    /// - Parameter enabled: A boolean indicating whether the red eye reduction should be enabled or not.
+    /// - Returns: The updated `AespaPhotoContext` instance.
+    public func redeyeReduction(enabled: Bool) -> AespaPhotoContext {
+        capturePhotoSetting.isAutoRedEyeReductionEnabled = enabled
+        return self
+    }
 
+    // MARK: - Throwing
     /// Asynchronously captures a photo with the specified `AVCapturePhotoSettings`.
     ///
     /// The captured photo is flattened into a `Data` object, and then added to an album. A `PhotoFile`
@@ -103,5 +127,15 @@ open class AespaPhotoContext {
 
         return photoFile
     }
-
+    
+    /// Updates the photo capturing settings for the `AespaPhotoContext` instance.
+    ///
+    /// - Note: This method can be potentially risky to use, as it overrides the existing capture settings.
+    ///  Not all `AVCapturePhotoSettings` are supported, for instance, live photos are not supported
+    ///  It's recommended to understand the implications of the settings before applying them.
+    ///
+    /// - Parameter setting: The `AVCapturePhotoSettings` to use for photo capturing.
+    public func customize(_ setting: AVCapturePhotoSettings) {
+        capturePhotoSetting = setting
+    }
 }
