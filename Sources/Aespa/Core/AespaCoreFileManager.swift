@@ -27,23 +27,21 @@ class AespaCoreFileManager {
     }
     
     func write(data: Data, to path: URL) throws {
-        // Check if the directory exists, if not, create it.
-        if !systemFileManager.fileExists(atPath: path.deletingLastPathComponent().absoluteString) {
-            try systemFileManager.createDirectory(at: path.deletingLastPathComponent(),
-                                                  withIntermediateDirectories: true)
+        // Check if the directory exists, if not, returns.
+        guard !systemFileManager.fileExists(atPath: path.deletingLastPathComponent().absoluteString) else {
+            return
         }
-
-        // Write data to the path
+        
         try data.write(to: path)
     }
     
-    func fetchPhoto(albumName: String, count: Int) -> [PhotoFile] {
+    func fetchPhoto(albumName: String, subDirectoryName: String, count: Int) -> [PhotoFile] {
         guard count >= 0 else { return [] }
         
-        // TODO: Fixit
         guard
-            let albumDirectory = try? VideoFilePathProvider.requestDirectoryPath(from: systemFileManager,
-                                                                                 name: albumName)
+            let albumDirectory = try? FilePathProvider.requestDirectoryPath(from: systemFileManager,
+                                                                            directoryName: albumName,
+                                                                            subDirectoryName: subDirectoryName)
         else {
             Logger.log(message: "Cannot fetch album directory so `fetch` will return empty array.")
             return []
@@ -56,7 +54,7 @@ class AespaCoreFileManager {
                 fileManager: systemFileManager,
                 fileFactory: photoFileFactory)
             
-            return fetchPhoto(albumName: albumName, count: count)
+            return fetchPhoto(albumName: albumName, subDirectoryName: subDirectoryName, count: count)
         }
 
         let files = proxy.fetch(count: count)
@@ -65,12 +63,13 @@ class AespaCoreFileManager {
     }
     
     /// If `count` is `0`, return all existing files
-    func fetchVideo(albumName: String, count: Int) -> [VideoFile] {
+    func fetchVideo(albumName: String, subDirectoryName: String, count: Int) -> [VideoFile] {
         guard count >= 0 else { return [] }
         
         guard
-            let albumDirectory = try? VideoFilePathProvider.requestDirectoryPath(from: systemFileManager,
-                                                                                 name: albumName)
+            let albumDirectory = try? FilePathProvider.requestDirectoryPath(from: systemFileManager,
+                                                                            directoryName: albumName,
+                                                                            subDirectoryName: subDirectoryName)
         else {
             Logger.log(message: "Cannot fetch album directory so `fetch` will return empty array.")
             return []
@@ -83,7 +82,7 @@ class AespaCoreFileManager {
                 fileManager: systemFileManager,
                 fileFactory: videoFileFactory)
 
-            return fetchVideo(albumName: albumName, count: count)
+            return fetchVideo(albumName: albumName, subDirectoryName: subDirectoryName, count: count)
         }
 
         let files = proxy.fetch(count: count)

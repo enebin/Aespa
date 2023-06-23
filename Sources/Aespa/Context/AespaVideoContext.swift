@@ -42,7 +42,11 @@ open class AespaVideoContext {
         self.isRecording = false
         
         // Add first video file to buffer if it exists
-        if let firstVideoFile = fileManager.fetchVideo(albumName: option.asset.albumName, count: 1).first {
+        if
+            let firstVideoFile = fileManager.fetchVideo(
+                albumName: option.asset.albumName,
+                subDirectoryName: option.asset.videoDirectoryName,
+                count: 1).first {
             videoFileBufferSubject.send(.success(firstVideoFile))
         }
     }
@@ -285,9 +289,10 @@ open class AespaVideoContext {
     ///     it sets the orientation according to the current device orientation.
     public func startRecordingWithError() throws {
         let fileName = option.asset.fileNameHandler()
-        let filePath = try VideoFilePathProvider.requestFilePath(
+        let filePath = try FilePathProvider.requestFilePath(
             from: fileManager.systemFileManager,
             directoryName: option.asset.albumName,
+            subDirectoryName: option.asset.videoDirectoryName,
             fileName: fileName,
             extension: "mp4")
 

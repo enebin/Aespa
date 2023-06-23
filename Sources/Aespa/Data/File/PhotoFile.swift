@@ -9,11 +9,17 @@ import UIKit
 import SwiftUI
 import Foundation
 
+/// `PhotoFile` represents a photo file with its associated metadata.
+///
+/// This struct holds information about the video file, including the path to the video file (`path`),
+/// and an optional thumbnail image (`thumbnail`)
+/// generated from the photo.
 public struct PhotoFile {
     /// A `Date` value keeps the date it's generated
     public let generatedDate: Date
     
-    /// The path to the photo file data.
+    /// The path to the photo file data. It's saved in the form of `Data.
+    /// If you want to load it directly you should encode it to any image type.
     public let path: URL
 
     /// An optional thumbnail generated from the video with `UIImage` type.

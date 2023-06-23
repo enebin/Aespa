@@ -11,8 +11,8 @@ import AVFoundation
 
 /// `VideoFile` represents a video file with its associated metadata.
 ///
-/// This struct holds information about the video file, including a unique identifier (`id`),
-/// the path to the video file (`path`), and an optional thumbnail image (`thumbnail`)
+/// This struct holds information about the video file, including the path to the video file (`path`),
+/// and an optional thumbnail image (`thumbnail`)
 /// generated from the video.
 public struct VideoFile {
     /// A `Date` value keeps the date it's generated
@@ -39,15 +39,15 @@ public extension VideoFile {
     }
 }
 
-extension VideoFile: Equatable {
-    public static func == (lhs: VideoFile, rhs: VideoFile) -> Bool {
-        lhs.path == rhs.path
-    }
-}
-
 extension VideoFile: Identifiable {
     public var id: URL {
         self.path
+    }
+}
+
+extension VideoFile: Equatable {
+    public static func == (lhs: VideoFile, rhs: VideoFile) -> Bool {
+        lhs.path == rhs.path
     }
 }
 
