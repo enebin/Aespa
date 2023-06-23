@@ -18,7 +18,7 @@ open class AespaPhotoContext {
     private let fileManager: AespaCoreFileManager
     private let option: AespaOption
     
-    private var capturePhotoSettingBuffer: CapturePhotoSettingBuffer
+    private var photoSetting: AVCapturePhotoSettings
     private let photoFileBufferSubject: CurrentValueSubject<Result<PhotoFile, Error>?, Never>
     
     init(
@@ -34,7 +34,7 @@ open class AespaPhotoContext {
         self.fileManager = fileManager
         self.option = option
         
-        self.capturePhotoSettingBuffer = CapturePhotoSettingBuffer()
+        self.photoSetting = AVCapturePhotoSettings()
         self.photoFileBufferSubject = .init(nil)
     }
     
@@ -88,7 +88,7 @@ open class AespaPhotoContext {
     /// - Returns: The updated `AespaPhotoContext` instance.
     @discardableResult
     public func setFlashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
-        capturePhotoSettingBuffer.flashMode = mode
+        photoSetting.flashMode = mode
         return self
     }
     
@@ -99,7 +99,7 @@ open class AespaPhotoContext {
     /// - Returns: The updated `AespaPhotoContext` instance.
     @discardableResult
     public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
-        capturePhotoSettingBuffer.isAutoRedEyeReductionEnabled = enabled
+        photoSetting.isAutoRedEyeReductionEnabled = enabled
         return self
     }
 
@@ -116,7 +116,7 @@ open class AespaPhotoContext {
     /// - Throws: An `AespaError` if there is an issue capturing the photo,
     ///     flattening it into a `Data` object, or adding it to the album.
     public func captureWithError() async throws -> PhotoFile {
-        let setting = capturePhotoSettingBuffer.toNativeType()
+        let setting = AVCapturePhotoSettings(from: photoSetting)
         let rawPhotoAsset = try await camera.capture(setting: setting)
         
         guard let rawPhotoData = rawPhotoAsset.fileDataRepresentation() else {
@@ -149,22 +149,22 @@ open class AespaPhotoContext {
     ///
     /// - Parameter setting: The `AVCapturePhotoSettings` to use for photo capturing.
     public func customize(_ setting: AVCapturePhotoSettings) {
-        guard let setting  = setting as? CapturePhotoSettingBuffer else {
-            fatalError()
-        }
-        
-        capturePhotoSettingBuffer = setting
+        photoSetting = setting
     }
-}
-
-private extension AespaPhotoContext {
-    class CapturePhotoSettingBuffer: AVCapturePhotoSettings {
-        func toNativeType() -> AVCapturePhotoSettings {
-            let settings = AVCapturePhotoSettings()
-            settings.flashMode = flashMode
-            settings.isAutoRedEyeReductionEnabled = isAutoRedEyeReductionEnabled
-            
-            return settings
-        }
+    
+    // MARK: - Utilities
+    /// Fetches a list of captured photo files.
+    /// The number of files fetched is controlled by the limit parameter.
+    ///
+    /// It is recommended not to be called in main thread.
+    ///
+    /// - Parameter limit: An integer specifying the maximum number of video files to fetch.
+    ///     If the limit is set to 0 (default), all recorded video files will be fetched.
+    /// - Returns: An array of `PhotoFile` instances.
+    public func fetchFiles(limit: Int = 0) -> [PhotoFile] {
+        return fileManager.fetchPhoto(
+            albumName: option.asset.albumName,
+            subDirectoryName: option.asset.photoDirectoryName,
+            count: limit)
     }
 }
