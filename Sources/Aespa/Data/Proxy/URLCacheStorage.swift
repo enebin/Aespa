@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class URLCacheStorage<File> {
+class URLCacheStorage<File> {
     private var storage: [URL: File]
     
     init() {

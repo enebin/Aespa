@@ -25,7 +25,7 @@
 		9C727D0F2A3FEF9800EF9472 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C727D0E2A3FEF9800EF9472 /* Preview Assets.xcassets */; };
 		9C727D502A3FF03200EF9472 /* Cuckoo in Frameworks */ = {isa = PBXBuildFile; productRef = 9C727D4F2A3FF03200EF9472 /* Cuckoo */; };
 		9C727D572A3FF0B100EF9472 /* Aespa in Frameworks */ = {isa = PBXBuildFile; productRef = 9C727D562A3FF0B100EF9472 /* Aespa */; };
-		9CF0FE2D2A40574200FEE8C9 /* VideoFileCachingProxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF0FE2C2A40574200FEE8C9 /* VideoFileCachingProxyTests.swift */; };
+		9CF0FE2D2A40574200FEE8C9 /* FileCachingProxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF0FE2C2A40574200FEE8C9 /* FileCachingProxyTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,7 +59,7 @@
 		9C727D0E2A3FEF9800EF9472 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9C727D142A3FEF9900EF9472 /* TestHostAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestHostAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C727D542A3FF09400EF9472 /* Aespa */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Aespa; path = ..; sourceTree = "<group>"; };
-		9CF0FE2C2A40574200FEE8C9 /* VideoFileCachingProxyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoFileCachingProxyTests.swift; sourceTree = "<group>"; };
+		9CF0FE2C2A40574200FEE8C9 /* FileCachingProxyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCachingProxyTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,7 +200,7 @@
 		9CF0FE2B2A40573000FEE8C9 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				9CF0FE2C2A40574200FEE8C9 /* VideoFileCachingProxyTests.swift */,
+				9CF0FE2C2A40574200FEE8C9 /* FileCachingProxyTests.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -365,7 +365,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CF0FE2D2A40574200FEE8C9 /* VideoFileCachingProxyTests.swift in Sources */,
+				9CF0FE2D2A40574200FEE8C9 /* FileCachingProxyTests.swift in Sources */,
 				9C4BBE5C2A400E450071C84F /* DeviceTunerTests.swift in Sources */,
 				9C4BBE612A400E450071C84F /* MockVideo.swift in Sources */,
 				9C4BBE5E2A400E450071C84F /* AlbumUtilTests.swift in Sources */,

@@ -149,7 +149,11 @@ open class AespaPhotoContext {
     ///
     /// - Parameter setting: The `AVCapturePhotoSettings` to use for photo capturing.
     public func customize(_ setting: AVCapturePhotoSettings) {
-        capturePhotoSettingBuffer = setting as! CapturePhotoSettingBuffer
+        guard let setting  = setting as? CapturePhotoSettingBuffer else {
+            fatalError()
+        }
+        
+        capturePhotoSettingBuffer = setting
     }
 }
 
