@@ -461,4 +461,20 @@ open class AespaVideoContext {
     public func customize<T: AespaSessionTuning>(_ tuner: T) throws {
         try coreSession.run(tuner)
     }
+    
+    // MARK: - Utilities
+    /// Fetches a list of captured photo files.
+    /// The number of files fetched is controlled by the limit parameter.
+    ///
+    /// It is recommended not to be called in main thread.
+    ///
+    /// - Parameter limit: An integer specifying the maximum number of video files to fetch.
+    ///     If the limit is set to 0 (default), all recorded video files will be fetched.
+    /// - Returns: An array of `PhotoFile` instances.
+    public func fetchFiles(limit: Int = 0) -> [PhotoFile] {
+        return fileManager.fetchPhoto(
+            albumName: option.asset.albumName,
+            subDirectoryName: option.asset.photoDirectoryName,
+            count: limit)
+    }
 }
