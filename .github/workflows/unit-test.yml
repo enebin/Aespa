@@ -2,7 +2,7 @@ name: Unit testing and collect result infomations
 
 on:
   pull_request:
-    types: [synchronize]
+    types: [opened, synchronize]
 
 concurrency: 
   group: unit-test-${{ github.head_ref }}
@@ -35,6 +35,7 @@ jobs:
 
     - name: Test
       run: |
+        set -o pipefail
         ROOT_PATH="./"
 
         # Now do test

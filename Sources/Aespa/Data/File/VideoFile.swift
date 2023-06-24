@@ -14,7 +14,7 @@ import AVFoundation
 /// This struct holds information about the video file, including the path to the video file (`path`),
 /// and an optional thumbnail image (`thumbnail`)
 /// generated from the video.
-public struct VideoFile: MediaFileType {
+public struct VideoFile {
     /// A `Date` value keeps the date it's generated
     public let generatedDate: Date
 
