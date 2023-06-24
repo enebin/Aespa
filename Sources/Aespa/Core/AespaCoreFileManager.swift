@@ -35,6 +35,32 @@ class AespaCoreFileManager {
         try data.write(to: path)
     }
     
+    func fetchAllMediaType(albumName: String, count: Int) -> [PhotoFile] {
+        guard count >= 0 else { return [] }
+        
+        guard
+            let albumDirectory = try? FilePathProvider.requestDirectoryPath(from: systemFileManager,
+                                                                            directoryName: albumName)
+        else {
+            Logger.log(message: "Cannot fetch album directory so `fetch` will return empty array.")
+            return []
+        }
+
+        guard let proxy = photoFileProxyDictionary[albumName] else {
+            photoFileProxyDictionary[albumName] = FileCachingProxy(
+                fileDirectory: albumDirectory,
+                enableCaching: enableCaching,
+                fileManager: systemFileManager,
+                fileFactory: photoFileFactory)
+            
+            return fetchAllMediaType(albumName: albumName, count: count)
+        }
+
+        let files = proxy.fetch(count: count)
+        Logger.log(message: "\(files.count) Photo files fetched")
+        return files
+    }
+    
     func fetchPhoto(albumName: String, subDirectoryName: String, count: Int) -> [PhotoFile] {
         guard count >= 0 else { return [] }
         

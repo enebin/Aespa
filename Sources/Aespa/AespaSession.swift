@@ -22,12 +22,14 @@ import AVFoundation
 open class AespaSession {
     private let option: AespaOption
     private let coreSession: AespaCoreSession
-    private let recorder: AespaCoreRecorder
-    private let camera: AespaCoreCamera
     private let fileManager: AespaCoreFileManager
     private let albumManager: AespaCoreAlbumManager
+    private let recorder: AespaCoreRecorder
+    private let camera: AespaCoreCamera
 
     private let previewLayerSubject: CurrentValueSubject<AVCaptureVideoPreviewLayer?, Never>
+    
+    private var photoSetting: AVCapturePhotoSettings
     
     private let videoContext: AespaVideoContext
     private let photoContext: AespaPhotoContext
@@ -64,21 +66,24 @@ open class AespaSession {
         self.camera = camera
         self.fileManager = fileManager
         self.albumManager = albumManager
+        
+        self.videoContext = AespaVideoContext(
+            coreSession: coreSession,
+            recorder: recorder,
+            albumManager: albumManager,
+            fileManager: fileManager,
+            option: option)
+        
+        self.photoContext = AespaPhotoContext(
+            coreSession: coreSession,
+            camera: camera,
+            albumManager: albumManager,
+            fileManager: fileManager,
+            option: option)
 
         self.previewLayerSubject = .init(nil)
         
-        self.videoContext = AespaVideoContext(coreSession: coreSession,
-                                              recorder: recorder,
-                                              albumManager: albumManager,
-                                              fileManager: fileManager,
-                                              option: option)
-        
-        self.photoContext = AespaPhotoContext(coreSession: coreSession,
-                                              camera: camera,
-                                              albumManager: albumManager,
-                                              fileManager: fileManager,
-                                              option: option)
-
+        self.photoSetting = .init()
         self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
     }
 
@@ -90,18 +95,6 @@ open class AespaSession {
     ///     If you require custom configurations, consider utilizing the `custom` function we offer whenever possible.
     public var avCaptureSession: AVCaptureSession {
         coreSession
-    }
-    
-    /// A property that provides access to the `AespaVideoContext` instance.
-    /// This instance allows to handle video capturing operations and settings.
-    public var video: AespaVideoContext {
-        videoContext
-    }
-
-    /// A property that provides access to the `AespaPhotoContext` instance.
-    /// This instance allows to handle photo capturing operations and settings.
-    public var photo: AespaPhotoContext {
-        photoContext
     }
 
     /// This property provides the maximum zoom factor supported by the active video device format.
@@ -115,7 +108,13 @@ open class AespaSession {
         guard let videoDeviceInput = coreSession.videoDeviceInput else { return nil }
         return videoDeviceInput.device.videoZoomFactor
     }
-
+    
+    /// This property reflects the current zoom factor applied to the video device.
+    public var currentFocusMode: AVCaptureDevice.FocusMode? {
+        guard let videoDeviceInput = coreSession.videoDeviceInput else { return nil }
+        return videoDeviceInput.device.focusMode
+    }
+    
     /// This publisher is responsible for emitting updates to the preview layer.
     ///
     /// A log message is printed to the console every time a new layer is pushed.
@@ -129,21 +128,6 @@ open class AespaSession {
     }
 
     // MARK: - Utilities
-    /// Fetches a list of recorded video files.
-    /// The number of files fetched is controlled by the limit parameter.
-    ///
-    /// It is recommended not to be called in main thread.
-    ///
-    /// - Parameter limit: An integer specifying the maximum number of video files to fetch.
-    ///     If the limit is set to 0 (default), all recorded video files will be fetched.
-    /// - Returns: An array of `VideoFile` instances.
-    public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
-        return fileManager.fetchVideo(
-            albumName: option.asset.albumName,
-            subDirectoryName: option.asset.videoDirectoryName,
-            count: limit)
-    }
-
     /// Checks if essential conditions to start recording are satisfied.
     /// This includes checking for capture authorization, if the session is running,
     /// if there is an existing connection and if a device is attached.
@@ -172,6 +156,139 @@ open class AespaSession {
         guard coreSession.videoDeviceInput != nil else {
             throw AespaError.session(reason: .cannotFindDevice)
         }
+    }
+}
+
+extension AespaSession: CommonContext {
+    @discardableResult
+    public func setQualityWithError(to preset: AVCaptureSession.Preset) throws -> AespaSession {
+        let tuner = QualityTuner(videoQuality: preset)
+        try coreSession.run(tuner)
+        return self
+    }
+    
+    @discardableResult
+    public func setPositionWithError(to position: AVCaptureDevice.Position) throws -> AespaSession {
+        let tuner = CameraPositionTuner(position: position,
+                                        devicePreference: option.session.cameraDevicePreference)
+        try coreSession.run(tuner)
+        return self
+    }
+    
+    @discardableResult
+    public func setOrientationWithError(to orientation: AVCaptureVideoOrientation) throws -> AespaSession {
+        let tuner = VideoOrientationTuner(orientation: orientation)
+        try coreSession.run(tuner)
+        return self
+    }
+    
+    @discardableResult
+    public func setAutofocusingWithError(mode: AVCaptureDevice.FocusMode) throws -> AespaSession {
+        let tuner = AutoFocusTuner(mode: mode)
+        try coreSession.run(tuner)
+        return self
+    }
+    
+    @discardableResult
+    public func zoomWithError(factor: CGFloat) throws -> AespaSession {
+        let tuner = ZoomTuner(zoomFactor: factor)
+        try coreSession.run(tuner)
+        return self
+    }
+}
+
+extension AespaSession: VideoContext {
+    public var underlyingVideoContext: AespaVideoContext {
+        videoContext
+    }
+    
+    public var videoFilePublisher: AnyPublisher<Result<VideoFile, Error>, Never> {
+        videoContext.videoFilePublisher
+    }
+    
+    public var isRecording: Bool {
+        videoContext.isRecording
+    }
+    
+    public var isMuted: Bool {
+        videoContext.isMuted
+    }
+    
+    public func startRecordingWithError() throws {
+        if option.session.autoVideoOrientationEnabled {
+            try setOrientationWithError(to: UIDevice.current.orientation.toVideoOrientation)
+        }
+
+        try videoContext.startRecordingWithError()
+    }
+    
+    @discardableResult
+    public func stopRecordingWithError() async throws -> VideoFile {
+        try await videoContext.stopRecordingWithError()
+    }
+    
+    @discardableResult
+    public func muteWithError() throws -> AespaVideoContext {
+        try videoContext.muteWithError()
+    }
+    
+    @discardableResult
+    public func unmuteWithError() throws -> AespaVideoContext {
+        try videoContext.unmuteWithError()
+    }
+    
+    @discardableResult
+    public func setStabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> AespaVideoContext {
+        try videoContext.setStabilizationWithError(mode: mode)
+    }
+    
+    @discardableResult
+    public func setTorchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> AespaVideoContext {
+        try videoContext.setTorchWithError(mode: mode, level: level)
+    }
+    
+    public func customize<T: AespaSessionTuning>(_ tuner: T) throws {
+        try coreSession.run(tuner)
+    }
+    
+    public func fetchVideoFiles(limit: Int) -> [VideoFile] {
+        videoContext.fetchVideoFiles(limit: limit)
+    }
+}
+
+extension AespaSession: PhotoContext {
+    public var underlyingPhotoContext: AespaPhotoContext {
+        photoContext
+    }
+    
+    public var photoFilePublisher: AnyPublisher<Result<PhotoFile, Error>, Never> {
+        photoContext.photoFilePublisher
+    }
+    
+    public var currentSetting: AVCapturePhotoSettings {
+        photoContext.currentSetting
+    }
+
+    public func capturePhotoWithError() async throws -> PhotoFile {
+        try await photoContext.capturePhotoWithError()
+    }
+
+    @discardableResult
+    public func setFlashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
+        photoContext.setFlashMode(to: mode)
+    }
+
+    @discardableResult
+    public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
+        photoContext.redEyeReduction(enabled: enabled)
+    }
+
+    public func customize(_ setting: AVCapturePhotoSettings) {
+        photoSetting = setting
+    }
+    
+    public func fetchPhotoFiles(limit: Int) -> [PhotoFile] {
+        photoContext.fetchPhotoFiles(limit: limit)
     }
 }
 
