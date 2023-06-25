@@ -13,7 +13,9 @@ import AVFoundation
 public typealias ErrorHandler = (Error) -> Void
 
 public protocol CommonContext {
-    associatedtype CommonContextType: CommonContext
+    associatedtype CommonContextType: CommonContext & VideoContext & PhotoContext
+    
+    var underlyingCommonContext: CommonContextType { get }
     
     /// Sets the quality preset for the video recording session.
     ///
@@ -64,6 +66,13 @@ public protocol CommonContext {
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
     @discardableResult func zoomWithError(factor: CGFloat) throws -> CommonContextType
+    
+    /// This function provides a way to use a custom tuner to modify the current session.
+    /// The tuner must conform to `AespaSessionTuning`.
+    ///
+    /// - Parameter tuner: An instance that conforms to `AespaSessionTuning`.
+    /// - Throws: If the session fails to run the tuner.
+    @discardableResult func customizeWithError<T: AespaSessionTuning>(_ tuner: T) throws -> CommonContextType
 }
 
 // MARK: Non-throwing methods
@@ -83,15 +92,15 @@ extension CommonContext {
     public func setQuality(
         to preset: AVCaptureSession.Preset,
         errorHandler: ErrorHandler? = nil
-    ) -> Self {
+    ) -> CommonContextType {
         do {
-            try self.setQualityWithError(to: preset)
+            return try self.setQualityWithError(to: preset)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
         }
         
-        return self
+        return underlyingCommonContext
     }
     
     /// Sets the camera position for the video recording session.
@@ -105,15 +114,15 @@ extension CommonContext {
     public func setPosition(
         to position: AVCaptureDevice.Position,
         errorHandler: ErrorHandler? = nil
-    ) -> Self {
+    ) -> CommonContextType {
         do {
-            try self.setPositionWithError(to: position)
+            return try self.setPositionWithError(to: position)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
         }
         
-        return self
+        return underlyingCommonContext
     }
     
     /// Sets the orientation for the session.
@@ -130,15 +139,15 @@ extension CommonContext {
     public func setOrientation(
         to orientation: AVCaptureVideoOrientation,
         errorHandler: ErrorHandler? = nil
-    ) -> Self {
+    ) -> CommonContextType {
         do {
-            try self.setOrientationWithError(to: orientation)
+            return try self.setOrientationWithError(to: orientation)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
         }
         
-        return self
+        return underlyingCommonContext
     }
     
     /// Sets the autofocusing mode for the video recording session.
@@ -152,15 +161,15 @@ extension CommonContext {
     public func setAutofocusing(
         mode: AVCaptureDevice.FocusMode,
         errorHandler: ErrorHandler? = nil
-    ) -> Self {
+    ) -> CommonContextType {
         do {
-            try self.setAutofocusingWithError(mode: mode)
+            return try self.setAutofocusingWithError(mode: mode)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
         }
         
-        return self
+        return underlyingCommonContext
     }
     
     /// Sets the zoom factor for the video recording session.
@@ -174,15 +183,30 @@ extension CommonContext {
     public func zoom(
         factor: CGFloat,
         errorHandler: ErrorHandler? = nil
-    ) -> Self {
+    ) -> CommonContextType {
         do {
-            try self.zoomWithError(factor: factor)
+            return try self.zoomWithError(factor: factor)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
         }
         
-        return self
+        return underlyingCommonContext
+    }
+    
+    @discardableResult
+    public func custom<T: AespaSessionTuning>(
+        _ tuner: T,
+        errorHandler: ErrorHandler? = nil
+    ) -> CommonContextType {
+        do {
+            return try self.customizeWithError(tuner)
+        } catch let error {
+            errorHandler?(error)
+            Logger.log(error: error) // Logs any errors encountered during the operation
+        }
+        
+        return underlyingCommonContext
     }
 }
 
@@ -258,13 +282,6 @@ public protocol VideoContext {
     /// - Note: This function might throw an error if the torch mode is not supported,
     ///     or the specified level is not within the acceptable range.
     @discardableResult func setTorchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> VideoContextType
-    
-    /// This function provides a way to use a custom tuner to modify the current session.
-    /// The tuner must conform to `AespaSessionTuning`.
-    ///
-    /// - Parameter tuner: An instance that conforms to `AespaSessionTuning`.
-    /// - Throws: If the session fails to run the tuner.
-    func customize<T: AespaSessionTuning>(_ tuner: T) throws
     
     /// Fetches a list of recorded video files.
     /// The number of files fetched is controlled by the limit parameter.
@@ -469,7 +486,7 @@ public protocol PhotoContext {
     ///  It's recommended to understand the implications of the settings before applying them.
     ///
     /// - Parameter setting: The `AVCapturePhotoSettings` to use for photo capturing.
-    func customize(_ setting: AVCapturePhotoSettings)
+    func custom(_ setting: AVCapturePhotoSettings) -> PhotoContextType
     
     // MARK: - Utilities
     /// Fetches a list of captured photo files.

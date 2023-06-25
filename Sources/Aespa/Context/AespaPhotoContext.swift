@@ -106,8 +106,9 @@ extension AespaPhotoContext: PhotoContext {
         return self
     }
     
-    public func customize(_ setting: AVCapturePhotoSettings) {
+    public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
         photoSetting = setting
+        return self
     }
     
     public func fetchPhotoFiles(limit: Int) -> [PhotoFile] {

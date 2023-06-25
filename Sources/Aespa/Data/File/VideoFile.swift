@@ -43,3 +43,15 @@ extension VideoFile: Comparable {
         lhs.generatedDate > rhs.generatedDate
     }
 }
+
+public extension VideoFile {
+    /// An optional thumbnail generated from the video with SwiftUI `Image` type.
+    /// This will be `nil` if the thumbnail could not be generated for some reason.
+    var thumbnailImage: Image? {
+        if let thumbnail {
+            return Image(uiImage: thumbnail)
+        }
+        
+        return nil
+    }
+}

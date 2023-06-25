@@ -24,6 +24,7 @@ open class AespaSession {
     private let coreSession: AespaCoreSession
     private let fileManager: AespaCoreFileManager
     private let albumManager: AespaCoreAlbumManager
+    
     private let recorder: AespaCoreRecorder
     private let camera: AespaCoreCamera
 
@@ -31,8 +32,8 @@ open class AespaSession {
     
     private var photoSetting: AVCapturePhotoSettings
     
-    private let videoContext: AespaVideoContext
-    private let photoContext: AespaPhotoContext
+    private var videoContext: AespaVideoContext<AespaSession>!
+    private var photoContext: AespaPhotoContext!
 
     /// A `UIKit` layer that you use to display video as it is being captured by an input device.
     ///
@@ -67,24 +68,29 @@ open class AespaSession {
         self.fileManager = fileManager
         self.albumManager = albumManager
         
-        self.videoContext = AespaVideoContext(
-            coreSession: coreSession,
-            recorder: recorder,
-            albumManager: albumManager,
-            fileManager: fileManager,
-            option: option)
+        self.previewLayerSubject = .init(nil)
         
+        self.photoSetting = .init()
+        self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
+        
+        setupContext()
+    }
+    
+    private func setupContext() {
         self.photoContext = AespaPhotoContext(
             coreSession: coreSession,
             camera: camera,
             albumManager: albumManager,
             fileManager: fileManager,
             option: option)
-
-        self.previewLayerSubject = .init(nil)
         
-        self.photoSetting = .init()
-        self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
+        self.videoContext = AespaVideoContext(
+            commonContext: self,
+            coreSession: coreSession,
+            recorder: recorder,
+            albumManager: albumManager,
+            fileManager: fileManager,
+            option: option)
     }
 
     // MARK: - Public variables
@@ -160,6 +166,10 @@ open class AespaSession {
 }
 
 extension AespaSession: CommonContext {
+    public var underlyingCommonContext: AespaSession {
+        self
+    }
+    
     @discardableResult
     public func setQualityWithError(to preset: AVCaptureSession.Preset) throws -> AespaSession {
         let tuner = QualityTuner(videoQuality: preset)
@@ -195,10 +205,17 @@ extension AespaSession: CommonContext {
         try coreSession.run(tuner)
         return self
     }
+    
+    public func customizeWithError<T: AespaSessionTuning>(_ tuner: T) throws -> AespaSession {
+        try coreSession.run(tuner)
+        return self
+    }
 }
 
 extension AespaSession: VideoContext {
-    public var underlyingVideoContext: AespaVideoContext {
+    public typealias AespaVideoSessionContext = AespaVideoContext<AespaSession>
+    
+    public var underlyingVideoContext: AespaVideoSessionContext {
         videoContext
     }
     
@@ -215,10 +232,6 @@ extension AespaSession: VideoContext {
     }
     
     public func startRecordingWithError() throws {
-        if option.session.autoVideoOrientationEnabled {
-            try setOrientationWithError(to: UIDevice.current.orientation.toVideoOrientation)
-        }
-
         try videoContext.startRecordingWithError()
     }
     
@@ -228,27 +241,23 @@ extension AespaSession: VideoContext {
     }
     
     @discardableResult
-    public func muteWithError() throws -> AespaVideoContext {
+    public func muteWithError() throws -> AespaVideoSessionContext {
         try videoContext.muteWithError()
     }
     
     @discardableResult
-    public func unmuteWithError() throws -> AespaVideoContext {
+    public func unmuteWithError() throws -> AespaVideoSessionContext {
         try videoContext.unmuteWithError()
     }
     
     @discardableResult
-    public func setStabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> AespaVideoContext {
+    public func setStabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> AespaVideoSessionContext {
         try videoContext.setStabilizationWithError(mode: mode)
     }
     
     @discardableResult
-    public func setTorchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> AespaVideoContext {
+    public func setTorchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> AespaVideoSessionContext {
         try videoContext.setTorchWithError(mode: mode, level: level)
-    }
-    
-    public func customize<T: AespaSessionTuning>(_ tuner: T) throws {
-        try coreSession.run(tuner)
     }
     
     public func fetchVideoFiles(limit: Int) -> [VideoFile] {
@@ -283,12 +292,16 @@ extension AespaSession: PhotoContext {
         photoContext.redEyeReduction(enabled: enabled)
     }
 
-    public func customize(_ setting: AVCapturePhotoSettings) {
+    public func custom(_ setting: AVCapturePhotoSettings) {
         photoSetting = setting
     }
     
     public func fetchPhotoFiles(limit: Int) -> [PhotoFile] {
         photoContext.fetchPhotoFiles(limit: limit)
+    }
+    
+    public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
+        photoContext.custom(setting)
     }
 }
 
