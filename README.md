@@ -36,8 +36,8 @@ try await Aespa.configure()
     - [Requirements](#Requirements)
     - [Getting Started](#Getting-Started)
 - [Implementation Examples](#Implementation-Examples)
-    - [Start & Stop Recording](#Start-&-Stop-Recording)
-    - [Subscribing Publisher](#Subscribing-Publisher)
+    - [Configuration](#Configuration)
+    - [Recording & Capture](#Recording-&-Capture)
 - [SwiftUI Integration](#SwiftUI-Integration)
     - [Example Usage](#Example-Usage)
 - [Contributing](#Contributing)
@@ -118,22 +118,41 @@ graph LR;
 </details>
 
 ## Functionality
-Aespa offers the following functionalities for managing a video recording session:
 
-| Function                     | Description                                       |
-|------------------------------|---------------------------------------------------|
-| `startRecording`             | Initiates the recording of a video session.       |
-| `stopRecording`              | Terminates the current video recording session and attempts to save the video file. |
-| `mute`                       | Mutes the audio input for the video recording session. |
-| `unmute`                     | Restores the audio input for the video recording session. |
-| `setOrientation`             | Adjusts the orientation for the video recording session. |
-| `setPosition`                | Changes the camera position for the video recording session. |
-| `setQuality`                 | Alters the video quality preset for the recording session. |
-| `setStabilization`           | Modifies the stabilization mode for the video recording session. |
-| `zoom`                       | Adjusts the zoom factor for the video recording session. |
-| `setAutofocusing`            | Modifies the autofocusing mode for the video recording session. |
-| `fetchVideoFiles`              | Fetch a list of recorded video files.             |
-| `doctor`                       | Check if essential conditions for recording are satisfied. |
+> **Note**
+> 
+> You can access our **official documentation** for the most comprehensive and up-to-date explanations in [here](https://enebin.github.io/Aespa/documentation/aespa/)
+
+| Common                           | Description                                                                                                      |
+|----------------------------------|------------------------------------------------------------------------------------------------------------------|
+| ✨ `zoom`                           | Modifies the zoom factor.                                                                                        |
+| ✨ `setPosition`                    | Changes the camera position.                                                                                     |
+| `setOrientation`                 | Modifies the orientation.                                                                                        |
+| `setAutofocusing`                | Alters the autofocusing mode.                                                                                    |
+| `setQuality`                     | Adjusts the video quality preset for the recording session.                                                      |
+| `doctor`                         | Checks if essential conditions to start recording are satisfied.                                                 |
+| `previewLayerPublisher`          | Responsible for emitting updates to the preview layer.                                                           |
+
+| Video                            | Description                                                                                                      |
+|----------------------------------|------------------------------------------------------------------------------------------------------------------|
+| ✨ `startRecording`      | Initiates the recording of a video session.                                                                      |
+| ✨ `stopRecording`              | Terminates the current video recording session and attempts to save the video file.                              |
+| `mute`                           | Mutes the audio input.                                                                                           |
+| `unmute`                         | Restores the audio input.                                                                                        |
+| `setStabilization`               | Alters the stabilization mode.                                                                                   |
+| `setTorch`                       | Adjusts the torch mode and level.                                                                                |
+| `customize`                      | Customizes the session with a specific tuning configuration.                                                     |
+| ✨ `fetchVideoFiles`                | Fetches a list of recorded video files.                                                                          |
+| `videoFilePublisher`             | Emits a `Result` object containing a latest video file data.                          |
+
+| Photo                            | Description                                                                                                      |
+|----------------------------------|------------------------------------------------------------------------------------------------------------------|
+| ✨ `capturePhoto`               | Capture a photo and returns a result image file.          |
+| ✨ `setFlashMode`                   | Sets the flash mode for the photo capture session.                                                               |
+| `redEyeReduction`                | Enables or disables red-eye reduction for the photo capture session.                                             |
+| `customize`                      | Customizes the photo capture session with a specific `AVCapturePhotoSettings`.                                   |
+| ✨ `fetchPhotoFiles`                | Fetches a list of captured photos files.                                                                          |
+| `photoFilePublisher`             | Emits a `Result` object containing a latest image file data.                            |
 
 ## Installation 
 ### Swift Package Manager (SPM)
@@ -141,15 +160,21 @@ Follow these steps to install **Aespa** using SPM:
 
 1. From within Xcode 13 or later, choose `File` > `Swift Packages` > `Add Package Dependency`.
 2. At the next screen, enter the URL for the **Aespa** repository in the search bar then click `Next`.
-    ``` Text
-    https://github.com/enebin/Aespa.git
-    ```
+``` Text
+https://github.com/enebin/Aespa.git
+```
 3. For the `Version rule`, select `Up to Next Minor` and specify the current Aespa version then click `Next`.
 4. On the final screen, select the `Aespa` library and then click `Finish`.
 
 **Aespa** should now be integrated into your project 🚀
 
 ## Usage
+
+> **Note**
+>
+> We offer an extensively detailed and ready-to-use code base for a SwiftUI app that showcases most of the package's features. 
+> You can access it [here](https://github.com/enebin/Aespa-iOS).
+
 ### Requirements
 - Swift 5.5+
 - iOS 14.0+
@@ -166,49 +191,39 @@ Task(priority: .background) {
 }
 ```
 > **Warning**
+> 
 > Please ensure to call `configure` within a background execution context. Neglecting to do so may lead to significantly reduced responsiveness in your application. ([reference](https://developer.apple.com/documentation/avfoundation/avcapturesession/1388185-startrunning))
 
-
-and so on. You can find the latest documetation in [here](https://enebin.github.io/Aespa/documentation/aespa/)
-.Implementation examples are decribed in [here](##Implementation-Exapmles)
-
-
 ## Implementation Exapmles
-### Start & stop recording
+### Configuration
 ``` Swift
-do {
-    try aespaSession
-        .setStabilization(mode: .auto)
-        .setPosition(to: .front)
-        .setQuality(to: .hd1920x1080)
-        .mute()
-        .startRecording()
-} catch {
-    print("Failed to start recording")
-}
+// Common setting
+aespaSession
+    .setAutofocusing(mode: .continuousAutoFocus)
+    .setOrientation(to: .portrait)
+    .setQuality(to: .high)
+    .customize(WideColorCameraTuner())
 
-// Later...
-try? aespaSession.stopRecording()
+// Photo-only setting
+aespaSession
+    .setFlashMode(to: .on)
+    .redEyeReduction(enabled: true)
 
+// Video-only setting
+aespaSession
+    .mute()
+    .setStabilization(mode: .auto)         
 ```
 
-### Subscribing publihser
-``` Swift 
-// Subscribe file publisher 
-aespaSession.videoFilePublisher
-    .receive(on: DispatchQueue.global(qos: .utility))
-    .sink { [weak self] status in
-        guard let self else { return }
-        switch status {
-        case .success(let file):
-            // Handle file
-            // ex) return file.thumbnailImage
-        case .failure(let error):
-            // Handle error
-            // ex)print(error)
-        }
-    }
-    .store(in: &subsriptions)
+### Recording & Capture
+``` Swift
+// Start recording
+aespaSession.startRecording()
+// Later... stop recording
+aespaSession.stopRecording()
+
+// Capture photo
+aespaSession.capturePhoto()
 ```
 
 ## SwiftUI Integration
@@ -249,13 +264,12 @@ class VideoContentViewModel: ObservableObject {
         Task(priority: .background) {
             do {
                 try await Aespa.configure()
-                try aespaSession
-                    .mute()
+                aespaSession
                     .setAutofocusing(mode: .continuousAutoFocus)
-                    .setStabilization(mode: .auto)
                     .setOrientation(to: .portrait)
                     .setQuality(to: .high)
-                    .customize(WideColorCameraTuner())
+
+                // Other settings ...
                 
             } catch let error {
                 print(error)
@@ -264,10 +278,10 @@ class VideoContentViewModel: ObservableObject {
     }
 }
 ```
-> **Note**: You can find the demo app in here([Aespa-iOS](https://github.com/enebin/Aespa-iOS))
 
-> **Note**: In UIKit, you can access the preview through the `previewLayer` property of `AespaSession`. 
+> **Note**
 > 
+> In `UIKit`, you can access the preview through the `previewLayer` property of `AespaSession`. 
 > For more details, refer to the [AVCaptureVideoPreviewLayer](https://developer.apple.com/documentation/avfoundation/avcapturevideopreviewlayer) in the official Apple documentation.
 
 ## Contributing
