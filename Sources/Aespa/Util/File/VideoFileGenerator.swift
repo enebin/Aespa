@@ -21,13 +21,18 @@ struct VideoFileGenerator {
 
         let imageGenerator = AVAssetImageGenerator(asset: asset)
         imageGenerator.appliesPreferredTrackTransform = true
-        imageGenerator.maximumSize = .init(width: 250, height: 250)
+        imageGenerator.apertureMode = .cleanAperture
 
         do {
             let cgImage = try imageGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1),
                                                          actualTime: nil)
-            let thumbnail = UIImage(cgImage: cgImage)
-
+            
+            let rawThumbnail = UIImage(cgImage: cgImage)
+            guard let compressedData = rawThumbnail.jpegData(compressionQuality: 0.5) else {
+                return nil
+            }
+            
+            let thumbnail = UIImage(data: compressedData)
             return thumbnail
         } catch let error {
             Logger.log(error: error)

@@ -21,17 +21,10 @@ struct PhotoFileGenerator {
             return nil
         }
            
-        guard let originalImage = UIImage(data: data) else {
+        guard let compressedImageData = UIImage(data: data)?.jpegData(compressionQuality: 0.5) else {
             return nil
         }
 
-        let size = CGSize(width: 250, height: 250)
-        let renderer = UIGraphicsImageRenderer(size: size)
-
-        let thumbnail = renderer.image { _ in
-            originalImage.draw(in: CGRect(origin: .zero, size: size))
-        }
-
-        return thumbnail
+        return UIImage(data: compressedImageData)
     }
 }
