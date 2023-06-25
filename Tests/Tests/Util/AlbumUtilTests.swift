@@ -53,7 +53,6 @@ final class AlbumUtilTests: XCTestCase {
     func testAlbumImporter_albumNotExists() throws {
         let albumName = "test"
         let options = PHFetchOptions()
-        let mockAlbum = MockAespaAssetCollectionRepresentable()
         
         // Success case
         stub(mockLibrary) { proxy in

@@ -1,43 +1,46 @@
 //
-//  VideoFileCachingProxy.swift
-//  
+//  ileCachingProxy.swift
+//
 //
 //  Created by 이영빈 on 2023/06/14.
 //
 
 import Foundation
 
-class VideoFileCachingProxy<CacheStorage: URLCaching<VideoFile>> {
-    private let albumDirectory: URL
+class FileCachingProxy<File: Comparable> {
+    private let fileDirectory: URL
     private let cacheEnabled: Bool
 
     private let fileManager: FileManager
 
-    private var cacheStroage: CacheStorage
+    private let fileFactory: (FileManager, URL) -> File?
+    
+    private var cacheStorage: URLCacheStorage<File>
     private(set) var lastModificationDate: Date?
 
     init(
-        albumDirectory: URL,
+        fileDirectory: URL,
         enableCaching: Bool,
         fileManager: FileManager,
-        cacheStorage: CacheStorage = URLCacheStorage<VideoFile>()
+        cacheStorage: URLCacheStorage<File> = URLCacheStorage<File>(),
+        fileFactory: @escaping (FileManager, URL) -> File?
     ) {
-        self.albumDirectory = albumDirectory
-        self.cacheStroage = cacheStorage
-        
+        self.fileDirectory = fileDirectory
         self.cacheEnabled = enableCaching
         self.fileManager = fileManager
+        self.cacheStorage = cacheStorage
+        self.fileFactory = fileFactory
     }
 
     /// If `count` is `0`, return all existing files
-    func fetch(count: Int = 0) -> [VideoFile] {
+    func fetch(count: Int = 0) -> [File] {
         guard cacheEnabled else {
             return fetchSortedFiles(count: count, usingCache: cacheEnabled)
         }
 
         // Get directory's last modification date
         guard
-            let directoryAttributes = try? fileManager.attributesOfItem(atPath: albumDirectory.path),
+            let directoryAttributes = try? fileManager.attributesOfItem(atPath: fileDirectory.path),
             let currentModificationDate = directoryAttributes[.modificationDate] as? Date
         else {
             return []
@@ -50,7 +53,7 @@ class VideoFileCachingProxy<CacheStorage: URLCaching<VideoFile>> {
         }
 
         // Update cache and lastModificationDate
-        update(cacheStroage)
+        update(cacheStorage)
         lastModificationDate = currentModificationDate
 
         return fetchSortedFiles(count: count, usingCache: cacheEnabled)
@@ -59,68 +62,56 @@ class VideoFileCachingProxy<CacheStorage: URLCaching<VideoFile>> {
     // Invalidate the cache if needed, for example when a file is added or removed
     func invalidate() {
         lastModificationDate = nil
-        cacheStroage.empty()
+        cacheStorage.empty()
     }
     
     func renew() {
-        update(cacheStroage)
+        update(cacheStorage)
     }
 }
 
-private extension VideoFileCachingProxy {
-    func update(_ storage: CacheStorage) {
+private extension FileCachingProxy {
+    func update(_ storage: URLCacheStorage<File>) {
         guard
-            let filePaths = try? fileManager.contentsOfDirectory(atPath: albumDirectory.path)
+            let filePaths = try? fileManager.contentsOfDirectory(atPath: fileDirectory.path)
         else {
-            Logger.log(message: "Cannot access to saved video file")
+            Logger.log(message: "Cannot access to saved file")
             return
         }
 
         filePaths.forEach { fileName in
-            let filePath = albumDirectory.appendingPathComponent(fileName)
+            let filePath = fileDirectory.appendingPathComponent(fileName)
             
             guard storage.get(filePath) == nil else {
                 return
             }
             
-            guard let videoFile = createVideoFile(for: filePath) else {
+            guard let file = fileFactory(fileManager, filePath) else {
                 return
             }
             
-            storage.store(videoFile, at: filePath)
+            storage.store(file, at: filePath)
         }
     }
     
-    func fetchSortedFiles(count: Int, usingCache: Bool) -> [VideoFile] {
-        let files: [VideoFile]
+    func fetchSortedFiles(count: Int, usingCache: Bool) -> [File] {
+        let files: [File]
         if usingCache {
-            files = cacheStroage.all.sorted()
+            files = cacheStorage.all.sorted()
         } else {
-            guard let filePaths = try? fileManager.contentsOfDirectory(atPath: albumDirectory.path) else {
-                Logger.log(message: "Cannot access to saved video file")
+            guard let filePaths = try? fileManager.contentsOfDirectory(atPath: fileDirectory.path) else {
+                Logger.log(message: "Cannot access to saved file")
                 return []
             }
             
             files = filePaths
                 .map { fileName in
-                    let filePath = albumDirectory.appendingPathComponent(fileName)
-                    return createVideoFile(for: filePath)
+                    let filePath = fileDirectory.appendingPathComponent(fileName)
+                    return fileFactory(fileManager, filePath)
                 }
                 .compactMap({$0})
         }
         
         return count == 0 ? files : Array(files.prefix(count))
-    }
-    
-    func createVideoFile(for filePath: URL) -> VideoFile? {
-        guard
-            let fileAttributes = try? fileManager.attributesOfItem(atPath: filePath.path),
-            let creationDate = fileAttributes[.creationDate] as? Date
-        else {
-            Logger.log(message: "Cannot access to saved video file")
-            return nil
-        }
-
-        return VideoFileGenerator.generate(with: filePath, date: creationDate)
     }
 }

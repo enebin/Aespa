@@ -15,7 +15,7 @@ PROJECT_NAME="Aespa"
 TESTER_NAME="TestHostApp"
 PACKAGE_SOURCE_PATH="${ROOT_PATH}/Sources/Aespa"
 OUTPUT_FILE="${ROOT_PATH}/Tests/Tests/Mock/GeneratedMocks.swift"
-SWIFT_FILES=$(find "$PACKAGE_SOURCE_PATH" -type f -name "*.swift" -print0 | xargs -0)
+SWIFT_FILES=$(find "$PACKAGE_SOURCE_PATH" -type f -name "*.swift" -not -path "*/Context/*" -print0 | xargs -0)
 
 echo "✅ Generated Mocks File = ${OUTPUT_FILE}"
 echo "✅ Mocks Input Directory = ${PACKAGE_SOURCE_PATH}"

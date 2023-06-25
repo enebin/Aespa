@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Aespa
 
 @main
 struct TestHostAppApp: App {

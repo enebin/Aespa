@@ -44,20 +44,22 @@ final class FileGeneratorTests: XCTestCase {
     
     func testRequestDirPath() throws {
         let albumName = "Test"
-        let dirPath = try VideoFilePathProvider.requestDirectoryPath(from: mockFileManager, name: albumName)
+        let dirPath = try FilePathProvider.requestDirectoryPath(from: mockFileManager, directoryName: albumName)
         
         XCTAssertEqual(dirPath.lastPathComponent, albumName)
     }
     
     func testRequestFilePath() throws {
         let albumName = "Test"
+        let subDirName = "Sub"
         let fileName = "Testfile"
         let `extension` = "mp4"
-        let expectedSuffix = "/\(albumName)/\(fileName).\(`extension`)"
+        let expectedSuffix = "/\(albumName)/\(subDirName)/\(fileName).\(`extension`)"
         
-        let filePath = try VideoFilePathProvider.requestFilePath(
+        let filePath = try FilePathProvider.requestFilePath(
             from: mockFileManager,
             directoryName: albumName,
+            subDirectoryName: subDirName,
             fileName: fileName,
             extension: `extension`)
         
