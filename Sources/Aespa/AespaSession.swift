@@ -121,6 +121,12 @@ open class AespaSession {
         return videoDeviceInput.device.focusMode
     }
     
+    /// This property reflects the session's current orientation.
+    public var currentOrientation: AVCaptureVideoOrientation? {
+        guard let connection = coreSession.connections.first else { return nil }
+        return connection.videoOrientation
+    }
+    
     /// This publisher is responsible for emitting updates to the preview layer.
     ///
     /// A log message is printed to the console every time a new layer is pushed.
