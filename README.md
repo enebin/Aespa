@@ -125,10 +125,10 @@ graph LR;
 
 | Common                           | Description                                                                                                      |
 |----------------------------------|------------------------------------------------------------------------------------------------------------------|
-| ✨ `zoom`                           | Modifies the zoom factor.                                                                                        |
-| ✨ `setPosition`                    | Changes the camera position.                                                                                     |
+| ✨ `zoom`                        | Modifies the zoom factor.                                                                                        |
+| ✨ `setPosition`                 | Changes the camera position.                                                                                     |
 | `setOrientation`                 | Modifies the orientation.                                                                                        |
-| `setAutofocusing`                | Alters the autofocusing mode.                                                                                    |
+| `setFocus`                       | Alters the autofocusing mode.                                                                                    |
 | `setQuality`                     | Adjusts the video quality preset for the recording session.                                                      |
 | `doctor`                         | Checks if essential conditions to start recording are satisfied.                                                 |
 | `previewLayerPublisher`          | Responsible for emitting updates to the preview layer.                                                           |
