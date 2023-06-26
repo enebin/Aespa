@@ -49,8 +49,7 @@ public class AespaVideoContext<Common: CommonContext> {
         if let firstVideoFile = fileManager.fetchVideo(
             albumName: option.asset.albumName,
             subDirectoryName: option.asset.videoDirectoryName,
-            count: 1).first
-        {
+            count: 1).first {
             videoFileBufferSubject.send(.success(firstVideoFile))
         }
     }

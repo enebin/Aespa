@@ -42,8 +42,7 @@ open class AespaPhotoContext {
         if let firstPhotoFile = fileManager.fetchPhoto(
             albumName: option.asset.albumName,
             subDirectoryName: option.asset.photoDirectoryName,
-            count: 1).first
-        {
+            count: 1).first {
             photoFileBufferSubject.send(.success(firstPhotoFile))
         }
     }

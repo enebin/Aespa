@@ -16,21 +16,78 @@ public extension AespaSession {
     ///     .resizeAspectFill` by default.
     ///
     /// - Returns: `some UIViewRepresentable` which can coordinate other `View` components
-    func preview(gravity: AVLayerVideoGravity = .resizeAspectFill) -> some UIViewControllerRepresentable {
-        Preview(of: previewLayer, gravity: gravity)
+    func preview(
+        gravity: AVLayerVideoGravity = .resizeAspectFill,
+        startPosition position: AVCaptureDevice.Position = .front,
+        preferredFocusMode mode: AVCaptureDevice.FocusMode = .continuousAutoFocus
+    ) -> some View {
+        let internalPreview = Preview(of: self, gravity: gravity)
+        return InteractivePreview(internalPreview, startPosition: position, preferredFocusMode: mode)
     }
 }
 
-private struct Preview: UIViewControllerRepresentable {
-    let previewLayer: AVCaptureVideoPreviewLayer
+public struct InteractivePreview: View {
+    private let preview: Preview
+    private let preferredFocusMode: AVCaptureDevice.FocusMode
+    @State private var cameraPosition: AVCaptureDevice.Position
+    
+    @GestureState private var magnification: CGFloat = 1.0
+    
+    init(
+        _ preview: Preview,
+        startPosition: AVCaptureDevice.Position,
+        preferredFocusMode: AVCaptureDevice.FocusMode
+    ) {
+        self.preview = preview
+        self.cameraPosition = startPosition
+        self.preferredFocusMode = preferredFocusMode
+    }
+    
+    var session: AespaSession {
+        preview.session
+    }
+    
+    var layer: AVCaptureVideoPreviewLayer {
+        preview.previewLayer
+    }
+    
+    var currentFocusMode: AVCaptureDevice.FocusMode {
+        session.currentFocusMode ?? preferredFocusMode
+    }
+    
+    public var body: some View {
+        preview
+            .gesture(DragGesture(minimumDistance: 0)
+                .onChanged { value in
+                    if currentFocusMode == .autoFocus {
+                        session.setFocus(mode: .autoFocus, point: value.location)
+                    }
+                })
+            .onTapGesture(count: 2) {
+                let nextPosition: AVCaptureDevice.Position = cameraPosition == .back ? .front : .back
+                session.setPosition(to: nextPosition)
+            }
+            .gesture(MagnificationGesture()
+                .updating($magnification) { currentState, gestureState, _ in
+                    gestureState = currentState
+                    session.zoom(factor: gestureState)
+                }
+            )
+    }
+}
+
+struct Preview: UIViewControllerRepresentable {
+    let session: AespaSession
     let gravity: AVLayerVideoGravity
+    let previewLayer: AVCaptureVideoPreviewLayer
 
     init(
-        of previewLayer: AVCaptureVideoPreviewLayer,
+        of session: AespaSession,
         gravity: AVLayerVideoGravity
     ) {
         self.gravity = gravity
-        self.previewLayer = previewLayer
+        self.session = session
+        self.previewLayer = AVCaptureVideoPreviewLayer(session: session.avCaptureSession)
     }
 
     func makeUIViewController(context: Context) -> UIViewController {

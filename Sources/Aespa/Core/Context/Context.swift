@@ -56,7 +56,7 @@ public protocol CommonContext {
     /// - Throws: `AespaError` if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func setAutofocusingWithError(mode: AVCaptureDevice.FocusMode) throws -> CommonContextType
+    @discardableResult func setFocusWithError(mode: AVCaptureDevice.FocusMode, point: CGPoint?) throws -> CommonContextType
     
     /// Sets the zoom factor for the video recording session.
     ///
@@ -158,12 +158,13 @@ extension CommonContext {
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
     @discardableResult
-    public func setAutofocusing(
+    public func setFocus(
         mode: AVCaptureDevice.FocusMode,
+        point: CGPoint? = nil,
         errorHandler: ErrorHandler? = nil
     ) -> CommonContextType {
         do {
-            return try self.setAutofocusingWithError(mode: mode)
+            return try self.setFocusWithError(mode: mode, point: point)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
@@ -209,7 +210,6 @@ extension CommonContext {
         return underlyingCommonContext
     }
 }
-
 
 public protocol VideoContext {
     associatedtype VideoContextType: VideoContext
@@ -394,7 +394,6 @@ extension VideoContext {
 
         return underlyingVideoContext
     }
-
     
     /// Sets the torch mode and level for the video recording session.
     ///
@@ -436,7 +435,6 @@ extension VideoContext {
         fetchVideoFiles(limit: limit)
     }
 }
-
 
 public protocol PhotoContext {
     associatedtype PhotoContextType: PhotoContext
@@ -503,7 +501,8 @@ public protocol PhotoContext {
 // MARK: Non-throwing methods
 // These methods encapsulate error handling within the method itself rather than propagating it to the caller.
 // This means any errors that occur during the execution of these methods will be caught and logged, not thrown.
-// Although it simplifies error handling, this approach may not be recommended because it offers less control to callers.
+// Although it simplifies error handling, this approach may not be recommended because
+// it offers less control to callers.
 // Developers are encouraged to use methods that throw errors, to gain finer control over error handling.
 extension PhotoContext {
     /// Asynchronously captures a photo using the specified `AVCapturePhotoSettings`.

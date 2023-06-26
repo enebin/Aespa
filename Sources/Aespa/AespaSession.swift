@@ -127,6 +127,12 @@ open class AespaSession {
         return connection.videoOrientation
     }
     
+    /// This property reflects the device's current position.
+    public var currentCameraPosition: AVCaptureDevice.Position? {
+        guard let device = coreSession.videoDeviceInput?.device else { return nil }
+        return device.position
+    }
+    
     /// This publisher is responsible for emitting updates to the preview layer.
     ///
     /// A log message is printed to the console every time a new layer is pushed.
@@ -199,8 +205,8 @@ extension AespaSession: CommonContext {
     }
     
     @discardableResult
-    public func setAutofocusingWithError(mode: AVCaptureDevice.FocusMode) throws -> AespaSession {
-        let tuner = AutoFocusTuner(mode: mode)
+    public func setFocusWithError(mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil) throws -> AespaSession {
+        let tuner = AutoFocusTuner(mode: mode, point: point)
         try coreSession.run(tuner)
         return self
     }
