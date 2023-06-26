@@ -10,6 +10,14 @@ import SwiftUI
 import AVFoundation
 
 public extension AespaSession {
+    /// This function is used to create a preview of the session.
+    /// It returns a SwiftUI `View` that displays video as it is being captured.
+    ///
+    /// - Parameter gravity: Defines how the video is displayed within the layer bounds.
+    ///     .resizeAspectFill` by default, which scales the video to fill the layer bounds.
+    /// - Parameter position: Determines the initial position of the camera (front or back). Default is .back.
+    ///
+    /// - Returns: A SwiftUI `View` that displays the video feed.
     func preview(
         gravity: AVLayerVideoGravity = .resizeAspectFill,
         startPosition position: AVCaptureDevice.Position = .back
@@ -17,14 +25,17 @@ public extension AespaSession {
         return Preview(of: self, gravity: gravity)
     }
     
-    /// A `SwiftUI` `View` that you use to display video as it is being captured by an input device.
+    /// This function is used to create an interactive preview of the session.
+    /// It returns a SwiftUI `View` that not only displays video as it is being captured,
+    /// but also allows user interaction like tap-to-focus, pinch zoom and double tap position change.
     ///
-    /// - Parameter gravity: Define `AVLayerVideoGravity` for preview's orientation.
-    ///     .resizeAspectFill` by default.
+    /// - Parameter gravity: Defines how the video is displayed within the layer bounds.
+    ///     .resizeAspectFill` by default, which scales the video to fill the layer bounds.
+    /// - Parameter position: Determines the initial position of the camera (front or back). Default is .front.
     ///
-    /// - Returns: `some UIViewRepresentable` which can coordinate other `View` components
+    /// - Returns: A SwiftUI `View` that displays the video feed and allows user interaction.
     ///
-    /// - Warning: Tap-to-focus works only in `autoFocus` mode. Make sure you're using the mode.
+    /// - Warning: Tap-to-focus works only in `autoFocus` mode. Make sure you're using this mode for the feature to work.
     func interactivePreview(
         gravity: AVLayerVideoGravity = .resizeAspectFill,
         startPosition position: AVCaptureDevice.Position = .front
@@ -33,6 +44,7 @@ public extension AespaSession {
         return InteractivePreview(internalPreview, startPosition: position)
     }
 }
+
 
 public struct InteractivePreview: View {
     private let preview: Preview

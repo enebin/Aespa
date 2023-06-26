@@ -24,6 +24,7 @@ public class AespaVideoContext<Common: CommonContext> {
     
     private let videoFileBufferSubject: CurrentValueSubject<Result<VideoFile, Error>?, Never>
 
+    /// A Boolean value that indicates whether the session is currently recording video.
     public var isRecording: Bool
 
     init(
@@ -87,6 +88,7 @@ extension AespaVideoContext: VideoContext {
         }
 
         try recorder.startRecording(in: filePath)
+        isRecording = true
     }
     
     public func stopRecordingWithError() async throws -> VideoFile {
@@ -96,6 +98,7 @@ extension AespaVideoContext: VideoContext {
         try await albumManager.addToAlbum(filePath: videoFilePath)
         videoFileBufferSubject.send(.success(videoFile))
 
+        isRecording = false
         return videoFile
     }
     

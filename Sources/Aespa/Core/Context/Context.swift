@@ -10,11 +10,18 @@ import Combine
 import Foundation
 import AVFoundation
 
+///
 public typealias ErrorHandler = (Error) -> Void
 
+/// A protocol that defines the common behaviors and properties that all context types must implement.
+///
+/// It includes methods to control the quality, position, orientation, and auto-focusing behavior
+/// of the session. It also includes the ability to adjust the zoom level of the session.
 public protocol CommonContext {
+    ///
     associatedtype CommonContextType: CommonContext & VideoContext & PhotoContext
     
+    ///
     var underlyingCommonContext: CommonContextType { get }
     
     /// Sets the quality preset for the video recording session.
@@ -47,7 +54,9 @@ public protocol CommonContext {
     ///
     /// - Note: It sets the orientation of the video you are recording,
     ///     not the orientation of the `AVCaptureVideoPreviewLayer`.
-    @discardableResult func setOrientationWithError(to orientation: AVCaptureVideoOrientation) throws -> CommonContextType
+    @discardableResult func setOrientationWithError(
+        to orientation: AVCaptureVideoOrientation
+    ) throws -> CommonContextType
     
     /// Sets the autofocusing mode for the video recording session.
     ///
@@ -56,7 +65,9 @@ public protocol CommonContext {
     /// - Throws: `AespaError` if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func setFocusWithError(mode: AVCaptureDevice.FocusMode, point: CGPoint?) throws -> CommonContextType
+    @discardableResult func setFocusWithError(
+        mode: AVCaptureDevice.FocusMode, point: CGPoint?
+    ) throws -> CommonContextType
     
     /// Sets the zoom factor for the video recording session.
     ///
@@ -78,7 +89,8 @@ public protocol CommonContext {
 // MARK: Non-throwing methods
 // These methods encapsulate error handling within the method itself rather than propagating it to the caller.
 // This means any errors that occur during the execution of these methods will be caught and logged, not thrown.
-// Although it simplifies error handling, this approach may not be recommended because it offers less control to callers.
+// Although it simplifies error handling, this approach may not be recommended
+// because it offers less control to callers.
 // Developers are encouraged to use methods that throw errors, to gain finer control over error handling.
 extension CommonContext {
     /// Sets the quality preset for the video recording session.
@@ -211,11 +223,18 @@ extension CommonContext {
     }
 }
 
+/// A protocol that defines the behaviors and properties specific to the video context.
+///
+/// It adds video-specific capabilities such as checking if
+/// the session is currently recording or muted, and controlling video recording,
+/// stabilization, torch mode, and fetching recorded video files.
 public protocol VideoContext {
+    ///
     associatedtype VideoContextType: VideoContext
-    
+    ///
     var underlyingVideoContext: VideoContextType { get }
     
+    /// A Boolean value that indicates whether the session is currently recording video.
     var isRecording: Bool { get }
 
     /// This publisher is responsible for emitting `VideoFile` objects resulting from completed recordings.
@@ -297,7 +316,8 @@ public protocol VideoContext {
 // MARK: Non-throwing methods
 // These methods encapsulate error handling within the method itself rather than propagating it to the caller.
 // This means any errors that occur during the execution of these methods will be caught and logged, not thrown.
-// Although it simplifies error handling, this approach may not be recommended because it offers less control to callers.
+// Although it simplifies error handling, this approach may not be recommended
+// because it offers less control to callers.
 // Developers are encouraged to use methods that throw errors, to gain finer control over error handling.
 extension VideoContext {
     /// Starts the recording of a video session.
@@ -436,6 +456,11 @@ extension VideoContext {
     }
 }
 
+/// A protocol that defines the behaviors and properties specific to the photo context.
+///
+/// It adds photo-specific capabilities such as accessing
+/// current photo settings, controlling flash mode, and red-eye reduction, capturing
+/// photo, and fetching captured photo files.
 public protocol PhotoContext {
     associatedtype PhotoContextType: PhotoContext
     
