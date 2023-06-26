@@ -15,7 +15,7 @@ class VideoContentViewModel: ObservableObject {
     let aespaSession: AespaSession
     
     var preview: some View {
-        aespaSession.preview()
+        aespaSession.interactivePreview()
     }
     
     private var subscription = Set<AnyCancellable>()

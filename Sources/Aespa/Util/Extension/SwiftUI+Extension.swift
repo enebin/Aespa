@@ -12,11 +12,9 @@ import AVFoundation
 public extension AespaSession {
     func preview(
         gravity: AVLayerVideoGravity = .resizeAspectFill,
-        startPosition position: AVCaptureDevice.Position = .back,
-        preferredFocusMode mode: AVCaptureDevice.FocusMode = .continuousAutoFocus
+        startPosition position: AVCaptureDevice.Position = .back
     ) -> some View {
-        let internalPreview = Preview(of: self, gravity: gravity)
-        return InteractivePreview(internalPreview, startPosition: position, preferredFocusMode: mode)
+        return Preview(of: self, gravity: gravity)
     }
     
     /// A `SwiftUI` `View` that you use to display video as it is being captured by an input device.
@@ -25,19 +23,19 @@ public extension AespaSession {
     ///     .resizeAspectFill` by default.
     ///
     /// - Returns: `some UIViewRepresentable` which can coordinate other `View` components
+    ///
+    /// - Warning: Tap-to-focus works only in `autoFocus` mode. Make sure you're using the mode.
     func interactivePreview(
         gravity: AVLayerVideoGravity = .resizeAspectFill,
-        startPosition position: AVCaptureDevice.Position = .front,
-        preferredFocusMode mode: AVCaptureDevice.FocusMode = .continuousAutoFocus
+        startPosition position: AVCaptureDevice.Position = .front
     ) -> some View {
         let internalPreview = Preview(of: self, gravity: gravity)
-        return InteractivePreview(internalPreview, startPosition: position, preferredFocusMode: mode)
+        return InteractivePreview(internalPreview, startPosition: position)
     }
 }
 
 public struct InteractivePreview: View {
     private let preview: Preview
-    private let preferredFocusMode: AVCaptureDevice.FocusMode
     @State private var cameraPosition: AVCaptureDevice.Position
     
     @State private var previousZoomFactor: CGFloat = 1.0
@@ -45,12 +43,10 @@ public struct InteractivePreview: View {
 
     init(
         _ preview: Preview,
-        startPosition: AVCaptureDevice.Position,
-        preferredFocusMode: AVCaptureDevice.FocusMode
+        startPosition: AVCaptureDevice.Position
     ) {
         self.preview = preview
         self.cameraPosition = startPosition
-        self.preferredFocusMode = preferredFocusMode
     }
     
     var session: AespaSession {
@@ -62,7 +58,7 @@ public struct InteractivePreview: View {
     }
     
     var currentFocusMode: AVCaptureDevice.FocusMode {
-        session.currentFocusMode ?? preferredFocusMode
+        session.currentFocusMode ?? .continuousAutoFocus
     }
     
     var currentCameraPosition: AVCaptureDevice.Position {
@@ -79,7 +75,7 @@ public struct InteractivePreview: View {
                 cameraPosition = nextPosition
             }
             .gesture(DragGesture(minimumDistance: 0)
-                .onChanged { value in
+                .onEnded { value in
                     if currentFocusMode == .autoFocus {
                         session.setFocus(mode: .autoFocus, point: value.location)
                     }
