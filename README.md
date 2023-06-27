@@ -47,17 +47,12 @@ try await Aespa.configure()
 
 ## Introduction
 Aespa is a robust and intuitive Swift package for video capturing, built with a focus on the ease of setting up and usage. 
+It is designed to be easy to use for both beginners and experienced developers.  If you're new to video recording on iOS or if you're looking to simplify your existing recording setup, Aespa could be the perfect fit for your project.
 
-**This package provides a high-level API over Apple's `AVFoundation` framework**: abstracting away its complexity and making it straightforward for developers to implement video capturing functionalities in their iOS applications.
-
-**This package provides a clean, user-friendly API for common video recording tasks**: including starting and stopping recording, managing audio settings, adjusting video quality, setting camera position, etc.
-
-
-## Features
-Aespa is designed to be easy to use for both beginners and experienced developers.  If you're new to video recording on iOS or if you're looking to simplify your existing recording setup, Aespa could be the perfect fit for your project.
+### ✅ Super easy to use
 
 <details>
-<summary> ✅ Super easy to use </summary>
+<summary> Zip the boring configuration routine </summary>
 
 *Before*
 ``` mermaid
@@ -69,6 +64,7 @@ AS -- "Connect" --> AIA["AVCaptureAudioInput"]
 AS -- "Add" --> FO["AVCaptureFileOutput"]
 FO --> PHCollectionListChangeRequest
 ```
+
 **Aespa**
 ``` mermaid
 graph LR
@@ -80,7 +76,7 @@ graph LR
 </details>
 
 <details>
-<summary> ✅ Offer essential preset configuration & customization </summary>
+<summary> Offer essential preset configuration & customization </summary>
 
 ``` mermaid
 graph TD
@@ -96,7 +92,16 @@ AS --> D["Fetching asset files"]
 </details>
 
 <details>
-<summary> ✅ Combine & async support </summary>
+<summary> Comprehensive error handling </summary>
+
+- The package provides comprehensive error handling, allowing you to build robust applications with minimal effort.
+
+</details>
+
+### ✅ No more delegate
+<details>
+
+<summary> Combine & async support </summary>
 
 ``` mermaid
 graph LR;
@@ -110,12 +115,11 @@ graph LR;
 
 </details>
 
-<details>
-<summary> ✅ Comprehensive error handling </summary>
+### ✅ Also...
+- Seamless image and video capture within a single preview session.
+- Automated system permission management.
+- Support SPM.
 
-- The package provides comprehensive error handling, allowing you to build robust applications with minimal effort.
-
-</details>
 
 ## Functionality
 
@@ -123,6 +127,17 @@ graph LR;
 > 
 > You can access our **official documentation** for the most comprehensive and up-to-date explanations in [here](https://enebin.github.io/Aespa/documentation/aespa/)
 
+### Interactive Preview
+One of our main feature, `InteractivePreview` provides a comprehensive and intuitive way for users to interact directly with the camera preview. 
+
+| Features               | Description                                                                                                      |
+|------------------------|------------------------------------------------------------------------------------------------------------------|
+| Tap-to-focus           | Adjusts the focus of the camera based on the tapped area on the screen.                                          |
+| Double tap camera change  | Switches between the front and back camera upon double tapping.                                                  |
+| Pinch zoom          | Allows zooming in or out on the preview by using a pinch gesture.                                                |
+
+
+### More manaul options
 | Common                           | Description                                                                                                      |
 |----------------------------------|------------------------------------------------------------------------------------------------------------------|
 | ✨ `zoom`                        | Modifies the zoom factor.                                                                                        |
@@ -154,6 +169,7 @@ graph LR;
 | ✨ `fetchPhotoFiles`                | Fetches a list of captured photos files.                                                                          |
 | `photoFilePublisher`             | Emits a `Result` object containing a latest image file data.                            |
 
+
 ## Installation 
 ### Swift Package Manager (SPM)
 Follow these steps to install **Aespa** using SPM:
@@ -166,7 +182,7 @@ https://github.com/enebin/Aespa.git
 3. For the `Version rule`, select `Up to Next Minor` and specify the current Aespa version then click `Next`.
 4. On the final screen, select the `Aespa` library and then click `Finish`.
 
-**Aespa** should now be integrated into your project 🚀
+**Aespa** should now be integrated into your project 🚀.
 
 ## Usage
 
