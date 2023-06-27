@@ -462,8 +462,9 @@ extension VideoContext {
 /// current photo settings, controlling flash mode, and red-eye reduction, capturing
 /// photo, and fetching captured photo files.
 public protocol PhotoContext {
+    ///
     associatedtype PhotoContextType: PhotoContext
-    
+    ///
     var underlyingPhotoContext: PhotoContextType { get }
     
     /// The publisher that broadcasts the result of a photo file operation.
