@@ -61,7 +61,7 @@
 		9C727D0B2A3FEF9800EF9472 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9C727D0E2A3FEF9800EF9472 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9C727D142A3FEF9900EF9472 /* TestHostAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestHostAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9C727D542A3FF09400EF9472 /* Aespa */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Aespa; path = ..; sourceTree = "<group>"; };
+		9CA8C9BC2A4AE41300548463 /* Aespa */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Aespa; path = ..; sourceTree = "<group>"; };
 		9CD12FF92A452FA10012D1E1 /* URLCacheStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLCacheStorageTests.swift; sourceTree = "<group>"; };
 		9CD12FFB2A454AC40012D1E1 /* GeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorTests.swift; sourceTree = "<group>"; };
 		9CD12FFD2A454B770012D1E1 /* MockImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImage.swift; sourceTree = "<group>"; };
@@ -153,8 +153,8 @@
 		9C727CFB2A3FEF9600EF9472 = {
 			isa = PBXGroup;
 			children = (
+				9CA8C9BB2A4AE41300548463 /* Packages */,
 				9C4BBE4A2A3FF4870071C84F /* Test.xctestplan */,
-				9C727D532A3FF09400EF9472 /* Packages */,
 				9C727D062A3FEF9600EF9472 /* TestHostApp */,
 				9C4BBE4B2A400E450071C84F /* Tests */,
 				9C727D052A3FEF9600EF9472 /* Products */,
@@ -190,19 +190,19 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		9C727D532A3FF09400EF9472 /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-				9C727D542A3FF09400EF9472 /* Aespa */,
-			);
-			name = Packages;
-			sourceTree = "<group>";
-		};
 		9C727D552A3FF0B100EF9472 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9CA8C9BB2A4AE41300548463 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				9CA8C9BC2A4AE41300548463 /* Aespa */,
+			);
+			name = Packages;
 			sourceTree = "<group>";
 		};
 		9CF0FE2B2A40573000FEE8C9 /* Data */ = {

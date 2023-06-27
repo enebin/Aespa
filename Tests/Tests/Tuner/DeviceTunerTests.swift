@@ -25,18 +25,19 @@ final class DeviceTunerTests: XCTestCase {
 
     func testAutoFocusTuner() throws {
         let mode = AVCaptureDevice.FocusMode.locked
-        let tuner = AutoFocusTuner(mode: mode)
+        let point = CGPoint()
+        let tuner = AutoFocusTuner(mode: mode, point: point)
         
         stub(device) { proxy in
             when(proxy.isFocusModeSupported(equal(to: mode))).thenReturn(true)
-            when(proxy.setFocusMode(equal(to: mode))).then { mode in
-                when(proxy.focusMode.get).thenReturn(mode)
+            when(proxy.setFocusMode(equal(to: mode), point: equal(to: point))).then { mode in
+                when(proxy.focusMode.get).thenReturn(.locked)
             }
         }
         
         try tuner.tune(device)
         verify(device)
-            .setFocusMode(equal(to: mode))
+            .setFocusMode(equal(to: mode), point: equal(to: point))
             .with(returnType: Void.self)
         
         XCTAssertEqual(device.focusMode, mode)
