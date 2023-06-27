@@ -22,6 +22,8 @@ struct VideoContentView: View {
     var body: some View {
         ZStack {
             viewModel.preview
+                .crosshair(enabled: false)
+                .pinchZoom(enabled: true)
                 .frame(minWidth: 0,
                        maxWidth: .infinity,
                        minHeight: 0,

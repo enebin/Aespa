@@ -14,7 +14,7 @@ import Aespa
 class VideoContentViewModel: ObservableObject {
     let aespaSession: AespaSession
     
-    var preview: some View {
+    var preview: InteractivePreview {
         aespaSession.interactivePreview()
     }
     
@@ -36,7 +36,7 @@ class VideoContentViewModel: ObservableObject {
                 
                 // Common setting
                 aespaSession
-                    .setFocus(mode: .continuousAutoFocus)
+                    .setFocus(mode: .autoFocus)
                     .setOrientation(to: .portrait)
                     .setQuality(to: .high)
                     .custom(WideColorCameraTuner())

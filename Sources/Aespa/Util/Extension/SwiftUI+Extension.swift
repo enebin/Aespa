@@ -40,7 +40,7 @@ public extension AespaSession {
     func interactivePreview(
         gravity: AVLayerVideoGravity = .resizeAspectFill,
         startPosition position: AVCaptureDevice.Position = .front
-    ) -> some View {
+    ) -> InteractivePreview {
         let internalPreview = Preview(of: self, gravity: gravity)
         return InteractivePreview(internalPreview, startPosition: position)
     }
@@ -64,7 +64,7 @@ public struct InteractivePreview: View {
     @State private var tappedLocation = CGPoint.zero
     @State private var focusFrameOpacity: Double = 0
     @State private var focusingTask: Task<Void, Error>?
-
+    
     init(
         _ preview: Preview,
         startPosition: AVCaptureDevice.Position
@@ -133,12 +133,16 @@ private extension InteractivePreview {
             .onEnded { value in
                 guard enableFocus else { return }
                 
-                //                if currentFocusMode == .autoFocus {
+//                guard currentFocusMode == .autoFocus || currentFocusMode == .continuousAutoFocus else {
+//                    return
+//                }
+                
                 session.setFocus(mode: .autoFocus, point: value.location)
                 tappedLocation = value.location
                 
-                showCrosshair()
-                //                }
+                if enableShowingCrosshair {
+                    showCrosshair()
+                }
             }
     }
     
@@ -183,20 +187,24 @@ private extension InteractivePreview {
 }
 
 public extension InteractivePreview {
-    func crosshair(enabled: Bool) {
+    func crosshair(enabled: Bool) -> Self {
         enableShowingCrosshair = enabled
+        return self
     }
     
-    func tapToFocus(enabled: Bool) {
+    func tapToFocus(enabled: Bool) -> Self {
         enableFocus = enabled
+        return self
     }
     
-    func doubleTapToChangeCameraPosition(enabled: Bool) {
+    func doubleTapToChangeCameraPosition(enabled: Bool) -> Self {
         enableChangePosition = enabled
+        return self
     }
     
-    func pinchZoom(enabled: Bool) {
+    func pinchZoom(enabled: Bool) -> Self {
         enableZoom = enabled
+        return self
     }
 }
 
@@ -204,7 +212,7 @@ struct Preview: UIViewControllerRepresentable {
     let session: AespaSession
     let gravity: AVLayerVideoGravity
     let previewLayer: AVCaptureVideoPreviewLayer
-
+    
     init(
         of session: AespaSession,
         gravity: AVLayerVideoGravity
@@ -213,21 +221,21 @@ struct Preview: UIViewControllerRepresentable {
         self.session = session
         self.previewLayer = session.previewLayer
     }
-
+    
     func makeUIViewController(context: Context) -> UIViewController {
         let viewController = UIViewController()
         viewController.view.backgroundColor = .clear
-
+        
         return viewController
     }
-
+    
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         previewLayer.videoGravity = gravity
         uiViewController.view.layer.addSublayer(previewLayer)
-
+        
         previewLayer.frame = uiViewController.view.bounds
     }
-
+    
     func dismantleUIViewController(_ uiViewController: UIViewController, coordinator: ()) {
         previewLayer.removeFromSuperlayer()
     }
