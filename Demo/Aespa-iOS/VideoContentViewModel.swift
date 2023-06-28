@@ -34,9 +34,11 @@ class VideoContentViewModel: ObservableObject {
             do {
                 try await Aespa.configure()
                 
+                // MARK: Settings should be done after `configure`
                 // Common setting
                 aespaSession
                     .setFocus(mode: .autoFocus)
+                    .setChangeMonitoring(enabled: true)
                     .setOrientation(to: .portrait)
                     .setQuality(to: .high)
                     .custom(WideColorCameraTuner())

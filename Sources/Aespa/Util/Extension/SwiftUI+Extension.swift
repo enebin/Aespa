@@ -15,14 +15,9 @@ public extension AespaSession {
     ///
     /// - Parameter gravity: Defines how the video is displayed within the layer bounds.
     ///     .resizeAspectFill` by default, which scales the video to fill the layer bounds.
-    /// - Parameter position: Determines the initial position of the camera (front or back). Default is .back.
     ///
     /// - Returns: A SwiftUI `View` that displays the video feed.
-    func preview(
-        gravity: AVLayerVideoGravity = .resizeAspectFill,
-        startPosition position: AVCaptureDevice.Position = .back,
-        preferredFocusMode focusMode: AVCaptureDevice.FocusMode = .continuousAutoFocus
-    ) -> some View {
+    func preview(gravity: AVLayerVideoGravity = .resizeAspectFill) -> some View {
         return Preview(of: self, gravity: gravity)
     }
     
@@ -32,7 +27,6 @@ public extension AespaSession {
     ///
     /// - Parameter gravity: Defines how the video is displayed within the layer bounds.
     ///     .resizeAspectFill` by default, which scales the video to fill the layer bounds.
-    /// - Parameter position: Determines the initial position of the camera (front or back). Default is .front.
     ///
     /// - Returns: A SwiftUI `View` that displays the video feed and allows user interaction.
     ///
@@ -40,14 +34,10 @@ public extension AespaSession {
     ///     Make sure you're using this mode for the feature to work.
     func interactivePreview(
         gravity: AVLayerVideoGravity = .resizeAspectFill,
-        startPosition position: AVCaptureDevice.Position = .back,
-        preferredFocusMode focusMode: AVCaptureDevice.FocusMode = .continuousAutoFocus
+        prefereedFocusMode focusMode: AVCaptureDevice.FocusMode = .continuousAutoFocus
     ) -> InteractivePreview {
         let internalPreview = Preview(of: self, gravity: gravity)
-        return InteractivePreview(
-            internalPreview,
-            startPosition: position,
-            preferredFocusMode: focusMode)
+        return InteractivePreview(internalPreview, preferredFocusMode: focusMode)
     }
 }
 
@@ -56,7 +46,6 @@ public struct InteractivePreview: View {
 
     // Position
     @State private var enableChangePosition = true
-    @State private var cameraPosition: AVCaptureDevice.Position
     
     // Zoom
     @State private var enableZoom = true
@@ -64,21 +53,25 @@ public struct InteractivePreview: View {
     @State private var currentZoomFactor: CGFloat = 1.0
     
     // Foocus
-    @State private var preferredFocusMode: AVCaptureDevice.FocusMode
+    @State private var preferredFocusMode: AVCaptureDevice.FocusMode = .continuousAutoFocus
     @State private var enableFocus = true
+    @State private var focusingLocation = CGPoint.zero
+    // Crosshair
     @State private var enableShowingCrosshair = true
-    @State private var tappedLocation = CGPoint.zero
     @State private var focusFrameOpacity: Double = 0
-    @State private var focusingTask: Task<Void, Error>?
+    @State private var showingCrosshairTask: Task<Void, Error>?
     
-    init(
-        _ preview: Preview,
-        startPosition: AVCaptureDevice.Position,
-        preferredFocusMode focusMode: AVCaptureDevice.FocusMode
-    ) {
+    var subjectAreaChangeMonitoringSubscription: Cancellable?
+    
+    init(_ preview: Preview, preferredFocusMode focusMode: AVCaptureDevice.FocusMode) {
         self.preview = preview
-        self.cameraPosition = startPosition
         self.preferredFocusMode = focusMode
+        self.subjectAreaChangeMonitoringSubscription = preview
+            .session
+            .getSubjectAreaDidChangePublisher()
+            .sink(receiveValue: { [self] _ in
+                self.resetFocusMode(to: focusMode)
+            })
     }
     
     var session: AespaSession {
@@ -89,12 +82,12 @@ public struct InteractivePreview: View {
         preview.previewLayer
     }
     
-    var currentFocusMode: AVCaptureDevice.FocusMode {
-        session.currentFocusMode ?? .continuousAutoFocus
+    var currentFocusMode: AVCaptureDevice.FocusMode? {
+        session.currentFocusMode
     }
     
-    var currentCameraPosition: AVCaptureDevice.Position {
-        session.currentCameraPosition ?? cameraPosition
+    var currentCameraPosition: AVCaptureDevice.Position? {
+        session.currentCameraPosition
     }
     
     public var body: some View {
@@ -109,7 +102,7 @@ public struct InteractivePreview: View {
                 .stroke(lineWidth: 1)
                 .foregroundColor(Color.yellow)
                 .frame(width: 100, height: 100)
-                .position(tappedLocation)
+                .position(focusingLocation)
                 .opacity(focusFrameOpacity)
                 .animation(.spring(), value: focusFrameOpacity)
         }
@@ -118,33 +111,32 @@ public struct InteractivePreview: View {
 
 private extension InteractivePreview {
     var changePositionGesture: some Gesture {
-        guard enableChangePosition else {
+        guard session.isRunning, enableChangePosition else {
             return TapGesture(count: 2).onEnded{}
         }
         
         return TapGesture(count: 2).onEnded {
             let nextPosition: AVCaptureDevice.Position = (currentCameraPosition == .back) ? .front : .back
             session.setPosition(to: nextPosition)
-            
-            cameraPosition = nextPosition
         }
     }
     
     var tapToFocusGesture: some Gesture {
-        guard enableFocus else {
+        guard session.isRunning, enableFocus else {
             return DragGesture(minimumDistance: 0).onEnded{ _ in }
         }
         
         return DragGesture(minimumDistance: 0)
             .onEnded { value in
-                guard enableFocus else { return }
+                guard
+                    let currentFocusMode,
+                    currentFocusMode == .autoFocus || currentFocusMode == .continuousAutoFocus
+                else {
+                    return
+                }
                 
-//                guard currentFocusMode == .autoFocus || currentFocusMode == .continuousAutoFocus else {
-//                    return
-//                }
-                
-                session.setFocus(mode: .autoFocus, point: value.location)
-                tappedLocation = value.location
+                session.setFocus(mode: currentFocusMode, point: value.location)
+                focusingLocation = value.location
                 
                 if enableShowingCrosshair {
                     showCrosshair()
@@ -153,7 +145,7 @@ private extension InteractivePreview {
     }
     
     var pinchZoomGesture: some Gesture {
-        guard enableZoom else {
+        guard session.isRunning, enableZoom else {
             return MagnificationGesture().onChanged { _ in } .onEnded { _ in }
         }
         
@@ -172,21 +164,27 @@ private extension InteractivePreview {
             }
     }
     
+    func resetFocusMode(to focusMode: AVCaptureDevice.FocusMode) {
+        guard session.isRunning else { return }
+        session.setFocus(mode: focusMode)
+    }
+    
     func showCrosshair() {
         guard enableShowingCrosshair else { return }
         
         // Cancel the previous task
-        focusingTask?.cancel()
-        
-        focusingTask = Task {
+        showingCrosshairTask?.cancel()
+        // Running a new task
+        showingCrosshairTask = Task {
+            // 10^9 nano seconds = 1 second
+            let second: UInt64 = 1_000_000_000
+            
             withAnimation { focusFrameOpacity = 1 }
             
-            // Sleep for 2 seconds
-            try await Task.sleep(nanoseconds: 2 * 1_000_000_000)
+            try await Task.sleep(nanoseconds: 2 * second)
             withAnimation { focusFrameOpacity = 0.35 }
             
-            // Sleep for 3 more seconds
-            try await Task.sleep(nanoseconds: 3 * 1_000_000_000)
+            try await Task.sleep(nanoseconds: 3 * second)
             withAnimation { focusFrameOpacity = 0 }
         }
     }
@@ -200,6 +198,11 @@ public extension InteractivePreview {
     
     func tapToFocus(enabled: Bool) -> Self {
         enableFocus = enabled
+        return self
+    }
+    
+    func preferredFocusMode(_ mode: AVCaptureDevice.FocusMode) -> Self {
+        preferredFocusMode = mode
         return self
     }
     

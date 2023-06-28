@@ -78,6 +78,8 @@ public protocol CommonContext {
     /// - Returns: `AespaVideoContext`, for chaining calls.
     @discardableResult func zoomWithError(factor: CGFloat) throws -> CommonContextType
     
+    @discardableResult func setChangeMonitoringWithError(enabled: Bool) throws -> CommonContextType
+    
     /// This function provides a way to use a custom tuner to modify the current session.
     /// The tuner must conform to `AespaSessionTuning`.
     ///
@@ -206,6 +208,23 @@ extension CommonContext {
         
         return underlyingCommonContext
     }
+    
+    @discardableResult
+    public func setChangeMonitoring(
+        enabled: Bool,
+        errorHandler: ErrorHandler? = nil
+    ) -> CommonContextType {
+        do {
+            return try self.setChangeMonitoringWithError(enabled: enabled)
+        } catch let error {
+            errorHandler?(error)
+            Logger.log(error: error) // Logs any errors encountered during the operation
+        }
+        
+        return underlyingCommonContext
+    }
+    
+    
     
     @discardableResult
     public func custom<T: AespaSessionTuning>(

@@ -20,8 +20,8 @@ import AVFoundation
 ///
 /// It also includes functionalities to fetch video files.
 open class AespaSession {
-    private let option: AespaOption
-    private let coreSession: AespaCoreSession
+    let option: AespaOption
+    let coreSession: AespaCoreSession
     private let fileManager: AespaCoreFileManager
     private let albumManager: AespaCoreAlbumManager
     
@@ -102,6 +102,10 @@ open class AespaSession {
     public var avCaptureSession: AVCaptureSession {
         coreSession
     }
+    
+    public var isRunning: Bool {
+        coreSession.isRunning
+    }
 
     /// This property provides the maximum zoom factor supported by the active video device format.
     public var maxZoomFactor: CGFloat? {
@@ -133,6 +137,11 @@ open class AespaSession {
         return device.position
     }
     
+    public var isSubjectAreaChangeMonitoringEnabled: Bool? {
+        guard let device = coreSession.videoDeviceInput?.device else { return nil }
+        return device.isSubjectAreaChangeMonitoringEnabled
+    }
+    
     /// This publisher is responsible for emitting updates to the preview layer.
     ///
     /// A log message is printed to the console every time a new layer is pushed.
@@ -144,8 +153,23 @@ open class AespaSession {
         .compactMap { $0 }
         .eraseToAnyPublisher()
     }
-
+    
     // MARK: - Utilities
+
+    public func getSubjectAreaDidChangePublisher() -> AnyPublisher<Notification, Never> {
+        if isSubjectAreaChangeMonitoringEnabled != true {
+            Logger.log(
+                message: """
+                `isSubjectAreaChangeMonitoringEnabled` is not set `true.
+                `AVCaptureDeviceSubjectAreaDidChange` publisher may not publish anything.
+                """)
+        }
+        
+        return NotificationCenter.default
+            .publisher(for: NSNotification.Name.AVCaptureDeviceSubjectAreaDidChange)
+            .eraseToAnyPublisher()
+    }
+    
     /// Checks if essential conditions to start recording are satisfied.
     /// This includes checking for capture authorization, if the session is running,
     /// if there is an existing connection and if a device is attached.
@@ -214,6 +238,13 @@ extension AespaSession: CommonContext {
     @discardableResult
     public func zoomWithError(factor: CGFloat) throws -> AespaSession {
         let tuner = ZoomTuner(zoomFactor: factor)
+        try coreSession.run(tuner)
+        return self
+    }
+    
+    @discardableResult
+    public func setChangeMonitoringWithError(enabled: Bool) throws -> AespaSession  {
+        let tuner = ChangeMonitoringTuner(isSubjectAreaChangeMonitoringEnabled: enabled)
         try coreSession.run(tuner)
         return self
     }

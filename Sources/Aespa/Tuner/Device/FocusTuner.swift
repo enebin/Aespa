@@ -13,8 +13,6 @@ struct FocusTuner: AespaDeviceTuning {
     let needLock = true
     
     let mode: AVCaptureDevice.FocusMode
-    let isSubjectAreaChangeMonitoringEnabled: Bool
-    
     let point: CGPoint? // Should be passed as original CGPoint, not mapped
 
     func tune<T: AespaCaptureDeviceRepresentable>(_ device: T) throws {
@@ -30,7 +28,6 @@ struct FocusTuner: AespaDeviceTuning {
             )
         }
 
-        device.isSubjectAreaChangeMonitoringEnabled = isSubjectAreaChangeMonitoringEnabled
         device.setFocusMode(mode, point: parsedPoint)
     }
 }
