@@ -19,14 +19,14 @@ protocol AespaCaptureDeviceRepresentable: NSObject {
     
     func isFocusModeSupported(_ focusMode: AVCaptureDevice.FocusMode) -> Bool
 
-    func setZoomFactor(_ factor: CGFloat)
-    func setFocusMode(_ focusMode: AVCaptureDevice.FocusMode, point: CGPoint?)
-    func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode)
+    func zoomFactor(_ factor: CGFloat)
+    func focusMode(_ focusMode: AVCaptureDevice.FocusMode, point: CGPoint?)
+    func torchMode(_ torchMode: AVCaptureDevice.TorchMode)
     func setTorchModeOn(level torchLevel: Float) throws
 }
 
 extension AVCaptureDevice: AespaCaptureDeviceRepresentable {
-    func setTorchMode(_ torchMode: TorchMode) {
+    func torchMode(_ torchMode: TorchMode) {
         switch torchMode {
         case .off:
             self.torchMode = .off
@@ -39,14 +39,14 @@ extension AVCaptureDevice: AespaCaptureDeviceRepresentable {
         }
     }
 
-    func setFocusMode(_ focusMode: AVCaptureDevice.FocusMode, point: CGPoint?) {
+    func focusMode(_ focusMode: AVCaptureDevice.FocusMode, point: CGPoint?) {
         self.focusMode = focusMode
         if let point {
             self.focusPointOfInterest = point
         }
     }
 
-    func setZoomFactor(_ factor: CGFloat) {
+    func zoomFactor(_ factor: CGFloat) {
         self.videoZoomFactor = factor
     }
 

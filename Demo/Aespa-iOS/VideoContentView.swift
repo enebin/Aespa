@@ -79,7 +79,7 @@ struct VideoContentView: View {
                         
                         // Position change + button
                         Button(action: {
-                            viewModel.aespaSession.setPosition(to: isFront ? .back : .front)
+                            viewModel.aespaSession.position(to: isFront ? .back : .front)
                             isFront.toggle()
                         }) {
                             Image(systemName: "arrow.triangle.2.circlepath.camera.fill")

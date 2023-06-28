@@ -94,7 +94,7 @@ extension AespaPhotoContext: PhotoContext {
     }
     
     @discardableResult
-    public func setFlashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
+    public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
         photoSetting.flashMode = mode
         return self
     }

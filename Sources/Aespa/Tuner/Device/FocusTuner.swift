@@ -28,6 +28,6 @@ struct FocusTuner: AespaDeviceTuning {
             )
         }
 
-        device.setFocusMode(mode, point: parsedPoint)
+        device.focusMode(mode, point: parsedPoint)
     }
 }

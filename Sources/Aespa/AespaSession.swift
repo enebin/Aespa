@@ -207,14 +207,14 @@ extension AespaSession: CommonContext {
     }
     
     @discardableResult
-    public func setQualityWithError(to preset: AVCaptureSession.Preset) throws -> AespaSession {
+    public func qualityWithError(to preset: AVCaptureSession.Preset) throws -> AespaSession {
         let tuner = QualityTuner(videoQuality: preset)
         try coreSession.run(tuner)
         return self
     }
     
     @discardableResult
-    public func setPositionWithError(to position: AVCaptureDevice.Position) throws -> AespaSession {
+    public func positionWithError(to position: AVCaptureDevice.Position) throws -> AespaSession {
         let tuner = CameraPositionTuner(position: position,
                                         devicePreference: option.session.cameraDevicePreference)
         try coreSession.run(tuner)
@@ -222,14 +222,14 @@ extension AespaSession: CommonContext {
     }
     
     @discardableResult
-    public func setOrientationWithError(to orientation: AVCaptureVideoOrientation) throws -> AespaSession {
+    public func orientationWithError(to orientation: AVCaptureVideoOrientation) throws -> AespaSession {
         let tuner = VideoOrientationTuner(orientation: orientation)
         try coreSession.run(tuner)
         return self
     }
     
     @discardableResult
-    public func setFocusWithError(mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil) throws -> AespaSession {
+    public func focusWithError(mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil) throws -> AespaSession {
         let tuner = FocusTuner(mode: mode, point: point)
         try coreSession.run(tuner)
         return self
@@ -243,7 +243,7 @@ extension AespaSession: CommonContext {
     }
     
     @discardableResult
-    public func setChangeMonitoringWithError(enabled: Bool) throws -> AespaSession  {
+    public func changeMonitoringWithError(enabled: Bool) throws -> AespaSession  {
         let tuner = ChangeMonitoringTuner(isSubjectAreaChangeMonitoringEnabled: enabled)
         try coreSession.run(tuner)
         return self
@@ -294,13 +294,13 @@ extension AespaSession: VideoContext {
     }
     
     @discardableResult
-    public func setStabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> AespaVideoSessionContext {
-        try videoContext.setStabilizationWithError(mode: mode)
+    public func stabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> AespaVideoSessionContext {
+        try videoContext.stabilizationWithError(mode: mode)
     }
     
     @discardableResult
-    public func setTorchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> AespaVideoSessionContext {
-        try videoContext.setTorchWithError(mode: mode, level: level)
+    public func torchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> AespaVideoSessionContext {
+        try videoContext.torchWithError(mode: mode, level: level)
     }
     
     public func fetchVideoFiles(limit: Int) -> [VideoFile] {
@@ -326,8 +326,8 @@ extension AespaSession: PhotoContext {
     }
 
     @discardableResult
-    public func setFlashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
-        photoContext.setFlashMode(to: mode)
+    public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
+        photoContext.flashMode(to: mode)
     }
 
     @discardableResult

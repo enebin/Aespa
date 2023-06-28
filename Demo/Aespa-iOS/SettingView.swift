@@ -39,7 +39,7 @@ struct SettingView: View {
                 }
                 .modifier(TitledPicker(title: "Asset quality"))
                 .onChange(of: quality) { newValue in
-                    viewModel.aespaSession.setQuality(to: newValue)
+                    viewModel.aespaSession.quality(to: newValue)
                 }
                 
                 Picker("Focus", selection: $focusMode) {
@@ -49,7 +49,7 @@ struct SettingView: View {
                 }
                 .modifier(TitledPicker(title: "Focus mode"))
                 .onChange(of: focusMode) { newValue in
-                    viewModel.aespaSession.setFocus(mode: newValue)
+                    viewModel.aespaSession.focus(mode: newValue)
                 }
             }
             
@@ -74,7 +74,7 @@ struct SettingView: View {
                 }
                 .modifier(TitledPicker(title: "Flash mode"))
                 .onChange(of: flashMode) { newValue in
-                    viewModel.aespaSession.setFlashMode(to: newValue)
+                    viewModel.aespaSession.flashMode(to: newValue)
                 }
             }
         }

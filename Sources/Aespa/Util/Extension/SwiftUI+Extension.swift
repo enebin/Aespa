@@ -117,7 +117,7 @@ private extension InteractivePreview {
         
         return TapGesture(count: 2).onEnded {
             let nextPosition: AVCaptureDevice.Position = (currentCameraPosition == .back) ? .front : .back
-            session.setPosition(to: nextPosition)
+            session.position(to: nextPosition)
         }
     }
     
@@ -135,7 +135,7 @@ private extension InteractivePreview {
                     return
                 }
                 
-                session.setFocus(mode: currentFocusMode, point: value.location)
+                session.focus(mode: currentFocusMode, point: value.location)
                 focusingLocation = value.location
                 
                 if enableShowingCrosshair {
@@ -166,7 +166,7 @@ private extension InteractivePreview {
     
     func resetFocusMode(to focusMode: AVCaptureDevice.FocusMode) {
         guard session.isRunning else { return }
-        session.setFocus(mode: focusMode)
+        session.focus(mode: focusMode)
     }
     
     func showCrosshair() {

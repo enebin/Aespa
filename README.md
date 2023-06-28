@@ -141,10 +141,10 @@ One of our main feature, `InteractivePreview` provides a comprehensive and intui
 | Common                           | Description                                                                                                      |
 |----------------------------------|------------------------------------------------------------------------------------------------------------------|
 | ✨ `zoom`                        | Modifies the zoom factor.                                                                                        |
-| ✨ `setPosition`                 | Changes the camera position.                                                                                     |
-| `setOrientation`                 | Modifies the orientation.                                                                                        |
-| `setFocus`                       | Alters the autofocusing mode.                                                                                    |
-| `setQuality`                     | Adjusts the video quality preset for the recording session.                                                      |
+| ✨ `position`                 | Changes the camera position.                                                                                     |
+| `orientation`                 | Modifies the orientation.                                                                                        |
+| `focus`                       | Alters the autofocusing mode.                                                                                    |
+| `quality`                     | Adjusts the video quality preset for the recording session.                                                      |
 | `doctor`                         | Checks if essential conditions to start recording are satisfied.                                                 |
 | `previewLayerPublisher`          | Responsible for emitting updates to the preview layer.                                                           |
 
@@ -154,8 +154,8 @@ One of our main feature, `InteractivePreview` provides a comprehensive and intui
 | ✨ `stopRecording`              | Terminates the current video recording session and attempts to save the video file.                              |
 | `mute`                           | Mutes the audio input.                                                                                           |
 | `unmute`                         | Restores the audio input.                                                                                        |
-| `setStabilization`               | Alters the stabilization mode.                                                                                   |
-| `setTorch`                       | Adjusts the torch mode and level.                                                                                |
+| `stabilization`               | Alters the stabilization mode.                                                                                   |
+| `torch`                       | Adjusts the torch mode and level.                                                                                |
 | `customize`                      | Customizes the session with a specific tuning configuration.                                                     |
 | ✨ `fetchVideoFiles`                | Fetches a list of recorded video files.                                                                          |
 | `videoFilePublisher`             | Emits a `Result` object containing a latest video file data.                          |
@@ -163,7 +163,7 @@ One of our main feature, `InteractivePreview` provides a comprehensive and intui
 | Photo                            | Description                                                                                                      |
 |----------------------------------|------------------------------------------------------------------------------------------------------------------|
 | ✨ `capturePhoto`               | Capture a photo and returns a result image file.          |
-| ✨ `setFlashMode`                   | Sets the flash mode for the photo capture session.                                                               |
+| ✨ `flashMode`                   | Sets the flash mode for the photo capture session.                                                               |
 | `redEyeReduction`                | Enables or disables red-eye reduction for the photo capture session.                                             |
 | `customize`                      | Customizes the photo capture session with a specific `AVCapturePhotoSettings`.                                   |
 | ✨ `fetchPhotoFiles`                | Fetches a list of captured photos files.                                                                          |
@@ -215,20 +215,20 @@ Task(priority: .background) {
 ``` Swift
 // Common setting
 aespaSession
-    .setAutofocusing(mode: .continuousAutoFocus)
-    .setOrientation(to: .portrait)
-    .setQuality(to: .high)
+    .autofocusing(mode: .continuousAutoFocus)
+    .orientation(to: .portrait)
+    .quality(to: .high)
     .customize(WideColorCameraTuner())
 
 // Photo-only setting
 aespaSession
-    .setFlashMode(to: .on)
+    .flashMode(to: .on)
     .redEyeReduction(enabled: true)
 
 // Video-only setting
 aespaSession
     .mute()
-    .setStabilization(mode: .auto)         
+    .stabilization(mode: .auto)         
 ```
 
 ### Recording & Capture
@@ -281,9 +281,9 @@ class VideoContentViewModel: ObservableObject {
             do {
                 try await Aespa.configure()
                 aespaSession
-                    .setAutofocusing(mode: .continuousAutoFocus)
-                    .setOrientation(to: .portrait)
-                    .setQuality(to: .high)
+                    .autofocusing(mode: .continuousAutoFocus)
+                    .orientation(to: .portrait)
+                    .quality(to: .high)
 
                 // Other settings ...
                 

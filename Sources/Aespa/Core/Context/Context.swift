@@ -31,7 +31,7 @@ public protocol CommonContext {
     /// - Throws: `AespaError` if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func setQualityWithError(to preset: AVCaptureSession.Preset) throws -> CommonContextType
+    @discardableResult func qualityWithError(to preset: AVCaptureSession.Preset) throws -> CommonContextType
     
     /// Sets the camera position for the video recording session.
     ///
@@ -42,7 +42,7 @@ public protocol CommonContext {
     /// - Throws: `AespaError` if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func setPositionWithError(to position: AVCaptureDevice.Position) throws -> CommonContextType
+    @discardableResult func positionWithError(to position: AVCaptureDevice.Position) throws -> CommonContextType
     
     /// Sets the orientation for the session.
     ///
@@ -54,7 +54,7 @@ public protocol CommonContext {
     ///
     /// - Note: It sets the orientation of the video you are recording,
     ///     not the orientation of the `AVCaptureVideoPreviewLayer`.
-    @discardableResult func setOrientationWithError(
+    @discardableResult func orientationWithError(
         to orientation: AVCaptureVideoOrientation
     ) throws -> CommonContextType
     
@@ -65,7 +65,7 @@ public protocol CommonContext {
     /// - Throws: `AespaError` if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func setFocusWithError(
+    @discardableResult func focusWithError(
         mode: AVCaptureDevice.FocusMode, point: CGPoint?
     ) throws -> CommonContextType
     
@@ -78,7 +78,7 @@ public protocol CommonContext {
     /// - Returns: `AespaVideoContext`, for chaining calls.
     @discardableResult func zoomWithError(factor: CGFloat) throws -> CommonContextType
     
-    @discardableResult func setChangeMonitoringWithError(enabled: Bool) throws -> CommonContextType
+    @discardableResult func changeMonitoringWithError(enabled: Bool) throws -> CommonContextType
     
     /// This function provides a way to use a custom tuner to modify the current session.
     /// The tuner must conform to `AespaSessionTuning`.
@@ -103,12 +103,12 @@ extension CommonContext {
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
     @discardableResult
-    public func setQuality(
+    public func quality(
         to preset: AVCaptureSession.Preset,
         errorHandler: ErrorHandler? = nil
     ) -> CommonContextType {
         do {
-            return try self.setQualityWithError(to: preset)
+            return try self.qualityWithError(to: preset)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
@@ -125,12 +125,12 @@ extension CommonContext {
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
     @discardableResult
-    public func setPosition(
+    public func position(
         to position: AVCaptureDevice.Position,
         errorHandler: ErrorHandler? = nil
     ) -> CommonContextType {
         do {
-            return try self.setPositionWithError(to: position)
+            return try self.positionWithError(to: position)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
@@ -150,12 +150,12 @@ extension CommonContext {
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
     @discardableResult
-    public func setOrientation(
+    public func orientation(
         to orientation: AVCaptureVideoOrientation,
         errorHandler: ErrorHandler? = nil
     ) -> CommonContextType {
         do {
-            return try self.setOrientationWithError(to: orientation)
+            return try self.orientationWithError(to: orientation)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
@@ -172,13 +172,13 @@ extension CommonContext {
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
     @discardableResult
-    public func setFocus(
+    public func focus(
         mode: AVCaptureDevice.FocusMode,
         point: CGPoint? = nil,
         errorHandler: ErrorHandler? = nil
     ) -> CommonContextType {
         do {
-            return try self.setFocusWithError(mode: mode, point: point)
+            return try self.focusWithError(mode: mode, point: point)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
@@ -210,12 +210,12 @@ extension CommonContext {
     }
     
     @discardableResult
-    public func setChangeMonitoring(
+    public func changeMonitoring(
         enabled: Bool,
         errorHandler: ErrorHandler? = nil
     ) -> CommonContextType {
         do {
-            return try self.setChangeMonitoringWithError(enabled: enabled)
+            return try self.changeMonitoringWithError(enabled: enabled)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
@@ -305,7 +305,7 @@ public protocol VideoContext {
     /// - Throws: `AespaError` if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func setStabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> VideoContextType
+    @discardableResult func stabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> VideoContextType
     
     /// Sets the torch mode and level for the video recording session.
     ///
@@ -319,7 +319,7 @@ public protocol VideoContext {
     ///
     /// - Note: This function might throw an error if the torch mode is not supported,
     ///     or the specified level is not within the acceptable range.
-    @discardableResult func setTorchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> VideoContextType
+    @discardableResult func torchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> VideoContextType
     
     /// Fetches a list of recorded video files.
     /// The number of files fetched is controlled by the limit parameter.
@@ -420,12 +420,12 @@ extension VideoContext {
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
     @discardableResult
-    public func setStabilization(
+    public func stabilization(
         mode: AVCaptureVideoStabilizationMode,
         errorHandler: ErrorHandler? = nil
     ) -> VideoContextType {
         do {
-            return try self.setStabilizationWithError(mode: mode)
+            return try self.stabilizationWithError(mode: mode)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
@@ -447,13 +447,13 @@ extension VideoContext {
     /// - Note: This function might throw an error if the torch mode is not supported,
     ///     or the specified level is not within the acceptable range.
     @discardableResult
-    public func setTorch(
+    public func torch(
         mode: AVCaptureDevice.TorchMode,
         level: Float,
         errorHandler: ErrorHandler? = nil
     ) -> VideoContextType {
         do {
-            return try self.setTorchWithError(mode: mode, level: level)
+            return try self.torchWithError(mode: mode, level: level)
         } catch let error {
             errorHandler?(error)
             Logger.log(error: error) // Logs any errors encountered during the operation
@@ -513,7 +513,7 @@ public protocol PhotoContext {
     ///
     /// - Parameter mode: The `AVCaptureDevice.FlashMode` to set for the camera.
     /// - Returns: The updated `AespaPhotoContext` instance.
-    @discardableResult func setFlashMode(to mode: AVCaptureDevice.FlashMode) -> PhotoContextType
+    @discardableResult func flashMode(to mode: AVCaptureDevice.FlashMode) -> PhotoContextType
     
     /// Sets the red eye reduction mode for the camera and returns the updated `AespaPhotoContext` instance.
     /// The returned instance can be used for chaining configuration.

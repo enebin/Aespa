@@ -84,7 +84,7 @@ extension AespaVideoContext: VideoContext {
             extension: "mp4")
         
         if option.session.autoVideoOrientationEnabled {
-            try commonContext.setOrientationWithError(to: UIDevice.current.orientation.toVideoOrientation)
+            try commonContext.orientationWithError(to: UIDevice.current.orientation.toVideoOrientation)
         }
 
         try recorder.startRecording(in: filePath)
@@ -117,14 +117,14 @@ extension AespaVideoContext: VideoContext {
     }
     
     @discardableResult
-    public func setStabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> AespaVideoContext {
+    public func stabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> AespaVideoContext {
         let tuner = VideoStabilizationTuner(stabilzationMode: mode)
         try coreSession.run(tuner)
         return self
     }
     
     @discardableResult
-    public func setTorchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> AespaVideoContext {
+    public func torchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> AespaVideoContext {
         let tuner = TorchTuner(level: level, torchMode: mode)
         try coreSession.run(tuner)
         return self

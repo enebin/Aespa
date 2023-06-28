@@ -37,21 +37,21 @@ class VideoContentViewModel: ObservableObject {
                 // MARK: Settings should be done after `configure`
                 // Common setting
                 aespaSession
-                    .setFocus(mode: .autoFocus)
-                    .setChangeMonitoring(enabled: true)
-                    .setOrientation(to: .portrait)
-                    .setQuality(to: .high)
+                    .focus(mode: .autoFocus)
+                    .changeMonitoring(enabled: true)
+                    .orientation(to: .portrait)
+                    .quality(to: .high)
                     .custom(WideColorCameraTuner())
                 
                 // Photo-only setting
                 aespaSession
-                    .setFlashMode(to: .on)
+                    .flashMode(to: .on)
                     .redEyeReduction(enabled: true)
                 
                 // Video-only setting
                 aespaSession
                     .mute()
-                    .setStabilization(mode: .auto)
+                    .stabilization(mode: .auto)
                 
                 // Prepare video album cover
                 aespaSession.videoFilePublisher

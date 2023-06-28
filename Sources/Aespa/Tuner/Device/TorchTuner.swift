@@ -17,7 +17,7 @@ struct TorchTuner: AespaDeviceTuning {
             throw AespaError.device(reason: .unsupported)
         }
 
-        device.setTorchMode(torchMode)
+        device.torchMode(torchMode)
         try device.setTorchModeOn(level: level)
     }
 }

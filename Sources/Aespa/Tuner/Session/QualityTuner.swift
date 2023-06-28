@@ -12,6 +12,6 @@ struct QualityTuner: AespaSessionTuning {
     var videoQuality: AVCaptureSession.Preset
 
     func tune<T: AespaCoreSessionRepresentable>(_ session: T) throws {
-        try session.setVideoQuality(to: self.videoQuality)
+        try session.videoQuality(to: self.videoQuality)
     }
 }

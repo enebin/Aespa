@@ -18,6 +18,6 @@ struct CameraPositionTuner: AespaSessionTuning {
     }
 
     func tune<T: AespaCoreSessionRepresentable>(_ session: T) throws {
-        try session.setCameraPosition(to: position, device: devicePreference)
+        try session.cameraPosition(to: position, device: devicePreference)
     }
 }

@@ -12,16 +12,16 @@ protocol AespaCaptureConnectionRepresentable {
     var videoOrientation: AVCaptureVideoOrientation { get set }
     var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode { get set }
 
-    func setOrientation(to orientation: AVCaptureVideoOrientation)
-    func setStabilizationMode(to mode: AVCaptureVideoStabilizationMode)
+    func orientation(to orientation: AVCaptureVideoOrientation)
+    func stabilizationMode(to mode: AVCaptureVideoStabilizationMode)
 }
 
 extension AVCaptureConnection: AespaCaptureConnectionRepresentable {
-    func setOrientation(to orientation: AVCaptureVideoOrientation) {
+    func orientation(to orientation: AVCaptureVideoOrientation) {
         self.videoOrientation = orientation
     }
 
-    func setStabilizationMode(to mode: AVCaptureVideoStabilizationMode) {
+    func stabilizationMode(to mode: AVCaptureVideoStabilizationMode) {
         self.preferredVideoStabilizationMode = mode
     }
 }
