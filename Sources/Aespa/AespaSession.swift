@@ -206,7 +206,7 @@ extension AespaSession: CommonContext {
     
     @discardableResult
     public func setFocusWithError(mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil) throws -> AespaSession {
-        let tuner = AutoFocusTuner(mode: mode, point: point)
+        let tuner = FocusTuner(mode: mode, point: point)
         try coreSession.run(tuner)
         return self
     }

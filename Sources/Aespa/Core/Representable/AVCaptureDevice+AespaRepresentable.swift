@@ -8,14 +8,15 @@
 import Foundation
 import AVFoundation
 
-protocol AespaCaptureDeviceRepresentable {
+protocol AespaCaptureDeviceRepresentable: NSObject {
     var hasTorch: Bool { get }
     var focusMode: AVCaptureDevice.FocusMode { get set }
+    var isSubjectAreaChangeMonitoringEnabled: Bool { get set }
     var flashMode: AVCaptureDevice.FlashMode { get set }
     var videoZoomFactor: CGFloat { get set }
 
     var maxResolution: Double? { get }
-
+    
     func isFocusModeSupported(_ focusMode: AVCaptureDevice.FocusMode) -> Bool
 
     func setZoomFactor(_ factor: CGFloat)

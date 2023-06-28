@@ -10,7 +10,7 @@ import SwiftUI
 import AVFoundation
 
 public extension AespaSession {
-    /// This function is used to create a preview of the session.
+    /// This function is used to create a preview of the session. Doesn't offer any functionalities.
     /// It returns a SwiftUI `View` that displays video as it is being captured.
     ///
     /// - Parameter gravity: Defines how the video is displayed within the layer bounds.
@@ -20,7 +20,8 @@ public extension AespaSession {
     /// - Returns: A SwiftUI `View` that displays the video feed.
     func preview(
         gravity: AVLayerVideoGravity = .resizeAspectFill,
-        startPosition position: AVCaptureDevice.Position = .back
+        startPosition position: AVCaptureDevice.Position = .back,
+        preferredFocusMode focusMode: AVCaptureDevice.FocusMode = .continuousAutoFocus
     ) -> some View {
         return Preview(of: self, gravity: gravity)
     }
@@ -39,16 +40,20 @@ public extension AespaSession {
     ///     Make sure you're using this mode for the feature to work.
     func interactivePreview(
         gravity: AVLayerVideoGravity = .resizeAspectFill,
-        startPosition position: AVCaptureDevice.Position = .front
+        startPosition position: AVCaptureDevice.Position = .back,
+        preferredFocusMode focusMode: AVCaptureDevice.FocusMode = .continuousAutoFocus
     ) -> InteractivePreview {
         let internalPreview = Preview(of: self, gravity: gravity)
-        return InteractivePreview(internalPreview, startPosition: position)
+        return InteractivePreview(
+            internalPreview,
+            startPosition: position,
+            preferredFocusMode: focusMode)
     }
 }
 
 public struct InteractivePreview: View {
     private let preview: Preview
-    private let animationQueue: OperationQueue
+
     // Position
     @State private var enableChangePosition = true
     @State private var cameraPosition: AVCaptureDevice.Position
@@ -59,6 +64,7 @@ public struct InteractivePreview: View {
     @State private var currentZoomFactor: CGFloat = 1.0
     
     // Foocus
+    @State private var preferredFocusMode: AVCaptureDevice.FocusMode
     @State private var enableFocus = true
     @State private var enableShowingCrosshair = true
     @State private var tappedLocation = CGPoint.zero
@@ -67,12 +73,12 @@ public struct InteractivePreview: View {
     
     init(
         _ preview: Preview,
-        startPosition: AVCaptureDevice.Position
+        startPosition: AVCaptureDevice.Position,
+        preferredFocusMode focusMode: AVCaptureDevice.FocusMode
     ) {
         self.preview = preview
         self.cameraPosition = startPosition
-        self.animationQueue = OperationQueue()
-        animationQueue.maxConcurrentOperationCount = 1
+        self.preferredFocusMode = focusMode
     }
     
     var session: AespaSession {
