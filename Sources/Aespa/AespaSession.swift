@@ -351,6 +351,7 @@ extension AespaSession: PhotoContext {
 extension AespaSession {
     func startSession() throws {
         let tuner = SessionLaunchTuner()
+        coreSession.start()
         try coreSession.run(tuner)
 
         previewLayerSubject.send(previewLayer)
