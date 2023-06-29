@@ -5,14 +5,13 @@
 
 <div align="center">
 
-### Add a camera in just 3 lines
+### From camera to album. In just 2 lines.
 
 </div>
 
 ``` Swift 
 let aespaOption = AespaOption(albumName: "YOUR_ALBUM_NAME")
 let aespaSession = Aespa.session(with: aespaOption)
-try await Aespa.configure()
 // Done!
 ```
 
@@ -47,7 +46,8 @@ try await Aespa.configure()
 
 ## Introduction
 Aespa is a robust and intuitive Swift package for video capturing, built with a focus on the ease of setting up and usage. 
-It is designed to be easy to use for both beginners and experienced developers.  If you're new to video recording on iOS or if you're looking to simplify your existing recording setup, Aespa could be the perfect fit for your project.
+
+It is designed to be easy to use from beginners to intermediate developers.  If you're new to video recording on iOS or if you're looking to simplify your existing camera setup, Aespa could be the perfect fit for your project.
 
 ### ✅ Super easy to use
 
@@ -101,7 +101,7 @@ AS --> D["Fetching asset files"]
 ### ✅ No more delegate
 <details>
 
-<summary> Combine & async support </summary>
+<summary> Combine support </summary>
 
 ``` mermaid
 graph LR;
@@ -115,9 +115,10 @@ graph LR;
 
 </details>
 
-### ✅ Also...
-- Seamless image and video capture within a single preview session.
+### ✅ Also
 - Automated system permission management.
+- Seamless image and video capture within a single preview session.
+- Thread-safe.
 - Support SPM.
 
 
@@ -127,7 +128,7 @@ graph LR;
 > 
 > You can access our **official documentation** for the most comprehensive and up-to-date explanations in [here](https://enebin.github.io/Aespa/documentation/aespa/)
 
-### Interactive Preview
+### `InteractivePreview`
 One of our main feature, `InteractivePreview` provides a comprehensive and intuitive way for users to interact directly with the camera preview. 
 
 | Features               | Description                                                                                                      |
@@ -137,7 +138,7 @@ One of our main feature, `InteractivePreview` provides a comprehensive and intui
 | Pinch zoom          | Allows zooming in or out on the preview by using a pinch gesture.                                                |
 
 
-### More manaul options
+### More manual options
 | Common                           | Description                                                                                                      |
 |----------------------------------|------------------------------------------------------------------------------------------------------------------|
 | ✨ `zoom`                        | Modifies the zoom factor.                                                                                        |
@@ -201,14 +202,7 @@ import Aespa
 
 let aespaOption = AespaOption(albumName: "YOUR_ALBUM_NAME")
 let aespaSession = Aespa.session(with: aespaOption)
-
-Task(priority: .background) {
-    try await Aespa.configure()
-}
 ```
-> **Warning**
-> 
-> Please ensure to call `configure` within a background execution context. Neglecting to do so may lead to significantly reduced responsiveness in your application. ([reference](https://developer.apple.com/documentation/avfoundation/avcapturesession/1388185-startrunning))
 
 ## Implementation Exapmles
 ### Configuration
@@ -243,7 +237,6 @@ aespaSession.capturePhoto()
 ```
 
 ## SwiftUI Integration
-
 Aespa also provides a super-easy way to integrate video capture functionality into SwiftUI applications. AespaSession includes a helper method to create a SwiftUI `UIViewRepresentable` that provides a preview of the video capture.
 
 ### Example usage
@@ -269,28 +262,20 @@ struct VideoContentView: View {
 
 class VideoContentViewModel: ObservableObject {
     let aespaSession: AespaSession
-    var preview: some UIViewRepresentable {
-        aespaSession.preview()
+    var preview: some View {
+        aespaSession.interactivePreview()
     }
     
     init() {
         let option = AespaOption(albumName: "Aespa-Demo")
         self.aespaSession = Aespa.session(with: option)
-        
-        Task(priority: .background) {
-            do {
-                try await Aespa.configure()
-                aespaSession
-                    .autofocusing(mode: .continuousAutoFocus)
-                    .orientation(to: .portrait)
-                    .quality(to: .high)
+    
+        aespaSession
+            .autofocusing(mode: .continuousAutoFocus)
+            .orientation(to: .portrait)
+            .quality(to: .high)
 
-                // Other settings ...
-                
-            } catch let error {
-                print(error)
-            }
-        }
+        // Other settings...
     }
 }
 ```
