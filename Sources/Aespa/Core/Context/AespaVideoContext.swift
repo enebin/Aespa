@@ -60,10 +60,11 @@ extension AespaVideoContext: VideoContext {
     public var underlyingVideoContext: AespaVideoContext {
         self
     }
-    
+
     public var isMuted: Bool {
         coreSession.audioDeviceInput == nil
     }
+    
     public var videoFilePublisher: AnyPublisher<Result<VideoFile, Error>, Never> {
         videoFileBufferSubject.handleEvents(receiveOutput: { status in
             if case .failure(let error) = status {
@@ -74,68 +75,84 @@ extension AespaVideoContext: VideoContext {
         .eraseToAnyPublisher()
     }
     
-    public func startRecordingWithError() throws {
-        let fileName = option.asset.fileNameHandler()
-        let filePath = try FilePathProvider.requestFilePath(
-            from: fileManager.systemFileManager,
-            directoryName: option.asset.albumName,
-            subDirectoryName: option.asset.videoDirectoryName,
-            fileName: fileName,
-            extension: "mp4")
-        
-        if option.session.autoVideoOrientationEnabled {
-            try commonContext.orientationWithError(to: UIDevice.current.orientation.toVideoOrientation)
+    public func startRecording(_ errorHandler: @escaping ErrorHandler = { _ in }) {
+        do {
+            let fileName = option.asset.fileNameHandler()
+            let filePath = try FilePathProvider.requestFilePath(
+                from: fileManager.systemFileManager,
+                directoryName: option.asset.albumName,
+                subDirectoryName: option.asset.videoDirectoryName,
+                fileName: fileName,
+                extension: "mp4")
+            
+            if option.session.autoVideoOrientationEnabled {
+                commonContext.orientation(to: UIDevice.current.orientation.toVideoOrientation, errorHandler)
+            }
+            
+            recorder.startRecording(in: filePath, errorHandler)
+            isRecording = true
+        } catch let error {
+            errorHandler(error)
         }
-
-        try recorder.startRecording(in: filePath)
-        isRecording = true
     }
     
-    public func stopRecordingWithError() async throws -> VideoFile {
-        let videoFilePath = try await recorder.stopRecording()
-        let videoFile = VideoFileGenerator.generate(with: videoFilePath, date: Date())
+    public func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }) {
+        Task(priority: .utility) {
+            do {
+                let videoFilePath = try await recorder.stopRecording()
+                let videoFile = VideoFileGenerator.generate(with: videoFilePath, date: Date())
 
-        try await albumManager.addToAlbum(filePath: videoFilePath)
-        videoFileBufferSubject.send(.success(videoFile))
+                try await albumManager.addToAlbum(filePath: videoFilePath)
+                videoFileBufferSubject.send(.success(videoFile))
 
-        isRecording = false
-        return videoFile
+                isRecording = false
+                completionHandler(.success(videoFile))
+            } catch let error {
+                Logger.log(error: error)
+                completionHandler(.failure(error))
+            }
+        }
     }
     
     @discardableResult
-    public func muteWithError() throws -> AespaVideoContext {
+    public func mute(_ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoContext {
         let tuner = AudioTuner(isMuted: true)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, errorHandler)
+        
         return self
     }
     
     @discardableResult
-    public func unmuteWithError() throws -> AespaVideoContext {
+    public func unmute(_ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoContext {
         let tuner = AudioTuner(isMuted: false)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, errorHandler)
+        
         return self
     }
     
     @discardableResult
-    public func stabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> AespaVideoContext {
+    public func stabilization(mode: AVCaptureVideoStabilizationMode, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoContext {
         let tuner = VideoStabilizationTuner(stabilzationMode: mode)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, errorHandler)
+        
         return self
     }
     
     @discardableResult
-    public func torchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> AespaVideoContext {
+    public func torch(mode: AVCaptureDevice.TorchMode, level: Float, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoContext {
         let tuner = TorchTuner(level: level, torchMode: mode)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, errorHandler)
+        
         return self
     }
 
-    public func customizewWithError<T: AespaSessionTuning>(_ tuner: T) throws -> AespaVideoContext {
-        try coreSession.run(tuner)
+    public func customize<T: AespaSessionTuning>(_ tuner: T, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoContext {
+        coreSession.run(tuner, errorHandler)
+        
         return self
     }
-    
-    public func fetchVideoFiles(limit: Int) -> [VideoFile] {
+
+    public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
         return fileManager.fetchVideo(
             albumName: option.asset.albumName,
             subDirectoryName: option.asset.videoDirectoryName,

@@ -13,233 +13,84 @@ import AVFoundation
 ///
 public typealias ErrorHandler = (Error) -> Void
 
+
 /// A protocol that defines the common behaviors and properties that all context types must implement.
 ///
 /// It includes methods to control the quality, position, orientation, and auto-focusing behavior
 /// of the session. It also includes the ability to adjust the zoom level of the session.
 public protocol CommonContext {
-    ///
     associatedtype CommonContextType: CommonContext & VideoContext & PhotoContext
-    
-    ///
+
     var underlyingCommonContext: CommonContextType { get }
-    
+
     /// Sets the quality preset for the video recording session.
     ///
-    /// - Parameter preset: An `AVCaptureSession.Preset` value indicating the quality preset to be set.
-    ///
-    /// - Throws: `AespaError` if the session fails to run the tuner.
+    /// - Parameters:
+    ///   - preset: An `AVCaptureSession.Preset` value indicating the quality preset to be set.
+    ///   - errorHandler: A closure to be executed if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func qualityWithError(to preset: AVCaptureSession.Preset) throws -> CommonContextType
-    
+    @discardableResult func quality(to preset: AVCaptureSession.Preset, _ errorHandler: @escaping ErrorHandler) -> CommonContextType
+
     /// Sets the camera position for the video recording session.
     ///
     /// It refers to `AespaOption.Session.cameraDevicePreference` when choosing the camera device.
     ///
-    /// - Parameter position: An `AVCaptureDevice.Position` value indicating the camera position to be set.
-    ///
-    /// - Throws: `AespaError` if the session fails to run the tuner.
+    /// - Parameters:
+    ///   - position: An `AVCaptureDevice.Position` value indicating the camera position to be set.
+    ///   - errorHandler: A closure to be executed if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func positionWithError(to position: AVCaptureDevice.Position) throws -> CommonContextType
-    
+    @discardableResult func position(to position: AVCaptureDevice.Position, _ errorHandler: @escaping ErrorHandler) -> CommonContextType
+
     /// Sets the orientation for the session.
     ///
-    /// - Parameter orientation: An `AVCaptureVideoOrientation` value indicating the orientation to be set.
-    ///
-    /// - Throws: `AespaError` if the session fails to run the tuner.
+    /// - Parameters:
+    ///   - orientation: An `AVCaptureVideoOrientation` value indicating the orientation to be set.
+    ///   - errorHandler: A closure to be executed if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
     ///
-    /// - Note: It sets the orientation of the video you are recording,
-    ///     not the orientation of the `AVCaptureVideoPreviewLayer`.
-    @discardableResult func orientationWithError(
-        to orientation: AVCaptureVideoOrientation
-    ) throws -> CommonContextType
-    
+    /// - Note: It sets the orientation of the video you are recording, not the orientation of the `AVCaptureVideoPreviewLayer`.
+    @discardableResult func orientation(to orientation: AVCaptureVideoOrientation, _ errorHandler: @escaping ErrorHandler) -> CommonContextType
+
     /// Sets the autofocusing mode for the video recording session.
     ///
-    /// - Parameter mode: The focus mode(`AVCaptureDevice.FocusMode`) for the session.
-    ///
-    /// - Throws: `AespaError` if the session fails to run the tuner.
+    /// - Parameters:
+    ///   - mode: The focus mode(`AVCaptureDevice.FocusMode`) for the session.
+    ///   - point: The point in the camera's field of view that the auto focus should prioritize.
+    ///   - errorHandler: A closure to be executed if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func focusWithError(
-        mode: AVCaptureDevice.FocusMode, point: CGPoint?
-    ) throws -> CommonContextType
-    
+    @discardableResult func focus(mode: AVCaptureDevice.FocusMode, point: CGPoint?, _ errorHandler: @escaping ErrorHandler) -> CommonContextType
+
     /// Sets the zoom factor for the video recording session.
     ///
-    /// - Parameter factor: A `CGFloat` value indicating the zoom factor to be set.
-    ///
-    /// - Throws: `AespaError` if the session fails to run the tuner.
+    /// - Parameters:
+    ///   - factor: A `CGFloat` value indicating the zoom factor to be set.
+    ///   - errorHandler: A closure to be executed if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func zoomWithError(factor: CGFloat) throws -> CommonContextType
-    
-    @discardableResult func changeMonitoringWithError(enabled: Bool) throws -> CommonContextType
-    
+    @discardableResult func zoom(factor: CGFloat, _ errorHandler: @escaping ErrorHandler) -> CommonContextType
+
+    /// Changes monitoring status.
+    ///
+    /// - Parameters:
+    ///   - enabled: A boolean value to set monitoring status.
+    ///   - errorHandler: A closure to be executed if the session fails to run the tuner.
+    ///
+    /// - Returns: `AespaVideoContext`, for chaining calls.
+    @discardableResult func changeMonitoring(enabled: Bool, _ errorHandler: @escaping ErrorHandler) -> CommonContextType
+
     /// This function provides a way to use a custom tuner to modify the current session.
     /// The tuner must conform to `AespaSessionTuning`.
     ///
-    /// - Parameter tuner: An instance that conforms to `AespaSessionTuning`.
-    /// - Throws: If the session fails to run the tuner.
-    @discardableResult func customizeWithError<T: AespaSessionTuning>(_ tuner: T) throws -> CommonContextType
-}
-
-// MARK: Non-throwing methods
-// These methods encapsulate error handling within the method itself rather than propagating it to the caller.
-// This means any errors that occur during the execution of these methods will be caught and logged, not thrown.
-// Although it simplifies error handling, this approach may not be recommended
-// because it offers less control to callers.
-// Developers are encouraged to use methods that throw errors, to gain finer control over error handling.
-extension CommonContext {
-    /// Sets the quality preset for the video recording session.
-    ///
-    /// - Parameter preset: An `AVCaptureSession.Preset` value indicating the quality preset to be set.
-    ///
-    /// If an error occurs during the operation, the error is logged.
+    /// - Parameters:
+    ///   - tuner: An instance that conforms to `AespaSessionTuning`.
+    ///   - errorHandler: A closure to be executed if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult
-    public func quality(
-        to preset: AVCaptureSession.Preset,
-        errorHandler: ErrorHandler? = nil
-    ) -> CommonContextType {
-        do {
-            return try self.qualityWithError(to: preset)
-        } catch let error {
-            errorHandler?(error)
-            Logger.log(error: error) // Logs any errors encountered during the operation
-        }
-        
-        return underlyingCommonContext
-    }
-    
-    /// Sets the camera position for the video recording session.
-    ///
-    /// - Parameter position: An `AVCaptureDevice.Position` value indicating the camera position to be set.
-    ///
-    /// If an error occurs during the operation, the error is logged.
-    ///
-    /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult
-    public func position(
-        to position: AVCaptureDevice.Position,
-        errorHandler: ErrorHandler? = nil
-    ) -> CommonContextType {
-        do {
-            return try self.positionWithError(to: position)
-        } catch let error {
-            errorHandler?(error)
-            Logger.log(error: error) // Logs any errors encountered during the operation
-        }
-        
-        return underlyingCommonContext
-    }
-    
-    /// Sets the orientation for the session.
-    ///
-    /// - Parameter orientation: An `AVCaptureVideoOrientation` value indicating the orientation to be set.
-    ///
-    /// If an error occurs during the operation, the error is logged.
-    ///
-    /// - Note: It sets the orientation of the video you are recording,
-    /// not the orientation of the `AVCaptureVideoPreviewLayer`.
-    ///
-    /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult
-    public func orientation(
-        to orientation: AVCaptureVideoOrientation,
-        errorHandler: ErrorHandler? = nil
-    ) -> CommonContextType {
-        do {
-            return try self.orientationWithError(to: orientation)
-        } catch let error {
-            errorHandler?(error)
-            Logger.log(error: error) // Logs any errors encountered during the operation
-        }
-        
-        return underlyingCommonContext
-    }
-    
-    /// Sets the autofocusing mode for the video recording session.
-    ///
-    /// - Parameter mode: The focus mode for the capture device.
-    ///
-    /// If an error occurs during the operation, the error is logged.
-    ///
-    /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult
-    public func focus(
-        mode: AVCaptureDevice.FocusMode,
-        point: CGPoint? = nil,
-        errorHandler: ErrorHandler? = nil
-    ) -> CommonContextType {
-        do {
-            return try self.focusWithError(mode: mode, point: point)
-        } catch let error {
-            errorHandler?(error)
-            Logger.log(error: error) // Logs any errors encountered during the operation
-        }
-        
-        return underlyingCommonContext
-    }
-    
-    /// Sets the zoom factor for the video recording session.
-    ///
-    /// - Parameter factor: A `CGFloat` value indicating the zoom factor to be set.
-    ///
-    /// If an error occurs during the operation, the error is logged.
-    ///
-    /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult
-    public func zoom(
-        factor: CGFloat,
-        errorHandler: ErrorHandler? = nil
-    ) -> CommonContextType {
-        do {
-            return try self.zoomWithError(factor: factor)
-        } catch let error {
-            errorHandler?(error)
-            Logger.log(error: error) // Logs any errors encountered during the operation
-        }
-        
-        return underlyingCommonContext
-    }
-    
-    @discardableResult
-    public func changeMonitoring(
-        enabled: Bool,
-        errorHandler: ErrorHandler? = nil
-    ) -> CommonContextType {
-        do {
-            return try self.changeMonitoringWithError(enabled: enabled)
-        } catch let error {
-            errorHandler?(error)
-            Logger.log(error: error) // Logs any errors encountered during the operation
-        }
-        
-        return underlyingCommonContext
-    }
-    
-    
-    
-    @discardableResult
-    public func custom<T: AespaSessionTuning>(
-        _ tuner: T,
-        errorHandler: ErrorHandler? = nil
-    ) -> CommonContextType {
-        do {
-            return try self.customizeWithError(tuner)
-        } catch let error {
-            errorHandler?(error)
-            Logger.log(error: error) // Logs any errors encountered during the operation
-        }
-        
-        return underlyingCommonContext
-    }
+    @discardableResult func custom<T: AespaSessionTuning>(_ tuner: T, _ errorHandler: @escaping ErrorHandler) -> CommonContextType
 }
 
 /// A protocol that defines the behaviors and properties specific to the video context.
@@ -248,11 +99,9 @@ extension CommonContext {
 /// the session is currently recording or muted, and controlling video recording,
 /// stabilization, torch mode, and fetching recorded video files.
 public protocol VideoContext {
-    ///
     associatedtype VideoContextType: VideoContext
-    ///
     var underlyingVideoContext: VideoContextType { get }
-    
+
     /// A Boolean value that indicates whether the session is currently recording video.
     var isRecording: Bool { get }
 
@@ -263,216 +112,72 @@ public protocol VideoContext {
     ///
     /// - Returns: `VideoFile` wrapped in a `Result` type.
     var videoFilePublisher: AnyPublisher<Result<VideoFile, Error>, Never> { get }
-        
+
     /// This property reflects the current state of audio input.
     ///
     /// If it returns `true`, the audio input is currently muted.
     var isMuted: Bool { get }
-    
-    /// - Throws: `AespaError` if the video file path request fails,
-    ///     orientation setting fails, or starting the recording fails.
+
+    /// Starts the video recording session.
+    ///
+    /// - Parameter errorHandler: A closure to handle any errors that occur during recording.
     ///
     /// - Note: If `autoVideoOrientation` option is enabled,
-    ///     it sets the orientation according to the current device orientation.
-    func startRecordingWithError() throws
-    
-    /// Stops the ongoing video recording session and attempts to add the video file to the album.
-    ///
-    /// Supporting `async`, you can use this method in Swift Concurrency's context
-    ///
-    /// - Throws: `AespaError` if stopping the recording fails.
-    @discardableResult func stopRecordingWithError() async throws -> VideoFile
+    ///   it sets the orientation according to the current device orientation.
+    func startRecording(_ errorHandler: @escaping ErrorHandler)
+
+    func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void)
     
     /// Mutes the audio input for the video recording session.
     ///
-    /// - Throws: `AespaError` if the session fails to run the tuner.
+    /// - Parameter errorHandler: A closure to handle any errors that occur when muting the audio.
     ///
-    /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func muteWithError() throws -> VideoContextType
-    
+    /// - Returns: The modified `VideoContextType` for chaining calls.
+    @discardableResult
+    func mute(_ errorHandler: @escaping ErrorHandler) -> VideoContextType
+
     /// Unmutes the audio input for the video recording session.
     ///
-    /// - Throws: `AespaError` if the session fails to run the tuner.
+    /// - Parameter errorHandler: A closure to handle any errors that occur when unmuting the audio.
     ///
-    /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func unmuteWithError() throws -> VideoContextType
-    
+    /// - Returns: The modified `VideoContextType` for chaining calls.
+    @discardableResult
+    func unmute(_ errorHandler: @escaping ErrorHandler) -> VideoContextType
+
     /// Sets the stabilization mode for the video recording session.
     ///
-    /// - Parameter mode: An `AVCaptureVideoStabilizationMode` value
-    ///     indicating the stabilization mode to be set.
+    /// - Parameters:
+    ///   - mode: An `AVCaptureVideoStabilizationMode` value indicating the stabilization mode to be set.
+    ///   - errorHandler: A closure to handle any errors that occur when setting the stabilization mode.
     ///
-    /// - Throws: `AespaError` if the session fails to run the tuner.
-    ///
-    /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func stabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> VideoContextType
-    
+    /// - Returns: The modified `VideoContextType` for chaining calls.
+    @discardableResult
+    func stabilization(mode: AVCaptureVideoStabilizationMode, _ errorHandler: @escaping ErrorHandler) -> VideoContextType
+
     /// Sets the torch mode and level for the video recording session.
     ///
     /// - Parameters:
-    ///     - mode: The desired torch mode (AVCaptureDevice.TorchMode).
-    ///     - level: The desired torch level as a Float between 0.0 and 1.0.
+    ///   - mode: The desired torch mode (AVCaptureDevice.TorchMode).
+    ///   - level: The desired torch level as a Float between 0.0 and 1.0.
     ///
     /// - Returns: Returns self, allowing additional settings to be configured.
     ///
-    /// - Throws: Throws an error if setting the torch mode or level fails.
-    ///
     /// - Note: This function might throw an error if the torch mode is not supported,
-    ///     or the specified level is not within the acceptable range.
-    @discardableResult func torchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> VideoContextType
-    
+    ///   or the specified level is not within the acceptable range.
+    @discardableResult
+    func torch(mode: AVCaptureDevice.TorchMode, level: Float, _ errorHandler: @escaping ErrorHandler) -> VideoContextType
+
     /// Fetches a list of recorded video files.
     /// The number of files fetched is controlled by the limit parameter.
     ///
-    /// It is recommended not to be called in main thread.
+    /// It is recommended not to be called in the main thread.
     ///
-    /// - Parameter limit: An integer specifying the maximum number of video files to fetch.
+    /// - Parameters:
+    ///   - limit: An integer specifying the maximum number of video files to fetch.
+    ///     Fetch all files if `limit` is zero(`0`)
     ///
     /// - Returns: An array of `VideoFile` instances.
     func fetchVideoFiles(limit: Int) -> [VideoFile]
-}
-
-// MARK: Non-throwing methods
-// These methods encapsulate error handling within the method itself rather than propagating it to the caller.
-// This means any errors that occur during the execution of these methods will be caught and logged, not thrown.
-// Although it simplifies error handling, this approach may not be recommended
-// because it offers less control to callers.
-// Developers are encouraged to use methods that throw errors, to gain finer control over error handling.
-extension VideoContext {
-    /// Starts the recording of a video session.
-    ///
-    /// If an error occurs during the operation, the error is logged.
-    ///
-    /// - Note: If auto video orientation is enabled,
-    ///     it sets the orientation according to the current device orientation.
-    public func startRecording(errorHandler: ErrorHandler? = nil) {
-        do {
-            try startRecordingWithError()
-        } catch let error {
-            errorHandler?(error)
-            Logger.log(error: error) // Logs any errors encountered during the operation
-        }
-    }
-    
-    /// Stops the current video recording session and attempts to save the video file to the album.
-    ///
-    /// Any errors that occur during the process are captured and logged.
-    ///
-    /// - Parameter completionHandler: A closure that handles the result of the operation.
-    ///      It's called with a `Result` object that encapsulates either a `VideoFile` instance.
-    ///
-    /// - Note: It is recommended to use the ``stopRecording() async throws``
-    /// for more straightforward error handling.
-    public func stopRecording(
-        _ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }
-    ) {
-        Task(priority: .utility) {
-            do {
-                let videoFile = try await self.stopRecordingWithError()
-                return completionHandler(.success(videoFile))
-            } catch let error {
-                Logger.log(error: error)
-                return completionHandler(.failure(error))
-            }
-        }
-    }
-    
-    /// Mutes the audio input for the video recording session.
-    ///
-    /// If an error occurs during the operation, the error is logged.
-    ///
-    /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult
-    public func mute(errorHandler: ErrorHandler? = nil) -> VideoContextType {
-        do {
-            return try self.muteWithError()
-        } catch let error {
-            errorHandler?(error)
-            Logger.log(error: error) // Logs any errors encountered during the operation
-        }
-        
-        return underlyingVideoContext
-    }
-    
-    /// Unmutes the audio input for the video recording session.
-    ///
-    /// If an error occurs during the operation, the error is logged.
-    ///
-    /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult
-    public func unmute(errorHandler: ErrorHandler? = nil) -> VideoContextType {
-        do {
-            return try self.unmuteWithError()
-        } catch let error {
-            errorHandler?(error)
-            Logger.log(error: error) // Logs any errors encountered during the operation
-
-            return underlyingVideoContext
-        }
-    }
-    
-    /// Sets the stabilization mode for the video recording session.
-    ///
-    /// - Parameter mode: An `AVCaptureVideoStabilizationMode` value
-    ///     indicating the stabilization mode to be set.
-    ///
-    /// If an error occurs during the operation, the error is logged.
-    ///
-    /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult
-    public func stabilization(
-        mode: AVCaptureVideoStabilizationMode,
-        errorHandler: ErrorHandler? = nil
-    ) -> VideoContextType {
-        do {
-            return try self.stabilizationWithError(mode: mode)
-        } catch let error {
-            errorHandler?(error)
-            Logger.log(error: error) // Logs any errors encountered during the operation
-        }
-
-        return underlyingVideoContext
-    }
-    
-    /// Sets the torch mode and level for the video recording session.
-    ///
-    /// If an error occurs during the operation, the error is logged.
-    ///
-    /// - Parameters:
-    ///     - mode: The desired torch mode (AVCaptureDevice.TorchMode).
-    ///     - level: The desired torch level as a Float between 0.0 and 1.0.
-    ///
-    /// - Returns: Returns self, allowing additional settings to be configured.
-    ///
-    /// - Note: This function might throw an error if the torch mode is not supported,
-    ///     or the specified level is not within the acceptable range.
-    @discardableResult
-    public func torch(
-        mode: AVCaptureDevice.TorchMode,
-        level: Float,
-        errorHandler: ErrorHandler? = nil
-    ) -> VideoContextType {
-        do {
-            return try self.torchWithError(mode: mode, level: level)
-        } catch let error {
-            errorHandler?(error)
-            Logger.log(error: error) // Logs any errors encountered during the operation
-        }
-        
-        return underlyingVideoContext
-    }
-
-    /// Fetches a list of recorded video files.
-    /// The number of files fetched is controlled by the limit parameter.
-    ///
-    /// It is recommended not to be called in main thread.
-    ///
-    /// - Parameter limit: An integer specifying the maximum number of video files to fetch.
-    ///     If the limit is set to 0 (default), all recorded video files will be fetched.
-    /// - Returns: An array of `VideoFile` instances.
-    public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
-        fetchVideoFiles(limit: limit)
-    }
 }
 
 /// A protocol that defines the behaviors and properties specific to the photo context.
@@ -495,18 +200,22 @@ public protocol PhotoContext {
     /// A variable holding current `AVCapturePhotoSettings`
     var currentSetting: AVCapturePhotoSettings { get }
     
-    /// Asynchronously captures a photo with the specified `AVCapturePhotoSettings`.
+    /// Asynchronously captures a photo using the specified `AVCapturePhotoSettings`.
     ///
-    /// The captured photo is flattened into a `Data` object, and then added to an album. A `PhotoFile`
-    /// object is then created using the raw photo data and the current date. This `PhotoFile` is sent
-    /// through the `photoFileBufferSubject` and then returned to the caller.
+    /// If the photo capture is successful, it will return a `PhotoFile`
+    /// object through the provided completion handler.
     ///
-    /// If any part of this process fails, an `AespaError` is thrown.
+    /// In case of an error during the photo capture process, the error will be logged and also returned via
+    /// the completion handler.
     ///
-    /// - Returns: A `PhotoFile` object representing the captured photo.
-    /// - Throws: An `AespaError` if there is an issue capturing the photo,
-    ///     flattening it into a `Data` object, or adding it to the album.
-    @discardableResult func capturePhotoWithError() async throws -> PhotoFile
+    /// - Parameters:
+    ///   - completionHandler: A closure to be invoked once the photo capture process is completed. This
+    ///     closure takes a `Result` type where `Success` contains a `PhotoFile` object and
+    ///     `Failure` contains an `Error` object. By default, the closure does nothing.
+    ///
+    func capturePhoto(
+        _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void
+    )
     
     /// Sets the flash mode for the camera and returns the updated `AespaPhotoContext` instance.
     /// The returned instance can be used for chaining configuration.
@@ -550,33 +259,6 @@ public protocol PhotoContext {
 // it offers less control to callers.
 // Developers are encouraged to use methods that throw errors, to gain finer control over error handling.
 extension PhotoContext {
-    /// Asynchronously captures a photo using the specified `AVCapturePhotoSettings`.
-    ///
-    /// If the photo capture is successful, it will return a `PhotoFile`
-    /// object through the provided completion handler.
-    ///
-    /// In case of an error during the photo capture process, the error will be logged and also returned via
-    /// the completion handler.
-    ///
-    /// - Parameters:
-    ///   - completionHandler: A closure to be invoked once the photo capture process is completed. This
-    ///     closure takes a `Result` type where `Success` contains a `PhotoFile` object and
-    ///     `Failure` contains an `Error` object. By default, the closure does nothing.
-    ///
-    public func capturePhoto(
-        _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void = { _ in }
-    ) {
-        Task(priority: .utility) {
-            do {
-                let photoFile = try await self.capturePhotoWithError()
-                return completionHandler(.success(photoFile))
-            } catch let error {
-                Logger.log(error: error)
-                return completionHandler(.failure(error))
-            }
-        }
-    }
-    
     /// Fetches a list of captured photo files.
     /// The number of files fetched is controlled by the limit parameter.
     ///

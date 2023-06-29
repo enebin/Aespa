@@ -30,58 +30,56 @@ class VideoContentViewModel: ObservableObject {
         let option = AespaOption(albumName: "Aespa-Demo")
         self.aespaSession = Aespa.session(with: option)
         
-        
-        // MARK: Settings should be done after `configure`
-        // Common setting
-        aespaSession
-            .focus(mode: .autoFocus)
-            .changeMonitoring(enabled: true)
-            .orientation(to: .portrait)
-            .quality(to: .high)
-            .custom(WideColorCameraTuner())
-        
-        // Photo-only setting
-        aespaSession
-            .flashMode(to: .on)
-            .redEyeReduction(enabled: true)
-        
-        // Video-only setting
-        aespaSession
-            .mute()
-            .stabilization(mode: .auto)
-        
-        // Prepare video album cover
-        aespaSession.videoFilePublisher
-            .receive(on: DispatchQueue.main)
-            .map { result -> Image? in
-                if case .success(let file) = result {
-                    return file.thumbnailImage
-                } else {
-                    return nil
+        do {
+            // MARK: Settings should be done after `configure`
+            // Common setting
+            aespaSession
+                .focus(mode: .continuousAutoFocus)
+                .changeMonitoring(enabled: true)
+                .orientation(to: .portrait)
+                .quality(to: .high)
+                .custom(WideColorCameraTuner())
+            
+            // Photo-only setting
+            aespaSession
+                .flashMode(to: .on)
+                .redEyeReduction(enabled: true)
+            
+            // Video-only setting
+            aespaSession
+                .mute()
+                .stabilization(mode: .auto)
+            
+            // Prepare video album cover
+            aespaSession.videoFilePublisher
+                .receive(on: DispatchQueue.main)
+                .map { result -> Image? in
+                    if case .success(let file) = result {
+                        return file.thumbnailImage
+                    } else {
+                        return nil
+                    }
                 }
-            }
-            .assign(to: \.videoAlbumCover, on: self)
-            .store(in: &subscription)
-        
-        // Prepare photo album cover
-        aespaSession.photoFilePublisher
-            .receive(on: DispatchQueue.main)
-            .map { result -> Image? in
-                if case .success(let file) = result {
-                    return file.thumbnailImage
-                } else {
-                    return nil
+                .assign(to: \.videoAlbumCover, on: self)
+                .store(in: &subscription)
+            
+            // Prepare photo album cover
+            aespaSession.photoFilePublisher
+                .receive(on: DispatchQueue.main)
+                .map { result -> Image? in
+                    if case .success(let file) = result {
+                        return file.thumbnailImage
+                    } else {
+                        return nil
+                    }
                 }
-            }
-            .assign(to: \.photoAlbumCover, on: self)
-            .store(in: &subscription)
-        
-        Task(priority: .background) {
-            do {
-                try await Aespa.configure()
-            } catch let error {
-                print(error)
-            }
+                .assign(to: \.photoAlbumCover, on: self)
+                .store(in: &subscription)
+            
+            try Aespa.configure()
+            
+        } catch let error {
+            print(error)
         }
     }
     

@@ -7,7 +7,7 @@
 
 import AVFoundation
 
-struct SessionLaunchTuner: AespaSessionTuning {
+struct SessionConfigurationTuner: AespaSessionTuning {
     let needTransaction = false
 
     func tune<T: AespaCoreSessionRepresentable>(_ session: T) throws {
@@ -17,5 +17,7 @@ struct SessionLaunchTuner: AespaSessionTuning {
         try session.addMovieFileOutput()
         try session.addCapturePhotoOutput()
         session.startRunning()
+        
+        Logger.log(message: "Session is configured successfully")
     }
 }

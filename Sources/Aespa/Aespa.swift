@@ -36,32 +36,33 @@ open class Aespa {
     ///
     /// - Warning: This method is synchronous and blocks until the session starts running or it fails,
     ///     which it reports by posting an `AVCaptureSessionRuntimeError` notification.
-    public static func configure() async throws {
-        guard let core = core else {
+    public static func configure(_ errorHandler: @escaping ErrorHandler = { _ in }) throws {
+        guard let core else {
             throw AespaError.session(reason: .notConfigured)
         }
 
-        guard
-            case .permitted = await AuthorizationChecker.checkCaptureAuthorizationStatus()
-        else {
-            throw AespaError.permission(reason: .denied)
+        Task {
+            guard
+                case .permitted = await AuthorizationChecker.checkCaptureAuthorizationStatus()
+            else {
+                throw AespaError.permission(reason: .denied)
+            }
+
+            Task.detached(priority: .background) {
+                core.startSession(errorHandler)
+            }
         }
-
-        try core.startSession()
-
-        Logger.log(message: "Session is configured successfully")
     }
 
     /// Terminates the current `AespaSession`.
     ///
     /// If a session has been started, it stops the session and releases resources.
     /// After termination, a new session needs to be configured to start recording again.
-    public static func terminate() throws {
+    public static func terminate(_ errorHandler: @escaping ErrorHandler = { _ in }) throws {
         guard let core = core else {
             return
         }
 
-        try core.terminateSession()
-        Logger.log(message: "Session is terminated successfully")
+        core.terminateSession(errorHandler)
     }
 }

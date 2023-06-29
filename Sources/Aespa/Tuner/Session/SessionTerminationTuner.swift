@@ -16,5 +16,7 @@ struct SessionTerminationTuner: AespaSessionTuning {
         session.removeAudioInput()
         session.removeMovieInput()
         session.stopRunning()
+        
+        Logger.log(message: "Session is terminated successfully")
     }
 }

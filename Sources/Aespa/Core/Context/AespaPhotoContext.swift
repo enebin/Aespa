@@ -67,30 +67,18 @@ extension AespaPhotoContext: PhotoContext {
         photoSetting
     }
     
-    public func capturePhotoWithError() async throws -> PhotoFile {
-        let setting = AVCapturePhotoSettings(from: photoSetting)
-        let rawPhotoAsset = try await camera.capture(setting: setting)
-        
-        guard let rawPhotoData = rawPhotoAsset.fileDataRepresentation() else {
-            throw AespaError.file(reason: .unableToFlatten)
+    public func capturePhoto(
+        _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void
+    ) {
+        Task(priority: .utility) {
+            do {
+                let photoFile = try await self.capturePhotoWithError()
+                completionHandler(.success(photoFile))
+            } catch let error {
+                Logger.log(error: error)
+                completionHandler(.failure(error))
+            }
         }
-
-        let filePath = try FilePathProvider.requestFilePath(
-            from: fileManager.systemFileManager,
-            directoryName: option.asset.albumName,
-            subDirectoryName: option.asset.photoDirectoryName,
-            fileName: option.asset.fileNameHandler())
-        
-        try fileManager.write(data: rawPhotoData, to: filePath)
-        try await albumManager.addToAlbum(imageData: rawPhotoData)
-
-        let photoFile = PhotoFileGenerator.generate(
-            with: filePath,
-            date: Date())
-        
-        photoFileBufferSubject.send(.success(photoFile))
-
-        return photoFile
     }
     
     @discardableResult
@@ -115,5 +103,33 @@ extension AespaPhotoContext: PhotoContext {
             albumName: option.asset.albumName,
             subDirectoryName: option.asset.photoDirectoryName,
             count: limit)
+    }
+}
+
+private extension AespaPhotoContext {
+    func capturePhotoWithError() async throws -> PhotoFile {
+        let setting = AVCapturePhotoSettings(from: photoSetting)
+        let rawPhotoAsset = try await camera.capture(setting: setting)
+        
+        guard let rawPhotoData = rawPhotoAsset.fileDataRepresentation() else {
+            throw AespaError.file(reason: .unableToFlatten)
+        }
+
+        let filePath = try FilePathProvider.requestFilePath(
+            from: fileManager.systemFileManager,
+            directoryName: option.asset.albumName,
+            subDirectoryName: option.asset.photoDirectoryName,
+            fileName: option.asset.fileNameHandler())
+        
+        try fileManager.write(data: rawPhotoData, to: filePath)
+        try await albumManager.addToAlbum(imageData: rawPhotoData)
+
+        let photoFile = PhotoFileGenerator.generate(
+            with: filePath,
+            date: Date())
+        
+        photoFileBufferSubject.send(.success(photoFile))
+
+        return photoFile
     }
 }

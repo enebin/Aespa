@@ -159,10 +159,7 @@ open class AespaSession {
     public func getSubjectAreaDidChangePublisher() -> AnyPublisher<Notification, Never> {
         if isSubjectAreaChangeMonitoringEnabled != true {
             Logger.log(
-                message: """
-                `isSubjectAreaChangeMonitoringEnabled` is not set `true.
-                `AVCaptureDeviceSubjectAreaDidChange` publisher may not publish anything.
-                """)
+                message: "`isSubjectAreaChangeMonitoringEnabled` is not set `true`. `AVCaptureDeviceSubjectAreaDidChange` publisher may not publish anything.")
         }
         
         return NotificationCenter.default
@@ -207,103 +204,103 @@ extension AespaSession: CommonContext {
     }
     
     @discardableResult
-    public func qualityWithError(to preset: AVCaptureSession.Preset) throws -> AespaSession {
+    public func quality(to preset: AVCaptureSession.Preset, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession {
         let tuner = QualityTuner(videoQuality: preset)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, errorHandler)
         return self
     }
-    
+
     @discardableResult
-    public func positionWithError(to position: AVCaptureDevice.Position) throws -> AespaSession {
+    public func position(to position: AVCaptureDevice.Position, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession {
         let tuner = CameraPositionTuner(position: position,
                                         devicePreference: option.session.cameraDevicePreference)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, errorHandler)
         return self
     }
-    
+
     @discardableResult
-    public func orientationWithError(to orientation: AVCaptureVideoOrientation) throws -> AespaSession {
+    public func orientation(to orientation: AVCaptureVideoOrientation, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession {
         let tuner = VideoOrientationTuner(orientation: orientation)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, errorHandler)
         return self
     }
-    
+
     @discardableResult
-    public func focusWithError(mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil) throws -> AespaSession {
+    public func focus(mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession {
         let tuner = FocusTuner(mode: mode, point: point)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, errorHandler)
         return self
     }
-    
+
     @discardableResult
-    public func zoomWithError(factor: CGFloat) throws -> AespaSession {
+    public func zoom(factor: CGFloat, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession {
         let tuner = ZoomTuner(zoomFactor: factor)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, errorHandler)
         return self
     }
-    
+
     @discardableResult
-    public func changeMonitoringWithError(enabled: Bool) throws -> AespaSession  {
+    public func changeMonitoring(enabled: Bool, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession  {
         let tuner = ChangeMonitoringTuner(isSubjectAreaChangeMonitoringEnabled: enabled)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, errorHandler)
         return self
     }
-    
-    public func customizeWithError<T: AespaSessionTuning>(_ tuner: T) throws -> AespaSession {
-        try coreSession.run(tuner)
+
+    @discardableResult
+    public func custom<T: AespaSessionTuning>(_ tuner: T, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession {
+        coreSession.run(tuner, errorHandler)
         return self
     }
 }
 
 extension AespaSession: VideoContext {
     public typealias AespaVideoSessionContext = AespaVideoContext<AespaSession>
-    
+
     public var underlyingVideoContext: AespaVideoSessionContext {
         videoContext
     }
-    
+
     public var videoFilePublisher: AnyPublisher<Result<VideoFile, Error>, Never> {
         videoContext.videoFilePublisher
     }
-    
+
     public var isRecording: Bool {
         videoContext.isRecording
     }
-    
+
     public var isMuted: Bool {
         videoContext.isMuted
     }
-    
-    public func startRecordingWithError() throws {
-        try videoContext.startRecordingWithError()
+
+    public func startRecording(_ errorHandler: @escaping ErrorHandler = { _ in }) {
+        videoContext.startRecording(errorHandler)
     }
     
+    public func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }) {
+        videoContext.stopRecording(completionHandler)
+    }
+
     @discardableResult
-    public func stopRecordingWithError() async throws -> VideoFile {
-        try await videoContext.stopRecordingWithError()
+    public func mute(_ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoSessionContext {
+        videoContext.mute(errorHandler)
     }
-    
+
     @discardableResult
-    public func muteWithError() throws -> AespaVideoSessionContext {
-        try videoContext.muteWithError()
+    public func unmute(_ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoSessionContext {
+        videoContext.unmute(errorHandler)
     }
-    
+
     @discardableResult
-    public func unmuteWithError() throws -> AespaVideoSessionContext {
-        try videoContext.unmuteWithError()
+    public func stabilization(mode: AVCaptureVideoStabilizationMode, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoSessionContext {
+        videoContext.stabilization(mode: mode, errorHandler)
     }
-    
+
     @discardableResult
-    public func stabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> AespaVideoSessionContext {
-        try videoContext.stabilizationWithError(mode: mode)
+    public func torch(mode: AVCaptureDevice.TorchMode, level: Float, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoSessionContext {
+        videoContext.torch(mode: mode, level: level, errorHandler)
     }
-    
-    @discardableResult
-    public func torchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> AespaVideoSessionContext {
-        try videoContext.torchWithError(mode: mode, level: level)
-    }
-    
-    public func fetchVideoFiles(limit: Int) -> [VideoFile] {
+
+    public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
         videoContext.fetchVideoFiles(limit: limit)
     }
 }
@@ -321,10 +318,11 @@ extension AespaSession: PhotoContext {
         photoContext.currentSetting
     }
 
-    public func capturePhotoWithError() async throws -> PhotoFile {
-        try await photoContext.capturePhotoWithError()
-    }
+    public func capturePhoto(_ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void = { _ in }) {
+        photoContext.capturePhoto(completionHandler)
 
+    }
+    
     @discardableResult
     public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
         photoContext.flashMode(to: mode)
@@ -334,31 +332,27 @@ extension AespaSession: PhotoContext {
     public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
         photoContext.redEyeReduction(enabled: enabled)
     }
-
-    public func custom(_ setting: AVCapturePhotoSettings) {
-        photoSetting = setting
-    }
     
-    public func fetchPhotoFiles(limit: Int) -> [PhotoFile] {
-        photoContext.fetchPhotoFiles(limit: limit)
-    }
-    
+    @discardableResult
     public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
         photoContext.custom(setting)
+    }
+    
+    public func fetchPhotoFiles(limit: Int = 0) -> [PhotoFile] {
+        photoContext.fetchPhotoFiles(limit: limit)
     }
 }
 
 extension AespaSession {
-    func startSession() throws {
-        let tuner = SessionLaunchTuner()
-        coreSession.start()
-        try coreSession.run(tuner)
-
+    func startSession(_ errorHandler: @escaping ErrorHandler) {
+        let tuner = SessionConfigurationTuner()
+        coreSession.run(tuner, errorHandler)
+        
         previewLayerSubject.send(previewLayer)
     }
-
-    func terminateSession() throws {
+    
+    func terminateSession(_ errorHandler: @escaping ErrorHandler) {
         let tuner = SessionTerminationTuner()
-        try coreSession.run(tuner)
+        coreSession.run(tuner, errorHandler)
     }
 }

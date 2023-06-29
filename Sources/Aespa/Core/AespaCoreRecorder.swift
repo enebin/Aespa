@@ -21,23 +21,28 @@ class AespaCoreRecorder: NSObject {
         self.core = core
     }
 
-    func run<T: AespaMovieFileOutputProcessing>(processor: T) throws {
+    func run<T: AespaMovieFileOutputProcessing>(processor: T, _ errorHandler: @escaping ErrorHandler) {
         guard let output = core.movieFileOutput else {
-            throw AespaError.session(reason: .cannotFindConnection)
+            errorHandler(AespaError.session(reason: .cannotFindConnection))
+            return
         }
 
-        try processor.process(output)
+        do {
+            try processor.process(output)
+        } catch {
+            errorHandler(error)
+        }
     }
 }
 
 extension AespaCoreRecorder {
-    func startRecording(in filePath: URL) throws {
-        try run(processor: StartRecordProcessor(filePath: filePath, delegate: self))
+    func startRecording(in filePath: URL, _ errorHandler: @escaping ErrorHandler) {
+        run(processor: StartRecordProcessor(filePath: filePath, delegate: self), errorHandler)
     }
-
+    
     func stopRecording() async throws -> URL {
-        try run(processor: FinishRecordProcessor())
-
+        run(processor: FinishRecordProcessor(), { _ in })
+        
         return try await withCheckedThrowingContinuation { continuation in
             fileIOResultSubsciption = fileIOResultSubject.sink { _ in
                 // Do nothing on completion; we're only interested in values.
