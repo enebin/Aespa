@@ -75,7 +75,7 @@ extension AespaVideoContext: VideoContext {
         .eraseToAnyPublisher()
     }
     
-    public func startRecording(_ errorHandler: @escaping ErrorHandler = { _ in }) {
+    public func startRecording(_ onComplete: @escaping CompletionHandler = { _ in }) {
         do {
             let fileName = option.asset.fileNameHandler()
             let filePath = try FilePathProvider.requestFilePath(
@@ -86,17 +86,17 @@ extension AespaVideoContext: VideoContext {
                 extension: "mp4")
             
             if option.session.autoVideoOrientationEnabled {
-                commonContext.orientation(to: UIDevice.current.orientation.toVideoOrientation, errorHandler)
+                commonContext.orientation(to: UIDevice.current.orientation.toVideoOrientation, onComplete)
             }
             
-            recorder.startRecording(in: filePath, errorHandler)
+            recorder.startRecording(in: filePath, onComplete)
             isRecording = true
         } catch let error {
-            errorHandler(error)
+            onComplete(.failure(error))
         }
     }
     
-    public func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }) {
+    public func stopRecording(_ onCompelte: @escaping ResultHandler<VideoFile> = { _ in }) {
         Task(priority: .utility) {
             do {
                 let videoFilePath = try await recorder.stopRecording()
@@ -106,48 +106,48 @@ extension AespaVideoContext: VideoContext {
                 videoFileBufferSubject.send(.success(videoFile))
 
                 isRecording = false
-                completionHandler(.success(videoFile))
+                onCompelte(.success(videoFile))
             } catch let error {
                 Logger.log(error: error)
-                completionHandler(.failure(error))
+                onCompelte(.failure(error))
             }
         }
     }
     
     @discardableResult
-    public func mute(_ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoContext {
+    public func mute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
         let tuner = AudioTuner(isMuted: true)
-        coreSession.run(tuner, errorHandler)
+        coreSession.run(tuner, onComplete)
         
         return self
     }
     
     @discardableResult
-    public func unmute(_ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoContext {
+    public func unmute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
         let tuner = AudioTuner(isMuted: false)
-        coreSession.run(tuner, errorHandler)
+        coreSession.run(tuner, onComplete)
         
         return self
     }
     
     @discardableResult
-    public func stabilization(mode: AVCaptureVideoStabilizationMode, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoContext {
+    public func stabilization(mode: AVCaptureVideoStabilizationMode, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
         let tuner = VideoStabilizationTuner(stabilzationMode: mode)
-        coreSession.run(tuner, errorHandler)
+        coreSession.run(tuner, onComplete)
         
         return self
     }
     
     @discardableResult
-    public func torch(mode: AVCaptureDevice.TorchMode, level: Float, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoContext {
+    public func torch(mode: AVCaptureDevice.TorchMode, level: Float, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
         let tuner = TorchTuner(level: level, torchMode: mode)
-        coreSession.run(tuner, errorHandler)
+        coreSession.run(tuner, onComplete)
         
         return self
     }
 
-    public func customize<T: AespaSessionTuning>(_ tuner: T, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoContext {
-        coreSession.run(tuner, errorHandler)
+    public func customize<T: AespaSessionTuning>(_ tuner: T, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
+        coreSession.run(tuner, onComplete)
         
         return self
     }

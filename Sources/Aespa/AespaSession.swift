@@ -204,51 +204,51 @@ extension AespaSession: CommonContext {
     }
     
     @discardableResult
-    public func quality(to preset: AVCaptureSession.Preset, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession {
+    public func quality(to preset: AVCaptureSession.Preset, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
         let tuner = QualityTuner(videoQuality: preset)
-        coreSession.run(tuner, errorHandler)
+        coreSession.run(tuner, onComplete)
         return self
     }
 
     @discardableResult
-    public func position(to position: AVCaptureDevice.Position, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession {
+    public func position(to position: AVCaptureDevice.Position, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
         let tuner = CameraPositionTuner(position: position,
                                         devicePreference: option.session.cameraDevicePreference)
-        coreSession.run(tuner, errorHandler)
+        coreSession.run(tuner, onComplete)
         return self
     }
 
     @discardableResult
-    public func orientation(to orientation: AVCaptureVideoOrientation, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession {
+    public func orientation(to orientation: AVCaptureVideoOrientation, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
         let tuner = VideoOrientationTuner(orientation: orientation)
-        coreSession.run(tuner, errorHandler)
+        coreSession.run(tuner, onComplete)
         return self
     }
 
     @discardableResult
-    public func focus(mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession {
+    public func focus(mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
         let tuner = FocusTuner(mode: mode, point: point)
-        coreSession.run(tuner, errorHandler)
+        coreSession.run(tuner, onComplete)
         return self
     }
 
     @discardableResult
-    public func zoom(factor: CGFloat, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession {
+    public func zoom(factor: CGFloat, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
         let tuner = ZoomTuner(zoomFactor: factor)
-        coreSession.run(tuner, errorHandler)
+        coreSession.run(tuner, onComplete)
         return self
     }
 
     @discardableResult
-    public func changeMonitoring(enabled: Bool, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession  {
+    public func changeMonitoring(enabled: Bool, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession  {
         let tuner = ChangeMonitoringTuner(isSubjectAreaChangeMonitoringEnabled: enabled)
-        coreSession.run(tuner, errorHandler)
+        coreSession.run(tuner, onComplete)
         return self
     }
 
     @discardableResult
-    public func custom<T: AespaSessionTuning>(_ tuner: T, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaSession {
-        coreSession.run(tuner, errorHandler)
+    public func custom<T: AespaSessionTuning>(_ tuner: T, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
+        coreSession.run(tuner, onComplete)
         return self
     }
 }
@@ -272,8 +272,8 @@ extension AespaSession: VideoContext {
         videoContext.isMuted
     }
 
-    public func startRecording(_ errorHandler: @escaping ErrorHandler = { _ in }) {
-        videoContext.startRecording(errorHandler)
+    public func startRecording(_ onComplete: @escaping CompletionHandler = { _ in }) {
+        videoContext.startRecording(onComplete)
     }
     
     public func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }) {
@@ -281,23 +281,23 @@ extension AespaSession: VideoContext {
     }
 
     @discardableResult
-    public func mute(_ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoSessionContext {
-        videoContext.mute(errorHandler)
+    public func mute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
+        videoContext.mute(onComplete)
     }
 
     @discardableResult
-    public func unmute(_ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoSessionContext {
-        videoContext.unmute(errorHandler)
+    public func unmute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
+        videoContext.unmute(onComplete)
     }
 
     @discardableResult
-    public func stabilization(mode: AVCaptureVideoStabilizationMode, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoSessionContext {
-        videoContext.stabilization(mode: mode, errorHandler)
+    public func stabilization(mode: AVCaptureVideoStabilizationMode, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
+        videoContext.stabilization(mode: mode, onComplete)
     }
 
     @discardableResult
-    public func torch(mode: AVCaptureDevice.TorchMode, level: Float, _ errorHandler: @escaping ErrorHandler = { _ in }) -> AespaVideoSessionContext {
-        videoContext.torch(mode: mode, level: level, errorHandler)
+    public func torch(mode: AVCaptureDevice.TorchMode, level: Float, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
+        videoContext.torch(mode: mode, level: level, onComplete)
     }
 
     public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
@@ -344,15 +344,17 @@ extension AespaSession: PhotoContext {
 }
 
 extension AespaSession {
-    func startSession(_ errorHandler: @escaping ErrorHandler) {
-        let tuner = SessionConfigurationTuner()
-        coreSession.run(tuner, errorHandler)
-        
-        previewLayerSubject.send(previewLayer)
+    func startSession(_ onComplete: @escaping CompletionHandler) {
+        do {
+            try coreSession.start()
+            previewLayerSubject.send(previewLayer)
+        } catch let error {
+            onComplete(.failure(error))
+        }
     }
     
-    func terminateSession(_ errorHandler: @escaping ErrorHandler) {
+    func terminateSession(_ onComplete: @escaping CompletionHandler) {
         let tuner = SessionTerminationTuner()
-        coreSession.run(tuner, errorHandler)
+        coreSession.run(tuner, onComplete)
     }
 }

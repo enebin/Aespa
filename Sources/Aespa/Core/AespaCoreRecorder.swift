@@ -21,23 +21,24 @@ class AespaCoreRecorder: NSObject {
         self.core = core
     }
 
-    func run<T: AespaMovieFileOutputProcessing>(processor: T, _ errorHandler: @escaping ErrorHandler) {
+    func run<T: AespaMovieFileOutputProcessing>(processor: T, _ onComplete: @escaping CompletionHandler) {
         guard let output = core.movieFileOutput else {
-            errorHandler(AespaError.session(reason: .cannotFindConnection))
+            onComplete(.failure(AespaError.session(reason: .cannotFindConnection)))
             return
         }
 
         do {
             try processor.process(output)
+            onComplete(.success(()))
         } catch {
-            errorHandler(error)
+            onComplete(.failure(error))
         }
     }
 }
 
 extension AespaCoreRecorder {
-    func startRecording(in filePath: URL, _ errorHandler: @escaping ErrorHandler) {
-        run(processor: StartRecordProcessor(filePath: filePath, delegate: self), errorHandler)
+    func startRecording(in filePath: URL, _ onComplete: @escaping CompletionHandler) {
+        run(processor: StartRecordProcessor(filePath: filePath, delegate: self), onComplete)
     }
     
     func stopRecording() async throws -> URL {

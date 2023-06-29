@@ -18,11 +18,10 @@ class Logger {
 
     static func log(
         error: Error,
-        file: String = (#file as NSString).lastPathComponent,
         method: String = #function
     ) {
         if enableLogging {
-            print("[Aespa : error] [\(file) : \(method)] - \(error) : \(error.localizedDescription)")
+            print("[Aespa : error] [\(method)] - \(error) : \(error.localizedDescription)")
         }
     }
 }

@@ -135,7 +135,7 @@ private extension InteractivePreview {
                     return
                 }
                 
-//                session.focus(mode: currentFocusMode, point: value.location)
+                session.focus(mode: currentFocusMode, point: value.location)
                 focusingLocation = value.location
                 
                 if enableShowingCrosshair {
@@ -166,7 +166,7 @@ private extension InteractivePreview {
     
     func resetFocusMode(to focusMode: AVCaptureDevice.FocusMode) {
         guard session.isRunning else { return }
-//        session.focus(mode: focusMode)
+        session.focus(mode: focusMode)
     }
     
     func showCrosshair() {
