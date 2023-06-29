@@ -32,12 +32,9 @@ public extension AespaSession {
     ///
     /// - Warning: Tap-to-focus works only in `autoFocus` mode.
     ///     Make sure you're using this mode for the feature to work.
-    func interactivePreview(
-        gravity: AVLayerVideoGravity = .resizeAspectFill,
-        prefereedFocusMode focusMode: AVCaptureDevice.FocusMode = .continuousAutoFocus
-    ) -> InteractivePreview {
+    func interactivePreview(gravity: AVLayerVideoGravity = .resizeAspectFill) -> InteractivePreview {
         let internalPreview = Preview(of: self, gravity: gravity)
-        return InteractivePreview(internalPreview, preferredFocusMode: focusMode)
+        return InteractivePreview(internalPreview)
     }
 }
 
@@ -63,14 +60,13 @@ public struct InteractivePreview: View {
     
     var subjectAreaChangeMonitoringSubscription: Cancellable?
     
-    init(_ preview: Preview, preferredFocusMode focusMode: AVCaptureDevice.FocusMode) {
+    init(_ preview: Preview) {
         self.preview = preview
-        self.preferredFocusMode = focusMode
         self.subjectAreaChangeMonitoringSubscription = preview
             .session
             .getSubjectAreaDidChangePublisher()
             .sink(receiveValue: { [self] _ in
-                self.resetFocusMode(to: focusMode)
+                self.resetFocusMode()
             })
     }
     
@@ -135,7 +131,8 @@ private extension InteractivePreview {
                     return
                 }
                 
-                session.focus(mode: currentFocusMode, point: value.location)
+                print(currentFocusMode.rawValue)
+                session.focus(mode: .autoFocus, point: value.location)
                 focusingLocation = value.location
                 
                 if enableShowingCrosshair {
@@ -164,9 +161,10 @@ private extension InteractivePreview {
             }
     }
     
-    func resetFocusMode(to focusMode: AVCaptureDevice.FocusMode) {
+    func resetFocusMode() {
         guard session.isRunning else { return }
-        session.focus(mode: focusMode)
+        print("reset", currentFocusMode?.rawValue)
+        session.focus(mode: .autoFocus)
     }
     
     func showCrosshair() {
