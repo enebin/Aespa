@@ -18,10 +18,13 @@ class Logger {
 
     static func log(
         error: Error,
+        message: String = "",
         method: String = #function
     ) {
         if enableLogging {
-            print("[Aespa : error] [\(method)] - \(error) : \(error.localizedDescription)")
+            let timestamp = Date().description
+            
+            print("[⚠️ Aespa Error] \(timestamp) | Method: \(method) | Error: \(error) | Description: \(error.localizedDescription) | Message: \(message)")
         }
     }
 }

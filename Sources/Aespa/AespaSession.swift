@@ -157,11 +157,6 @@ open class AespaSession {
     // MARK: - Utilities
 
     public func getSubjectAreaDidChangePublisher() -> AnyPublisher<Notification, Never> {
-        if isSubjectAreaChangeMonitoringEnabled != true {
-            Logger.log(
-                message: "`isSubjectAreaChangeMonitoringEnabled` is not set `true`. `AVCaptureDeviceSubjectAreaDidChange` publisher may not publish anything.")
-        }
-        
         return NotificationCenter.default
             .publisher(for: NSNotification.Name.AVCaptureDeviceSubjectAreaDidChange)
             .eraseToAnyPublisher()

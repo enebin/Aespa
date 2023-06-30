@@ -33,8 +33,7 @@ class AespaCoreSession: AVCaptureSession {
                 
                 try tuner.tune(self)
             } catch let error {
-                print(tuner)
-                Logger.log(error: error)
+                Logger.log(error: error, message: "in \(tuner)")
                 onComplete(.failure(error))
             }
         }
@@ -55,8 +54,7 @@ class AespaCoreSession: AVCaptureSession {
                 
                 try tuner.tune(device)
             } catch let error {
-                print(tuner)
-                Logger.log(error: error)
+                Logger.log(error: error, message: "in \(tuner)")
                 onComplete(.failure(error))
             }
         }
@@ -72,8 +70,7 @@ class AespaCoreSession: AVCaptureSession {
                 try tuner.tune(connection)
                 onComplete(.success(()))
             } catch let error {
-                print(tuner)
-                Logger.log(error: error)
+                Logger.log(error: error, message: "in \(tuner)")
                 onComplete(.failure(error))
             }
         }
@@ -89,8 +86,7 @@ class AespaCoreSession: AVCaptureSession {
                 try processor.process(output)
                 onComplete(.success(()))
             } catch let error {
-                print(processor)
-                Logger.log(error: error)
+                Logger.log(error: error, message: "in \(processor)")
                 onComplete(.failure(error))
             }
         }

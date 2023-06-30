@@ -15,7 +15,8 @@ class VideoContentViewModel: ObservableObject {
     let aespaSession: AespaSession
     
     var preview: InteractivePreview {
-        aespaSession.interactivePreview()
+        let option = InteractivePreviewOption(enableShowingCrosshair: false)
+        return aespaSession.interactivePreview(option: option)
     }
     
     private var subscription = Set<AnyCancellable>()
@@ -36,7 +37,11 @@ class VideoContentViewModel: ObservableObject {
             .changeMonitoring(enabled: true)
             .orientation(to: .portrait)
             .quality(to: .high)
-            .custom(WideColorCameraTuner())
+            .custom(WideColorCameraTuner()) { result in
+                if case .failure(let error) = result {
+                    print("Error: ", error)
+                }
+            }
         
         // Photo-only setting
         aespaSession
