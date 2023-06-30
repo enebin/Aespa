@@ -21,13 +21,15 @@ let aespaSession = Aespa.session(with: aespaOption)
 - **Latest API documentation** can be found in [here](https://enebin.github.io/Aespa/documentation/aespa/)
 
 ### Index
+Introduction
+Aespa is a robust and intuitive Swift package for video capturing, built with a focus on the ease of setting up and usage.
+
+It is designed to be easy to use from beginners to intermediate developers. If you're new to video recording on iOS or if you're looking to simplify your existing camera setup, Aespa could be the perfect fit for your project.
 
 - [Introduction](#Introduction)
-- [Features](#Features)
     - [Super Easy to Use](#Super-Easy-to-Use)
-    - [Offer Essential Preset Configuration & Customization](#Offer-Essential-Preset-Configuration-&-Customization)
-    - [`Combine` & `async` Support](#Combine-&-async-Support)
-    - [Comprehensive Error Handling](#Comprehensive-Error-Handling)
+    - [No more delegate](#No-more-delegate)
+    - [Also](#Also)
 - [Functionality](#Functionality)
 - [Installation](#Installation)
     - [Swift Package Manager (SPM)](#Swift-Package-Manager-(SPM))
