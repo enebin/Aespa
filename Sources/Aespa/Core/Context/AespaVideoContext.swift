@@ -24,6 +24,7 @@ public class AespaVideoContext<Common: CommonContext> {
     
     private let videoFileBufferSubject: CurrentValueSubject<Result<VideoFile, Error>?, Never>
 
+    /// A Boolean value that indicates whether the session is currently recording video.
     public var isRecording: Bool
 
     init(
@@ -49,8 +50,7 @@ public class AespaVideoContext<Common: CommonContext> {
         if let firstVideoFile = fileManager.fetchVideo(
             albumName: option.asset.albumName,
             subDirectoryName: option.asset.videoDirectoryName,
-            count: 1).first
-        {
+            count: 1).first {
             videoFileBufferSubject.send(.success(firstVideoFile))
         }
     }
@@ -60,10 +60,11 @@ extension AespaVideoContext: VideoContext {
     public var underlyingVideoContext: AespaVideoContext {
         self
     }
-    
+
     public var isMuted: Bool {
         coreSession.audioDeviceInput == nil
     }
+    
     public var videoFilePublisher: AnyPublisher<Result<VideoFile, Error>, Never> {
         videoFileBufferSubject.handleEvents(receiveOutput: { status in
             if case .failure(let error) = status {
@@ -74,66 +75,94 @@ extension AespaVideoContext: VideoContext {
         .eraseToAnyPublisher()
     }
     
-    public func startRecordingWithError() throws {
-        let fileName = option.asset.fileNameHandler()
-        let filePath = try FilePathProvider.requestFilePath(
-            from: fileManager.systemFileManager,
-            directoryName: option.asset.albumName,
-            subDirectoryName: option.asset.videoDirectoryName,
-            fileName: fileName,
-            extension: "mp4")
-        
-        if option.session.autoVideoOrientationEnabled {
-            try commonContext.setOrientationWithError(to: UIDevice.current.orientation.toVideoOrientation)
+    public func startRecording(_ onComplete: @escaping CompletionHandler = { _ in }) {
+        do {
+            let fileName = option.asset.fileNameHandler()
+            let filePath = try FilePathProvider.requestFilePath(
+                from: fileManager.systemFileManager,
+                directoryName: option.asset.albumName,
+                subDirectoryName: option.asset.videoDirectoryName,
+                fileName: fileName,
+                extension: "mp4")
+            
+            if option.session.autoVideoOrientationEnabled {
+                commonContext.orientation(to: UIDevice.current.orientation.toVideoOrientation, onComplete)
+            }
+            
+            recorder.startRecording(in: filePath, onComplete)
+            isRecording = true
+        } catch let error {
+            onComplete(.failure(error))
         }
-
-        try recorder.startRecording(in: filePath)
     }
     
-    public func stopRecordingWithError() async throws -> VideoFile {
-        let videoFilePath = try await recorder.stopRecording()
-        let videoFile = VideoFileGenerator.generate(with: videoFilePath, date: Date())
+    public func stopRecording(_ onCompelte: @escaping ResultHandler<VideoFile> = { _ in }) {
+        Task(priority: .utility) {
+            do {
+                let videoFilePath = try await recorder.stopRecording()
+                let videoFile = VideoFileGenerator.generate(with: videoFilePath, date: Date())
 
-        try await albumManager.addToAlbum(filePath: videoFilePath)
-        videoFileBufferSubject.send(.success(videoFile))
+                try await albumManager.addToAlbum(filePath: videoFilePath)
+                videoFileBufferSubject.send(.success(videoFile))
 
-        return videoFile
+                isRecording = false
+                onCompelte(.success(videoFile))
+            } catch let error {
+                Logger.log(error: error)
+                onCompelte(.failure(error))
+            }
+        }
     }
     
     @discardableResult
-    public func muteWithError() throws -> AespaVideoContext {
+    public func mute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
         let tuner = AudioTuner(isMuted: true)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, onComplete)
+        
         return self
     }
     
     @discardableResult
-    public func unmuteWithError() throws -> AespaVideoContext {
+    public func unmute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
         let tuner = AudioTuner(isMuted: false)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, onComplete)
+        
         return self
     }
     
     @discardableResult
-    public func setStabilizationWithError(mode: AVCaptureVideoStabilizationMode) throws -> AespaVideoContext {
+    public func stabilization(
+        mode: AVCaptureVideoStabilizationMode,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoContext {
         let tuner = VideoStabilizationTuner(stabilzationMode: mode)
-        try coreSession.run(tuner)
+        coreSession.run(tuner, onComplete)
+        
         return self
     }
     
     @discardableResult
-    public func setTorchWithError(mode: AVCaptureDevice.TorchMode, level: Float) throws -> AespaVideoContext {
+    public func torch(
+        mode: AVCaptureDevice.TorchMode,
+        level: Float,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoContext {
         let tuner = TorchTuner(level: level, torchMode: mode)
-        try coreSession.run(tuner)
-        return self
-    }
-
-    public func customizewWithError<T: AespaSessionTuning>(_ tuner: T) throws -> AespaVideoContext {
-        try coreSession.run(tuner)
+        coreSession.run(tuner, onComplete)
+        
         return self
     }
     
-    public func fetchVideoFiles(limit: Int) -> [VideoFile] {
+    public func customize<T: AespaSessionTuning>(
+        _ tuner: T,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoContext {
+        coreSession.run(tuner, onComplete)
+        
+        return self
+    }
+    
+    public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
         return fileManager.fetchVideo(
             albumName: option.asset.albumName,
             subDirectoryName: option.asset.videoDirectoryName,

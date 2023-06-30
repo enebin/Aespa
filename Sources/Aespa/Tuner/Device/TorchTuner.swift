@@ -14,10 +14,10 @@ struct TorchTuner: AespaDeviceTuning {
 
     func tune<T>(_ device: T) throws where T: AespaCaptureDeviceRepresentable {
         guard device.hasTorch else {
-            throw AespaError.device(reason: .unsupported)
+            throw AespaError.device(reason: .notSupported)
         }
 
-        device.setTorchMode(torchMode)
+        device.torchMode(torchMode)
         try device.setTorchModeOn(level: level)
     }
 }

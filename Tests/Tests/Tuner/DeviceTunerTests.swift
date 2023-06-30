@@ -22,21 +22,23 @@ final class DeviceTunerTests: XCTestCase {
     override func tearDownWithError() throws {
         device = nil
     }
-
-    func testAutoFocusTuner() throws {
+    
+    func testFocusTuner() throws {
         let mode = AVCaptureDevice.FocusMode.locked
-        let tuner = AutoFocusTuner(mode: mode)
+        let point = CGPoint()
+        let tuner = FocusTuner(mode: mode, point: point)
         
         stub(device) { proxy in
             when(proxy.isFocusModeSupported(equal(to: mode))).thenReturn(true)
-            when(proxy.setFocusMode(equal(to: mode))).then { mode in
-                when(proxy.focusMode.get).thenReturn(mode)
+            when(proxy.setFocusMode(equal(to: mode),
+                                    point: equal(to: point))).then { mode in
+                when(proxy.focusMode.get).thenReturn(.locked)
             }
         }
         
         try tuner.tune(device)
         verify(device)
-            .setFocusMode(equal(to: mode))
+            .setFocusMode(equal(to: mode), point: equal(to: point))
             .with(returnType: Void.self)
         
         XCTAssertEqual(device.focusMode, mode)
@@ -47,14 +49,14 @@ final class DeviceTunerTests: XCTestCase {
         let tuner = ZoomTuner(zoomFactor: factor)
         
         stub(device) { proxy in
-            when(proxy.setZoomFactor(equal(to: factor))).then { factor in
+            when(proxy.zoomFactor(equal(to: factor))).then { factor in
                 when(proxy.videoZoomFactor.get).thenReturn(factor)
             }
         }
         
         tuner.tune(device)
         verify(device)
-            .setZoomFactor(equal(to: factor))
+            .zoomFactor(equal(to: factor))
             .with(returnType: Void.self)
         
         XCTAssertEqual(device.videoZoomFactor, factor)
@@ -67,13 +69,13 @@ final class DeviceTunerTests: XCTestCase {
         
         stub(device) { proxy in
             when(proxy.hasTorch.get).thenReturn(true)
-            when(proxy.setTorchMode(equal(to: mode))).thenDoNothing()
+            when(proxy.torchMode(equal(to: mode))).thenDoNothing()
             when(proxy.setTorchModeOn(level: level)).thenDoNothing()
         }
         
         try tuner.tune(device)
         verify(device)
-            .setTorchMode(equal(to: mode))
+            .torchMode(equal(to: mode))
             .with(returnType: Void.self)
         
         verify(device)

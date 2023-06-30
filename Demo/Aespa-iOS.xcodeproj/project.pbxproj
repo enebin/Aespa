@@ -1,0 +1,406 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0716FED02A37326600B5AA1B /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0716FECF2A37326600B5AA1B /* GalleryView.swift */; };
+		0716FED42A3737D700B5AA1B /* Aespa in Frameworks */ = {isa = PBXBuildFile; productRef = 0716FED32A3737D700B5AA1B /* Aespa */; };
+		07778FF12A31E3A000B1DC6C /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07778FF02A31E3A000B1DC6C /* SettingView.swift */; };
+		9CE5B7DC2A306F350058334D /* Aespa_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE5B7DB2A306F350058334D /* Aespa_iOSApp.swift */; };
+		9CE5B7DE2A306F350058334D /* VideoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE5B7DD2A306F350058334D /* VideoContentView.swift */; };
+		9CE5B7E02A306F370058334D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9CE5B7DF2A306F370058334D /* Assets.xcassets */; };
+		9CE5B7E32A306F370058334D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9CE5B7E22A306F370058334D /* Preview Assets.xcassets */; };
+		9CE5B80B2A3070380058334D /* VideoContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE5B80A2A3070380058334D /* VideoContentViewModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0716FECF2A37326600B5AA1B /* GalleryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
+		07778FF02A31E3A000B1DC6C /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
+		07F81CEE2A49A21B00DEDB04 /* Aespa */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Aespa; path = ..; sourceTree = "<group>"; };
+		9CE5B7D82A306F350058334D /* Aespa-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Aespa-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CE5B7DB2A306F350058334D /* Aespa_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aespa_iOSApp.swift; sourceTree = "<group>"; };
+		9CE5B7DD2A306F350058334D /* VideoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoContentView.swift; sourceTree = "<group>"; };
+		9CE5B7DF2A306F370058334D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9CE5B7E22A306F370058334D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		9CE5B80A2A3070380058334D /* VideoContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoContentViewModel.swift; sourceTree = "<group>"; };
+		9CE5B80E2A316BC00058334D /* Aespa-iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Aespa-iOS.entitlements"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9CE5B7D52A306F350058334D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0716FED42A3737D700B5AA1B /* Aespa in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		07F81CED2A49A21B00DEDB04 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				07F81CEE2A49A21B00DEDB04 /* Aespa */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		9CE5B7CF2A306F350058334D = {
+			isa = PBXGroup;
+			children = (
+				07F81CED2A49A21B00DEDB04 /* Packages */,
+				9CE5B7DA2A306F350058334D /* Aespa-iOS */,
+				9CE5B7D92A306F350058334D /* Products */,
+				9CE5B8072A3070200058334D /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		9CE5B7D92A306F350058334D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9CE5B7D82A306F350058334D /* Aespa-iOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9CE5B7DA2A306F350058334D /* Aespa-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				9CE5B80E2A316BC00058334D /* Aespa-iOS.entitlements */,
+				9CE5B7DB2A306F350058334D /* Aespa_iOSApp.swift */,
+				9CE5B7DD2A306F350058334D /* VideoContentView.swift */,
+				0716FECF2A37326600B5AA1B /* GalleryView.swift */,
+				07778FF02A31E3A000B1DC6C /* SettingView.swift */,
+				9CE5B80A2A3070380058334D /* VideoContentViewModel.swift */,
+				9CE5B7DF2A306F370058334D /* Assets.xcassets */,
+				9CE5B7E12A306F370058334D /* Preview Content */,
+			);
+			path = "Aespa-iOS";
+			sourceTree = "<group>";
+		};
+		9CE5B7E12A306F370058334D /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				9CE5B7E22A306F370058334D /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		9CE5B8072A3070200058334D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9CE5B7D72A306F350058334D /* Aespa-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9CE5B7FC2A306F370058334D /* Build configuration list for PBXNativeTarget "Aespa-iOS" */;
+			buildPhases = (
+				9CE5B7D42A306F350058334D /* Sources */,
+				9CE5B7D52A306F350058334D /* Frameworks */,
+				9CE5B7D62A306F350058334D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Aespa-iOS";
+			packageProductDependencies = (
+				0716FED32A3737D700B5AA1B /* Aespa */,
+			);
+			productName = "Aespa-iOS";
+			productReference = 9CE5B7D82A306F350058334D /* Aespa-iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9CE5B7D02A306F350058334D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					9CE5B7D72A306F350058334D = {
+						CreatedOnToolsVersion = 14.3;
+					};
+				};
+			};
+			buildConfigurationList = 9CE5B7D32A306F350058334D /* Build configuration list for PBXProject "Aespa-iOS" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9CE5B7CF2A306F350058334D;
+			packageReferences = (
+			);
+			productRefGroup = 9CE5B7D92A306F350058334D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9CE5B7D72A306F350058334D /* Aespa-iOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9CE5B7D62A306F350058334D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CE5B7E32A306F370058334D /* Preview Assets.xcassets in Resources */,
+				9CE5B7E02A306F370058334D /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9CE5B7D42A306F350058334D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CE5B7DE2A306F350058334D /* VideoContentView.swift in Sources */,
+				07778FF12A31E3A000B1DC6C /* SettingView.swift in Sources */,
+				9CE5B7DC2A306F350058334D /* Aespa_iOSApp.swift in Sources */,
+				9CE5B80B2A3070380058334D /* VideoContentViewModel.swift in Sources */,
+				0716FED02A37326600B5AA1B /* GalleryView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9CE5B7FA2A306F370058334D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		9CE5B7FB2A306F370058334D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9CE5B7FD2A306F370058334D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Aespa-iOS/Aespa-iOS.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Aespa-iOS/Preview Content\"";
+				DEVELOPMENT_TEAM = W6QHM4Y43Z;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Use camera";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use mic";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Use and add album";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Use album";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "co.enebin.Aespa-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9CE5B7FE2A306F370058334D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Aespa-iOS/Aespa-iOS.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Aespa-iOS/Preview Content\"";
+				DEVELOPMENT_TEAM = W6QHM4Y43Z;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Use camera";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use mic";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Use and add album";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Use album";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "co.enebin.Aespa-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9CE5B7D32A306F350058334D /* Build configuration list for PBXProject "Aespa-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CE5B7FA2A306F370058334D /* Debug */,
+				9CE5B7FB2A306F370058334D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9CE5B7FC2A306F370058334D /* Build configuration list for PBXNativeTarget "Aespa-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CE5B7FD2A306F370058334D /* Debug */,
+				9CE5B7FE2A306F370058334D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0716FED32A3737D700B5AA1B /* Aespa */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Aespa;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 9CE5B7D02A306F350058334D /* Project object */;
+}

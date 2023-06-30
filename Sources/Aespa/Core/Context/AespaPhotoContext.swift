@@ -42,8 +42,7 @@ open class AespaPhotoContext {
         if let firstPhotoFile = fileManager.fetchPhoto(
             albumName: option.asset.albumName,
             subDirectoryName: option.asset.photoDirectoryName,
-            count: 1).first
-        {
+            count: 1).first {
             photoFileBufferSubject.send(.success(firstPhotoFile))
         }
     }
@@ -68,7 +67,47 @@ extension AespaPhotoContext: PhotoContext {
         photoSetting
     }
     
-    public func capturePhotoWithError() async throws -> PhotoFile {
+    public func capturePhoto(
+        _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void
+    ) {
+        Task(priority: .utility) {
+            do {
+                let photoFile = try await self.capturePhotoWithError()
+                completionHandler(.success(photoFile))
+            } catch let error {
+                Logger.log(error: error)
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
+    @discardableResult
+    public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
+        photoSetting.flashMode = mode
+        return self
+    }
+    
+    @discardableResult
+    public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
+        photoSetting.isAutoRedEyeReductionEnabled = enabled
+        return self
+    }
+    
+    public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
+        photoSetting = setting
+        return self
+    }
+    
+    public func fetchPhotoFiles(limit: Int) -> [PhotoFile] {
+        return fileManager.fetchPhoto(
+            albumName: option.asset.albumName,
+            subDirectoryName: option.asset.photoDirectoryName,
+            count: limit)
+    }
+}
+
+private extension AespaPhotoContext {
+    func capturePhotoWithError() async throws -> PhotoFile {
         let setting = AVCapturePhotoSettings(from: photoSetting)
         let rawPhotoAsset = try await camera.capture(setting: setting)
         
@@ -92,29 +131,5 @@ extension AespaPhotoContext: PhotoContext {
         photoFileBufferSubject.send(.success(photoFile))
 
         return photoFile
-    }
-    
-    @discardableResult
-    public func setFlashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
-        photoSetting.flashMode = mode
-        return self
-    }
-    
-    @discardableResult
-    public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
-        photoSetting.isAutoRedEyeReductionEnabled = enabled
-        return self
-    }
-    
-    public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
-        photoSetting = setting
-        return self
-    }
-    
-    public func fetchPhotoFiles(limit: Int) -> [PhotoFile] {
-        return fileManager.fetchPhoto(
-            albumName: option.asset.albumName,
-            subDirectoryName: option.asset.photoDirectoryName,
-            count: limit)
     }
 }

@@ -11,21 +11,23 @@ import AVFoundation
 protocol AespaCaptureDeviceRepresentable {
     var hasTorch: Bool { get }
     var focusMode: AVCaptureDevice.FocusMode { get set }
+    var isSubjectAreaChangeMonitoringEnabled: Bool { get set }
     var flashMode: AVCaptureDevice.FlashMode { get set }
     var videoZoomFactor: CGFloat { get set }
 
     var maxResolution: Double? { get }
-
+    
     func isFocusModeSupported(_ focusMode: AVCaptureDevice.FocusMode) -> Bool
 
-    func setZoomFactor(_ factor: CGFloat)
-    func setFocusMode(_ focusMode: AVCaptureDevice.FocusMode)
-    func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode)
+    func zoomFactor(_ factor: CGFloat)
+    func setFocusMode(_ focusMode: AVCaptureDevice.FocusMode, point: CGPoint?) throws
+    func torchMode(_ torchMode: AVCaptureDevice.TorchMode)
+    func enableMonitoring(_ enabled: Bool)
     func setTorchModeOn(level torchLevel: Float) throws
 }
 
 extension AVCaptureDevice: AespaCaptureDeviceRepresentable {
-    func setTorchMode(_ torchMode: TorchMode) {
+    func torchMode(_ torchMode: TorchMode) {
         switch torchMode {
         case .off:
             self.torchMode = .off
@@ -37,12 +39,30 @@ extension AVCaptureDevice: AespaCaptureDeviceRepresentable {
             self.torchMode = .off
         }
     }
-
-    func setFocusMode(_ focusMode: FocusMode) {
-        self.focusMode = focusMode
+    
+    func enableMonitoring(_ enabled: Bool) {
+        self.isSubjectAreaChangeMonitoringEnabled = enabled
     }
 
-    func setZoomFactor(_ factor: CGFloat) {
+    func setFocusMode(_ focusMode: AVCaptureDevice.FocusMode, point: CGPoint?) throws {
+        if isAdjustingFocus {
+            throw AespaError.device(reason: .busy)
+        }
+        
+        if isFocusModeSupported(focusMode) {
+            self.focusMode = focusMode
+        } else {
+            throw AespaError.device(reason: .notSupported)
+        }
+        
+        if isFocusPointOfInterestSupported {
+            if let point { self.focusPointOfInterest = point }
+        } else {
+            throw AespaError.device(reason: .notSupported)
+        }
+    }
+
+    func zoomFactor(_ factor: CGFloat) {
         self.videoZoomFactor = factor
     }
 

@@ -53,8 +53,10 @@ public extension AespaError {
                 "Output is already exists"
         case unableToSetOutput =
                 "Unable to set output."
-        case unsupported =
-                "Unsupported device (supported on iPhone XR and later devices)"
+        case notSupported =
+                "Unsupported functionality."
+        case busy =
+                "Device is busy now."
     }
 
     enum PermissionErrorReason: String {

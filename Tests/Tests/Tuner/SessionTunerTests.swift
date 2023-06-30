@@ -29,12 +29,12 @@ final class SessionTunerTests: XCTestCase {
         let tuner = QualityTuner(videoQuality: preset)
         
         stub(mockSessionProtocol) { proxy in
-            when(proxy.setVideoQuality(to: any())).thenDoNothing()
+            when(proxy.videoQuality(to: any())).thenDoNothing()
         }
         
         try tuner.tune(mockSessionProtocol)
         verify(mockSessionProtocol)
-            .setVideoQuality(to: equal(to: AVCaptureSession.Preset.cif352x288))
+            .videoQuality(to: equal(to: AVCaptureSession.Preset.cif352x288))
             .with(returnType: Void.self)
     }
     
@@ -43,12 +43,12 @@ final class SessionTunerTests: XCTestCase {
         let tuner = CameraPositionTuner(position: position)
         
         stub(mockSessionProtocol) { proxy in
-            when(proxy.setCameraPosition(to: any(), device: any())).thenDoNothing()
+            when(proxy.cameraPosition(to: any(), device: any())).thenDoNothing()
         }
         
         try tuner.tune(mockSessionProtocol)
         verify(mockSessionProtocol)
-            .setCameraPosition(to: equal(to: AVCaptureDevice.Position.front), device: any())
+            .cameraPosition(to: equal(to: AVCaptureDevice.Position.front), device: any())
             .with(returnType: Void.self)
     }
     
@@ -66,62 +66,6 @@ final class SessionTunerTests: XCTestCase {
         tuner = AudioTuner(isMuted: true)
         try tuner.tune(mockSessionProtocol)
         verify(mockSessionProtocol).removeAudioInput()
-    }
-    
-    func testSessionLaunchTuner_whenNotRunning() throws {
-        stub(mockSessionProtocol) { proxy in
-            when(proxy.isRunning.get).thenReturn(false)
-            
-            when(proxy.addMovieInput()).thenDoNothing()
-            when(proxy.addMovieFileOutput()).thenDoNothing()
-            when(proxy.addCapturePhotoOutput()).thenDoNothing()
-            
-            when(proxy.startRunning()).thenDoNothing()
-        }
-
-        let tuner = SessionLaunchTuner()
-        try tuner.tune(mockSessionProtocol)
-        
-        verify(mockSessionProtocol)
-            .addMovieInput()
-            .with(returnType: Void.self)
-        
-        verify(mockSessionProtocol)
-            .addMovieFileOutput()
-            .with(returnType: Void.self)
-        
-        verify(mockSessionProtocol)
-            .addCapturePhotoOutput()
-            .with(returnType: Void.self)
-        
-        verify(mockSessionProtocol)
-            .startRunning()
-            .with(returnType: Void.self)
-    }
-    
-    func testSessionLaunchTuner_whenRunning() throws {
-        stub(mockSessionProtocol) { proxy in
-            when(proxy.isRunning.get).thenReturn(true)
-        }
-        
-        let tuner = SessionLaunchTuner()
-        try tuner.tune(mockSessionProtocol)
-        
-        verify(mockSessionProtocol, never())
-            .addMovieInput()
-            .with(returnType: Void.self)
-        
-        verify(mockSessionProtocol, never())
-            .addMovieFileOutput()
-            .with(returnType: Void.self)
-        
-        verify(mockSessionProtocol, never())
-            .addCapturePhotoOutput()
-            .with(returnType: Void.self)
-        
-        verify(mockSessionProtocol, never())
-            .startRunning()
-            .with(returnType: Void.self)
     }
     
     func testSessionTerminationTuner_whenRunning() throws {

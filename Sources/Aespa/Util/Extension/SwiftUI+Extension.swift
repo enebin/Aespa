@@ -10,44 +10,33 @@ import SwiftUI
 import AVFoundation
 
 public extension AespaSession {
-    /// A `SwiftUI` `View` that you use to display video as it is being captured by an input device.
+    /// This function is used to create a preview of the session. Doesn't offer any functionalities.
+    /// It returns a SwiftUI `View` that displays video as it is being captured.
     ///
-    /// - Parameter gravity: Define `AVLayerVideoGravity` for preview's orientation.
-    ///     .resizeAspectFill` by default.
+    /// - Parameter gravity: Defines how the video is displayed within the layer bounds.
+    ///     .resizeAspectFill` by default, which scales the video to fill the layer bounds.
     ///
-    /// - Returns: `some UIViewRepresentable` which can coordinate other `View` components
-    func preview(gravity: AVLayerVideoGravity = .resizeAspectFill) -> some UIViewControllerRepresentable {
-        Preview(of: previewLayer, gravity: gravity)
+    /// - Returns: A SwiftUI `View` that displays the video feed.
+    func preview(gravity: AVLayerVideoGravity = .resizeAspectFill) -> some View {
+        return Preview(of: self, gravity: gravity)
     }
-}
-
-private struct Preview: UIViewControllerRepresentable {
-    let previewLayer: AVCaptureVideoPreviewLayer
-    let gravity: AVLayerVideoGravity
-
-    init(
-        of previewLayer: AVCaptureVideoPreviewLayer,
-        gravity: AVLayerVideoGravity
-    ) {
-        self.gravity = gravity
-        self.previewLayer = previewLayer
-    }
-
-    func makeUIViewController(context: Context) -> UIViewController {
-        let viewController = UIViewController()
-        viewController.view.backgroundColor = .clear
-
-        return viewController
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        previewLayer.videoGravity = gravity
-        uiViewController.view.layer.addSublayer(previewLayer)
-
-        previewLayer.frame = uiViewController.view.bounds
-    }
-
-    func dismantleUIViewController(_ uiViewController: UIViewController, coordinator: ()) {
-        previewLayer.removeFromSuperlayer()
+    
+    /// This function is used to create an interactive preview of the session.
+    /// It returns a SwiftUI `View` that not only displays video as it is being captured,
+    /// but also allows user interaction like tap-to-focus, pinch zoom and double tap position change.
+    ///
+    /// - Parameter gravity: Defines how the video is displayed within the layer bounds.
+    ///     .resizeAspectFill` by default, which scales the video to fill the layer bounds.
+    ///
+    /// - Returns: A SwiftUI `View` that displays the video feed and allows user interaction.
+    ///
+    /// - Warning: Tap-to-focus works only in `autoFocus` mode.
+    ///     Make sure you're using this mode for the feature to work.
+    func interactivePreview(
+        gravity: AVLayerVideoGravity = .resizeAspectFill,
+        option: InteractivePreviewOption = .init()
+    ) -> InteractivePreview {
+        let internalPreview = Preview(of: self, gravity: gravity)
+        return InteractivePreview(internalPreview)
     }
 }

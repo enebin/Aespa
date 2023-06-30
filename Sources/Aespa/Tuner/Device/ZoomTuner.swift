@@ -12,6 +12,6 @@ struct ZoomTuner: AespaDeviceTuning {
     var zoomFactor: CGFloat
 
     func tune<T: AespaCaptureDeviceRepresentable>(_ device: T) {
-        device.setZoomFactor(zoomFactor)
+        device.zoomFactor(zoomFactor)
     }
 }

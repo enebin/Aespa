@@ -5,14 +5,13 @@
 
 <div align="center">
 
-### Add a camera in just 3 lines
+### From camera to album. In just 2 lines.
 
 </div>
 
 ``` Swift 
 let aespaOption = AespaOption(albumName: "YOUR_ALBUM_NAME")
 let aespaSession = Aespa.session(with: aespaOption)
-try await Aespa.configure()
 // Done!
 ```
 
@@ -48,16 +47,12 @@ try await Aespa.configure()
 ## Introduction
 Aespa is a robust and intuitive Swift package for video capturing, built with a focus on the ease of setting up and usage. 
 
-**This package provides a high-level API over Apple's `AVFoundation` framework**: abstracting away its complexity and making it straightforward for developers to implement video capturing functionalities in their iOS applications.
+It is designed to be easy to use from beginners to intermediate developers.  If you're new to video recording on iOS or if you're looking to simplify your existing camera setup, Aespa could be the perfect fit for your project.
 
-**This package provides a clean, user-friendly API for common video recording tasks**: including starting and stopping recording, managing audio settings, adjusting video quality, setting camera position, etc.
-
-
-## Features
-Aespa is designed to be easy to use for both beginners and experienced developers.  If you're new to video recording on iOS or if you're looking to simplify your existing recording setup, Aespa could be the perfect fit for your project.
+### ✅ Super easy to use
 
 <details>
-<summary> ✅ Super easy to use </summary>
+<summary> Zip the boring configuration routine </summary>
 
 *Before*
 ``` mermaid
@@ -69,6 +64,7 @@ AS -- "Connect" --> AIA["AVCaptureAudioInput"]
 AS -- "Add" --> FO["AVCaptureFileOutput"]
 FO --> PHCollectionListChangeRequest
 ```
+
 **Aespa**
 ``` mermaid
 graph LR
@@ -80,7 +76,7 @@ graph LR
 </details>
 
 <details>
-<summary> ✅ Offer essential preset configuration & customization </summary>
+<summary> Offer essential preset configuration & customization </summary>
 
 ``` mermaid
 graph TD
@@ -96,7 +92,16 @@ AS --> D["Fetching asset files"]
 </details>
 
 <details>
-<summary> ✅ Combine & async support </summary>
+<summary> Comprehensive error handling </summary>
+
+- The package provides comprehensive error handling, allowing you to build robust applications with minimal effort.
+
+</details>
+
+### ✅ No more delegate
+<details>
+
+<summary> Combine support </summary>
 
 ``` mermaid
 graph LR;
@@ -110,12 +115,12 @@ graph LR;
 
 </details>
 
-<details>
-<summary> ✅ Comprehensive error handling </summary>
+### ✅ Also
+- Automated system permission management.
+- Seamless image and video capture within a single preview session.
+- Thread-safe.
+- Support SPM.
 
-- The package provides comprehensive error handling, allowing you to build robust applications with minimal effort.
-
-</details>
 
 ## Functionality
 
@@ -123,13 +128,24 @@ graph LR;
 > 
 > You can access our **official documentation** for the most comprehensive and up-to-date explanations in [here](https://enebin.github.io/Aespa/documentation/aespa/)
 
+### `InteractivePreview`
+One of our main feature, `InteractivePreview` provides a comprehensive and intuitive way for users to interact directly with the camera preview. 
+
+| Features               | Description                                                                                                      |
+|------------------------|------------------------------------------------------------------------------------------------------------------|
+| Tap to focus           | Adjusts the focus of the camera based on the tapped area on the screen.                                          |
+| Double tap to change camera  | Switches between the front and back camera upon double tapping.                                                  |
+| Pinch zoom          | Allows zooming in or out on the preview by using a pinch gesture.                                                |
+
+
+### More manual options
 | Common                           | Description                                                                                                      |
 |----------------------------------|------------------------------------------------------------------------------------------------------------------|
-| ✨ `zoom`                           | Modifies the zoom factor.                                                                                        |
-| ✨ `setPosition`                    | Changes the camera position.                                                                                     |
-| `setOrientation`                 | Modifies the orientation.                                                                                        |
-| `setAutofocusing`                | Alters the autofocusing mode.                                                                                    |
-| `setQuality`                     | Adjusts the video quality preset for the recording session.                                                      |
+| ✨ `zoom`                        | Modifies the zoom factor.                                                                                        |
+| ✨ `position`                 | Changes the camera position.                                                                                     |
+| `orientation`                 | Modifies the orientation.                                                                                        |
+| `focus`                       | Alters the autofocusing mode.                                                                                    |
+| `quality`                     | Adjusts the video quality preset for the recording session.                                                      |
 | `doctor`                         | Checks if essential conditions to start recording are satisfied.                                                 |
 | `previewLayerPublisher`          | Responsible for emitting updates to the preview layer.                                                           |
 
@@ -139,8 +155,8 @@ graph LR;
 | ✨ `stopRecording`              | Terminates the current video recording session and attempts to save the video file.                              |
 | `mute`                           | Mutes the audio input.                                                                                           |
 | `unmute`                         | Restores the audio input.                                                                                        |
-| `setStabilization`               | Alters the stabilization mode.                                                                                   |
-| `setTorch`                       | Adjusts the torch mode and level.                                                                                |
+| `stabilization`               | Alters the stabilization mode.                                                                                   |
+| `torch`                       | Adjusts the torch mode and level.                                                                                |
 | `customize`                      | Customizes the session with a specific tuning configuration.                                                     |
 | ✨ `fetchVideoFiles`                | Fetches a list of recorded video files.                                                                          |
 | `videoFilePublisher`             | Emits a `Result` object containing a latest video file data.                          |
@@ -148,11 +164,12 @@ graph LR;
 | Photo                            | Description                                                                                                      |
 |----------------------------------|------------------------------------------------------------------------------------------------------------------|
 | ✨ `capturePhoto`               | Capture a photo and returns a result image file.          |
-| ✨ `setFlashMode`                   | Sets the flash mode for the photo capture session.                                                               |
+| ✨ `flashMode`                   | Sets the flash mode for the photo capture session.                                                               |
 | `redEyeReduction`                | Enables or disables red-eye reduction for the photo capture session.                                             |
 | `customize`                      | Customizes the photo capture session with a specific `AVCapturePhotoSettings`.                                   |
 | ✨ `fetchPhotoFiles`                | Fetches a list of captured photos files.                                                                          |
 | `photoFilePublisher`             | Emits a `Result` object containing a latest image file data.                            |
+
 
 ## Installation 
 ### Swift Package Manager (SPM)
@@ -166,7 +183,7 @@ https://github.com/enebin/Aespa.git
 3. For the `Version rule`, select `Up to Next Minor` and specify the current Aespa version then click `Next`.
 4. On the final screen, select the `Aespa` library and then click `Finish`.
 
-**Aespa** should now be integrated into your project 🚀
+**Aespa** should now be integrated into your project 🚀.
 
 ## Usage
 
@@ -185,34 +202,27 @@ import Aespa
 
 let aespaOption = AespaOption(albumName: "YOUR_ALBUM_NAME")
 let aespaSession = Aespa.session(with: aespaOption)
-
-Task(priority: .background) {
-    try await Aespa.configure()
-}
 ```
-> **Warning**
-> 
-> Please ensure to call `configure` within a background execution context. Neglecting to do so may lead to significantly reduced responsiveness in your application. ([reference](https://developer.apple.com/documentation/avfoundation/avcapturesession/1388185-startrunning))
 
 ## Implementation Exapmles
 ### Configuration
 ``` Swift
 // Common setting
 aespaSession
-    .setAutofocusing(mode: .continuousAutoFocus)
-    .setOrientation(to: .portrait)
-    .setQuality(to: .high)
+    .autofocusing(mode: .continuousAutoFocus)
+    .orientation(to: .portrait)
+    .quality(to: .high)
     .customize(WideColorCameraTuner())
 
 // Photo-only setting
 aespaSession
-    .setFlashMode(to: .on)
+    .flashMode(to: .on)
     .redEyeReduction(enabled: true)
 
 // Video-only setting
 aespaSession
     .mute()
-    .setStabilization(mode: .auto)         
+    .stabilization(mode: .auto)         
 ```
 
 ### Recording & Capture
@@ -225,10 +235,26 @@ aespaSession.stopRecording()
 // Capture photo
 aespaSession.capturePhoto()
 ```
+### Get result
+``` Swift
+aespaSession.stopRecording { result in
+    switch result {
+    case .success(let file):
+        //
+    case .failure(let error):
+        print(error)
+    }
+}
+
+// or 
+aespaSession.fetchVideoFiles(limit: 1)
+
+// or you can use publisher
+aespaSession.videoFilePublisher.sink { result in ... }
+```
 
 ## SwiftUI Integration
-
-Aespa also provides a super-easy way to integrate video capture functionality into SwiftUI applications. AespaSession includes a helper method to create a SwiftUI `UIViewRepresentable` that provides a preview of the video capture.
+Aespa also provides a super-easy way to integrate video capture functionality into SwiftUI applications. `AespaSession` includes a helper method to create a SwiftUI `UIViewRepresentable` that provides a preview of the video capture.
 
 ### Example usage
 
@@ -253,28 +279,20 @@ struct VideoContentView: View {
 
 class VideoContentViewModel: ObservableObject {
     let aespaSession: AespaSession
-    var preview: some UIViewRepresentable {
-        aespaSession.preview()
+    var preview: some View {
+        aespaSession.interactivePreview()
     }
     
     init() {
         let option = AespaOption(albumName: "Aespa-Demo")
         self.aespaSession = Aespa.session(with: option)
-        
-        Task(priority: .background) {
-            do {
-                try await Aespa.configure()
-                aespaSession
-                    .setAutofocusing(mode: .continuousAutoFocus)
-                    .setOrientation(to: .portrait)
-                    .setQuality(to: .high)
+    
+        aespaSession
+            .autofocusing(mode: .continuousAutoFocus)
+            .orientation(to: .portrait)
+            .quality(to: .high)
 
-                // Other settings ...
-                
-            } catch let error {
-                print(error)
-            }
-        }
+        // Other settings...
     }
 }
 ```

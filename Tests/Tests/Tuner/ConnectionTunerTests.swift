@@ -28,14 +28,14 @@ final class ConnectionTunerTests: XCTestCase {
         let tuner = VideoOrientationTuner(orientation: orientation)
         
         stub(connection) { proxy in
-            when(proxy.setOrientation(to: equal(to: orientation))).then { value in
+            when(proxy.orientation(to: equal(to: orientation))).then { value in
                 when(proxy.videoOrientation.get).thenReturn(orientation)
             }
         }
         
         try tuner.tune(connection)
         verify(connection)
-            .setOrientation(to: equal(to: orientation))
+            .orientation(to: equal(to: orientation))
             .with(returnType: Void.self)
         
         XCTAssertEqual(connection.videoOrientation, orientation)
@@ -46,14 +46,14 @@ final class ConnectionTunerTests: XCTestCase {
         let tuner = VideoStabilizationTuner(stabilzationMode: mode)
         
         stub(connection) { proxy in
-            when(proxy.setStabilizationMode(to: equal(to: mode))).then { value in
+            when(proxy.stabilizationMode(to: equal(to: mode))).then { value in
                 when(proxy.preferredVideoStabilizationMode.get).thenReturn(mode)
             }
         }
         
         tuner.tune(connection)
         verify(connection)
-            .setStabilizationMode(to: equal(to: mode))
+            .stabilizationMode(to: equal(to: mode))
             .with(returnType: Void.self)
         
         XCTAssertEqual(connection.preferredVideoStabilizationMode, mode)
