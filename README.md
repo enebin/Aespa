@@ -17,7 +17,7 @@ let aespaSession = Aespa.session(with: aespaOption)
 
 ### Quick link
 
-- **Demo app & usage example** can be found in [here](https://github.com/enebin/Aespa-iOS/tree/main/Aespa-iOS)
+- **Demo app & usage example** can be found in [here](https://github.com/enebin/Aespa/tree/main/Demo/Aespa-iOS)
 - **Latest API documentation** can be found in [here](https://enebin.github.io/Aespa/documentation/aespa/)
 
 ### Index
@@ -190,7 +190,7 @@ https://github.com/enebin/Aespa.git
 > **Note**
 >
 > We offer an extensively detailed and ready-to-use code base for a SwiftUI app that showcases most of the package's features. 
-> You can access it [here](https://github.com/enebin/Aespa-iOS).
+> You can access it [here, the demo app](https://github.com/enebin/Aespa/tree/main/Demo/Aespa-iOS).
 
 ### Requirements
 - Swift 5.5+
