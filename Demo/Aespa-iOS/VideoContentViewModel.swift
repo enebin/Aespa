@@ -14,9 +14,12 @@ import Aespa
 class VideoContentViewModel: ObservableObject {
     let aespaSession: AespaSession
     
-    var preview: InteractivePreview {
-        let option = InteractivePreviewOption(enableShowingCrosshair: false)
-        return aespaSession.interactivePreview(option: option)
+    var preview: some View {
+        return aespaSession.interactivePreview()
+        
+        // Or you can give some options
+//        let option = InteractivePreviewOption(enableShowingCrosshair: false)
+//        return aespaSession.interactivePreview(option: option)
     }
     
     private var subscription = Set<AnyCancellable>()
@@ -93,13 +96,8 @@ class VideoContentViewModel: ObservableObject {
     
     func fetchPhotoFiles() {
         // File fetching task can cause low reponsiveness when called from main thread
-        DispatchQueue.global().async {
-            let fetchedFiles = self.aespaSession.fetchPhotoFiles()
-            
-            DispatchQueue.main.async {
-                self.photoFiles = fetchedFiles
-            }
-        }
+        let fetchedFiles = self.aespaSession.fetchPhotoFiles()
+        self.photoFiles = fetchedFiles
     }
 }
 

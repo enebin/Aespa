@@ -10,8 +10,11 @@ import Combine
 import Foundation
 import AVFoundation
 
-///
+/// A type representing a closure that handles a completion event with potential errors.
 public typealias CompletionHandler = (Result<Void, Error>) -> Void
+
+/// A type representing a closure that handles a result of an operation
+/// that produces a value of type `T`, with potential errors.
 public typealias ResultHandler<T> = (Result<T, Error>) -> Void
 
 /// A protocol that defines the common behaviors and properties that all context types must implement.
@@ -19,8 +22,9 @@ public typealias ResultHandler<T> = (Result<T, Error>) -> Void
 /// It includes methods to control the quality, position, orientation, and auto-focusing behavior
 /// of the session. It also includes the ability to adjust the zoom level of the session.
 public protocol CommonContext {
+    ///
     associatedtype CommonContextType: CommonContext & VideoContext & PhotoContext
-
+    ///
     var underlyingCommonContext: CommonContextType { get }
 
     /// Sets the quality preset for the video recording session.
@@ -30,7 +34,10 @@ public protocol CommonContext {
     ///   - onComplete: A closure to be executed if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func quality(to preset: AVCaptureSession.Preset, _ onComplete: @escaping CompletionHandler) -> CommonContextType
+    @discardableResult func quality(
+        to preset: AVCaptureSession.Preset,
+        _ onComplete: @escaping CompletionHandler
+    ) -> CommonContextType
 
     /// Sets the camera position for the video recording session.
     ///
@@ -41,7 +48,10 @@ public protocol CommonContext {
     ///   - onComplete: A closure to be executed if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func position(to position: AVCaptureDevice.Position, _ onComplete: @escaping CompletionHandler) -> CommonContextType
+    @discardableResult func position(
+        to position: AVCaptureDevice.Position,
+        _ onComplete: @escaping CompletionHandler
+    ) -> CommonContextType
 
     /// Sets the orientation for the session.
     ///
@@ -51,8 +61,12 @@ public protocol CommonContext {
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
     ///
-    /// - Note: It sets the orientation of the video you are recording, not the orientation of the `AVCaptureVideoPreviewLayer`.
-    @discardableResult func orientation(to orientation: AVCaptureVideoOrientation, _ onComplete: @escaping CompletionHandler) -> CommonContextType
+    /// - Note: It sets the orientation of the video you are recording,
+    ///     not the orientation of the `AVCaptureVideoPreviewLayer`.
+    @discardableResult func orientation(
+        to orientation: AVCaptureVideoOrientation,
+        _ onComplete: @escaping CompletionHandler
+    ) -> CommonContextType
 
     /// Sets the autofocusing mode for the video recording session.
     ///
@@ -62,7 +76,11 @@ public protocol CommonContext {
     ///   - onComplete: A closure to be executed if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func focus(mode: AVCaptureDevice.FocusMode, point: CGPoint?, _ onComplete: @escaping CompletionHandler) -> CommonContextType
+    @discardableResult func focus(
+        mode: AVCaptureDevice.FocusMode,
+        point: CGPoint?,
+        _ onComplete: @escaping CompletionHandler
+    ) -> CommonContextType
 
     /// Sets the zoom factor for the video recording session.
     ///
@@ -80,7 +98,10 @@ public protocol CommonContext {
     ///   - onComplete: A closure to be executed if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func changeMonitoring(enabled: Bool, _ onComplete: @escaping CompletionHandler) -> CommonContextType
+    @discardableResult func changeMonitoring(
+        enabled: Bool,
+        _ onComplete: @escaping CompletionHandler
+    ) -> CommonContextType
 
     /// This function provides a way to use a custom tuner to modify the current session.
     /// The tuner must conform to `AespaSessionTuning`.
@@ -90,7 +111,10 @@ public protocol CommonContext {
     ///   - onComplete: A closure to be executed if the session fails to run the tuner.
     ///
     /// - Returns: `AespaVideoContext`, for chaining calls.
-    @discardableResult func custom<T: AespaSessionTuning>(_ tuner: T, _ onComplete: @escaping CompletionHandler) -> CommonContextType
+    @discardableResult func custom<T: AespaSessionTuning>(
+        _ tuner: T,
+        _ onComplete: @escaping CompletionHandler
+    ) -> CommonContextType
 }
 
 /// A protocol that defines the behaviors and properties specific to the video context.
@@ -99,7 +123,9 @@ public protocol CommonContext {
 /// the session is currently recording or muted, and controlling video recording,
 /// stabilization, torch mode, and fetching recorded video files.
 public protocol VideoContext {
+    ///
     associatedtype VideoContextType: VideoContext
+    ///
     var underlyingVideoContext: VideoContextType { get }
 
     /// A Boolean value that indicates whether the session is currently recording video.
@@ -126,7 +152,14 @@ public protocol VideoContext {
     ///   it sets the orientation according to the current device orientation.
     func startRecording(_ onComplete: @escaping CompletionHandler)
 
-    func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void)
+    /// Stops the current recording session and saves the video file.
+    ///
+    /// Once the recording session is successfully stopped and the video file is saved,
+    /// this function invokes a completion handler with the resulting `VideoFile` instance or an error.
+    ///
+    /// - Parameter onComplete: A closure to be called after the recording has stopped
+    ///  and the video file is saved or failed.
+    func stopRecording(_ onComplete: @escaping (Result<VideoFile, Error>) -> Void)
     
     /// Mutes the audio input for the video recording session.
     ///
@@ -152,7 +185,10 @@ public protocol VideoContext {
     ///
     /// - Returns: The modified `VideoContextType` for chaining calls.
     @discardableResult
-    func stabilization(mode: AVCaptureVideoStabilizationMode, _ onComplete: @escaping CompletionHandler) -> VideoContextType
+    func stabilization(
+        mode: AVCaptureVideoStabilizationMode,
+        _ onComplete: @escaping CompletionHandler
+    ) -> VideoContextType
 
     /// Sets the torch mode and level for the video recording session.
     ///
@@ -165,7 +201,11 @@ public protocol VideoContext {
     /// - Note: This function might throw an error if the torch mode is not supported,
     ///   or the specified level is not within the acceptable range.
     @discardableResult
-    func torch(mode: AVCaptureDevice.TorchMode, level: Float, _ onComplete: @escaping CompletionHandler) -> VideoContextType
+    func torch(
+        mode: AVCaptureDevice.TorchMode,
+        level: Float,
+        _ onComplete: @escaping CompletionHandler
+    ) -> VideoContextType
 
     /// Fetches a list of recorded video files.
     /// The number of files fetched is controlled by the limit parameter.

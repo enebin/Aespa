@@ -18,6 +18,6 @@ struct ChangeMonitoringTuner: AespaDeviceTuning {
     }
 
     func tune<T: AespaCaptureDeviceRepresentable>(_ device: T) throws {
-        device.isSubjectAreaChangeMonitoringEnabled = enabled
+        device.enableMonitoring(enabled)
     }
 }

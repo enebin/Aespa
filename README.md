@@ -133,8 +133,8 @@ One of our main feature, `InteractivePreview` provides a comprehensive and intui
 
 | Features               | Description                                                                                                      |
 |------------------------|------------------------------------------------------------------------------------------------------------------|
-| Tap-to-focus           | Adjusts the focus of the camera based on the tapped area on the screen.                                          |
-| Double tap camera change  | Switches between the front and back camera upon double tapping.                                                  |
+| Tap to focus           | Adjusts the focus of the camera based on the tapped area on the screen.                                          |
+| Double tap to change camera  | Switches between the front and back camera upon double tapping.                                                  |
 | Pinch zoom          | Allows zooming in or out on the preview by using a pinch gesture.                                                |
 
 
@@ -235,9 +235,26 @@ aespaSession.stopRecording()
 // Capture photo
 aespaSession.capturePhoto()
 ```
+### Get result
+``` Swift
+aespaSession.stopRecording { result in
+    switch result {
+    case .success(let file):
+        //
+    case .failure(let error):
+        print(error)
+    }
+}
+
+// or 
+aespaSession.fetchVideoFiles(limit: 1)
+
+// or you can use publisher
+aespaSession.videoFilePublisher.sink { result in ... }
+```
 
 ## SwiftUI Integration
-Aespa also provides a super-easy way to integrate video capture functionality into SwiftUI applications. AespaSession includes a helper method to create a SwiftUI `UIViewRepresentable` that provides a preview of the video capture.
+Aespa also provides a super-easy way to integrate video capture functionality into SwiftUI applications. `AespaSession` includes a helper method to create a SwiftUI `UIViewRepresentable` that provides a preview of the video capture.
 
 ### Example usage
 

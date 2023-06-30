@@ -23,8 +23,13 @@ class Logger {
     ) {
         if enableLogging {
             let timestamp = Date().description
-            
-            print("[⚠️ Aespa Error] \(timestamp) | Method: \(method) | Error: \(error) | Description: \(error.localizedDescription) | Message: \(message)")
+            print(
+                "[⚠️ Aespa Error] \(timestamp) |" +
+                " Method: \(method) |" +
+                " Error: \(error) |" +
+                " Description: \(error.localizedDescription) |" +
+                " Message: \(message)"
+            )
         }
     }
 }

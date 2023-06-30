@@ -131,7 +131,10 @@ extension AespaVideoContext: VideoContext {
     }
     
     @discardableResult
-    public func stabilization(mode: AVCaptureVideoStabilizationMode, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
+    public func stabilization(
+        mode: AVCaptureVideoStabilizationMode,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoContext {
         let tuner = VideoStabilizationTuner(stabilzationMode: mode)
         coreSession.run(tuner, onComplete)
         
@@ -139,19 +142,26 @@ extension AespaVideoContext: VideoContext {
     }
     
     @discardableResult
-    public func torch(mode: AVCaptureDevice.TorchMode, level: Float, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
+    public func torch(
+        mode: AVCaptureDevice.TorchMode,
+        level: Float,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoContext {
         let tuner = TorchTuner(level: level, torchMode: mode)
         coreSession.run(tuner, onComplete)
         
         return self
     }
-
-    public func customize<T: AespaSessionTuning>(_ tuner: T, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
+    
+    public func customize<T: AespaSessionTuning>(
+        _ tuner: T,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoContext {
         coreSession.run(tuner, onComplete)
         
         return self
     }
-
+    
     public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
         return fileManager.fetchVideo(
             albumName: option.asset.albumName,

@@ -103,6 +103,7 @@ open class AespaSession {
         coreSession
     }
     
+    /// This property indicates whether the current session is active or not.
     public var isRunning: Bool {
         coreSession.isRunning
     }
@@ -137,6 +138,10 @@ open class AespaSession {
         return device.position
     }
     
+    /// This property indicates whether the camera device is set to monitor changes in the subject area.
+    ///
+    /// Enabling subject area change monitoring allows the device to adjust focus and exposure settings automatically
+    /// when the subject within the specified area changes.
     public var isSubjectAreaChangeMonitoringEnabled: Bool? {
         guard let device = coreSession.videoDeviceInput?.device else { return nil }
         return device.isSubjectAreaChangeMonitoringEnabled
@@ -155,7 +160,12 @@ open class AespaSession {
     }
     
     // MARK: - Utilities
-
+    /// Returns a publisher that emits a `Notification` when the subject area of the capture device changes.
+    ///
+    /// This is useful when you want to react to changes in the capture device's subject area,
+    /// such as when the user changes the zoom factor, or when the device changes its autofocus area.
+    ///
+    /// - Returns: An `AnyPublisher` instance that emits `Notification` values.
     public func getSubjectAreaDidChangePublisher() -> AnyPublisher<Notification, Never> {
         return NotificationCenter.default
             .publisher(for: NSNotification.Name.AVCaptureDeviceSubjectAreaDidChange)
@@ -199,34 +209,46 @@ extension AespaSession: CommonContext {
     }
     
     @discardableResult
-    public func quality(to preset: AVCaptureSession.Preset, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
+    public func quality(
+        to preset: AVCaptureSession.Preset,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaSession {
         let tuner = QualityTuner(videoQuality: preset)
         coreSession.run(tuner, onComplete)
         return self
     }
-
+    
     @discardableResult
-    public func position(to position: AVCaptureDevice.Position, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
+    public func position(
+        to position: AVCaptureDevice.Position,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaSession {
         let tuner = CameraPositionTuner(position: position,
                                         devicePreference: option.session.cameraDevicePreference)
         coreSession.run(tuner, onComplete)
         return self
     }
-
+    
     @discardableResult
-    public func orientation(to orientation: AVCaptureVideoOrientation, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
+    public func orientation(
+        to orientation: AVCaptureVideoOrientation,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaSession {
         let tuner = VideoOrientationTuner(orientation: orientation)
         coreSession.run(tuner, onComplete)
         return self
     }
-
+    
     @discardableResult
-    public func focus(mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
+    public func focus(
+        mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaSession {
         let tuner = FocusTuner(mode: mode, point: point)
         coreSession.run(tuner, onComplete)
         return self
     }
-
+    
     @discardableResult
     public func zoom(factor: CGFloat, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
         let tuner = ZoomTuner(zoomFactor: factor)
@@ -235,14 +257,17 @@ extension AespaSession: CommonContext {
     }
 
     @discardableResult
-    public func changeMonitoring(enabled: Bool, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession  {
+    public func changeMonitoring(enabled: Bool, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
         let tuner = ChangeMonitoringTuner(isSubjectAreaChangeMonitoringEnabled: enabled)
         coreSession.run(tuner, onComplete)
         return self
     }
 
     @discardableResult
-    public func custom<T: AespaSessionTuning>(_ tuner: T, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
+    public func custom<T: AespaSessionTuning>(
+        _ tuner: T,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaSession {
         coreSession.run(tuner, onComplete)
         return self
     }
@@ -286,15 +311,22 @@ extension AespaSession: VideoContext {
     }
 
     @discardableResult
-    public func stabilization(mode: AVCaptureVideoStabilizationMode, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
+    public func stabilization(
+        mode: AVCaptureVideoStabilizationMode,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoSessionContext {
         videoContext.stabilization(mode: mode, onComplete)
     }
-
+    
     @discardableResult
-    public func torch(mode: AVCaptureDevice.TorchMode, level: Float, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
+    public func torch(
+        mode: AVCaptureDevice.TorchMode,
+        level: Float,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoSessionContext {
         videoContext.torch(mode: mode, level: level, onComplete)
     }
-
+    
     public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
         videoContext.fetchVideoFiles(limit: limit)
     }

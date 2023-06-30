@@ -9,17 +9,27 @@ import Combine
 import SwiftUI
 import AVFoundation
 
+/// Struct that contains the options for customizing an `InteractivePreview`.
+///
+/// The options include enabling or disabling certain interactive features such as changing position,
+/// zooming, focusing, adjusting focus mode when moved, and showing a crosshair.
 public struct InteractivePreviewOption {
-    // Position
+    /// Flag that controls whether the camera position can be changed. Default is `true`.
     public var enableChangePosition = true
-    // Zoom
-    public var enableZoom = true
-    // Foocus
-    public var enableFocus = true
-    public var enableChangeFocusModeWhenMoved = true
-    // Crosshair
-    public var enableShowingCrosshair = true
     
+    /// Flag that controls whether zoom functionality is enabled. Default is `true`.
+    public var enableZoom = true
+    
+    /// Flag that controls whether focus can be manually adjusted. Default is `true`.
+    public var enableFocus = true
+    
+    /// Flag that controls whether the focus mode is changed when the camera is moved. Default is `true`.
+    public var enableChangeFocusModeWhenMoved = true
+    
+    /// Flag that controls whether a crosshair is displayed on the preview. Default is `true`.
+    public var enableShowingCrosshair = true
+
+    /// Initialize the option
     public init(
         enableChangePosition: Bool = true,
         enableZoom: Bool = true,
@@ -109,7 +119,7 @@ public struct InteractivePreview: View {
 private extension InteractivePreview {
     var changePositionGesture: some Gesture {
         guard session.isRunning, option.enableChangePosition else {
-            return TapGesture(count: 2).onEnded{}
+            return TapGesture(count: 2).onEnded {}
         }
         
         return TapGesture(count: 2).onEnded {
@@ -120,7 +130,7 @@ private extension InteractivePreview {
     
     func tapToFocusGesture(_ geometry: GeometryProxy) -> some Gesture {
         guard session.isRunning, option.enableFocus else {
-            return DragGesture(minimumDistance: 0).onEnded{ _ in }
+            return DragGesture(minimumDistance: 0).onEnded { _ in }
         }
         
         return DragGesture(minimumDistance: 0)
@@ -139,7 +149,7 @@ private extension InteractivePreview {
                 )
                 print(point)
                 
-                session.focus(mode: .autoFocus, point: point) { result in
+                session.focus(mode: .autoFocus, point: point) { _ in
                     print("Done")
                 }
                 focusingLocation = value.location

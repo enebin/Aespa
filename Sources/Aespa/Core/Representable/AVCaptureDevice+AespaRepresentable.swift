@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-protocol AespaCaptureDeviceRepresentable: NSObject {
+protocol AespaCaptureDeviceRepresentable {
     var hasTorch: Bool { get }
     var focusMode: AVCaptureDevice.FocusMode { get set }
     var isSubjectAreaChangeMonitoringEnabled: Bool { get set }
@@ -22,6 +22,7 @@ protocol AespaCaptureDeviceRepresentable: NSObject {
     func zoomFactor(_ factor: CGFloat)
     func setFocusMode(_ focusMode: AVCaptureDevice.FocusMode, point: CGPoint?) throws
     func torchMode(_ torchMode: AVCaptureDevice.TorchMode)
+    func enableMonitoring(_ enabled: Bool)
     func setTorchModeOn(level torchLevel: Float) throws
 }
 
@@ -37,6 +38,10 @@ extension AVCaptureDevice: AespaCaptureDeviceRepresentable {
         @unknown default:
             self.torchMode = .off
         }
+    }
+    
+    func enableMonitoring(_ enabled: Bool) {
+        self.isSubjectAreaChangeMonitoringEnabled = enabled
     }
 
     func setFocusMode(_ focusMode: AVCaptureDevice.FocusMode, point: CGPoint?) throws {

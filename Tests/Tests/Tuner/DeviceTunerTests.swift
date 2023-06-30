@@ -22,22 +22,23 @@ final class DeviceTunerTests: XCTestCase {
     override func tearDownWithError() throws {
         device = nil
     }
-
-    func testAutoFocusTuner() throws {
+    
+    func testFocusTuner() throws {
         let mode = AVCaptureDevice.FocusMode.locked
         let point = CGPoint()
-        let tuner = AutoFocusTuner(mode: mode, point: point)
+        let tuner = FocusTuner(mode: mode, point: point)
         
         stub(device) { proxy in
             when(proxy.isFocusModeSupported(equal(to: mode))).thenReturn(true)
-            when(proxy.focusMode(equal(to: mode), point: equal(to: point))).then { mode in
+            when(proxy.setFocusMode(equal(to: mode),
+                                    point: equal(to: point))).then { mode in
                 when(proxy.focusMode.get).thenReturn(.locked)
             }
         }
         
         try tuner.tune(device)
         verify(device)
-            .focusMode(equal(to: mode), point: equal(to: point))
+            .setFocusMode(equal(to: mode), point: equal(to: point))
             .with(returnType: Void.self)
         
         XCTAssertEqual(device.focusMode, mode)
@@ -69,7 +70,7 @@ final class DeviceTunerTests: XCTestCase {
         stub(device) { proxy in
             when(proxy.hasTorch.get).thenReturn(true)
             when(proxy.torchMode(equal(to: mode))).thenDoNothing()
-            when(proxy.torchModeOn(level: level)).thenDoNothing()
+            when(proxy.setTorchModeOn(level: level)).thenDoNothing()
         }
         
         try tuner.tune(device)
@@ -78,7 +79,7 @@ final class DeviceTunerTests: XCTestCase {
             .with(returnType: Void.self)
         
         verify(device)
-            .torchModeOn(level: level)
+            .setTorchModeOn(level: level)
             .with(returnType: Void.self)
     }
 }
