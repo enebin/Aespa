@@ -26,7 +26,6 @@ struct VideoAssetAdditionProcessor: AespaAssetProcessing {
         }
 
         try await add(video: filePath, to: assetCollection, photoLibrary)
-        Logger.log(message: "File is added to album")
     }
 
     /// Add the video to the app's album roll
@@ -42,8 +41,7 @@ struct VideoAssetAdditionProcessor: AespaAssetProcessing {
 
         return try await photoLibrary.performChanges {
             guard
-                let assetChangeRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(
-                    atFileURL: path),
+                let assetChangeRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: path),
                 let placeholder = assetChangeRequest.placeholderForCreatedAsset,
                 let albumChangeRequest = PHAssetCollectionChangeRequest(for: album.underlyingAssetCollection)
             else {
@@ -53,6 +51,8 @@ struct VideoAssetAdditionProcessor: AespaAssetProcessing {
 
             let enumeration = NSArray(object: placeholder)
             albumChangeRequest.addAssets(enumeration)
+            
+            Logger.log(message: "File is added to album")
         }
     }
 }

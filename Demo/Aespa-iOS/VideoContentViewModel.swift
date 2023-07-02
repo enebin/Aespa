@@ -31,7 +31,7 @@ class VideoContentViewModel: ObservableObject {
     @Published var photoFiles: [PhotoFile] = []
     
     init() {
-        let option = AespaOption(albumName: "Aespa-Demo")
+        let option = AespaOption(albumName: "Aespa-Demo-App")
         self.aespaSession = Aespa.session(with: option)
         
         // Common setting
