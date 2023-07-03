@@ -62,45 +62,27 @@ extension AespaCoreAlbumManager {
         try await run(processor: processor)
     }
     
-    func fetchPhotoFile(limit: Int) async throws -> [PhotoAssetFile] {
+    func fetchPhotoFile(limit: Int) async -> [PhotoAssetFile] {
         let processor = AssetLoader(limit: limit, assetType: .image)
-        let assets = try run(loader: processor)
-        
-        return await cachingProxy.fetchPhoto(assets)
+
+        do {
+            let assets = try run(loader: processor)
+            return await cachingProxy.fetchPhoto(assets)
+        } catch let error {
+            Logger.log(error: error)
+            return []
+        }
     }
     
-    func fetchVideoFile(limit: Int) async throws -> [VideoAssetFile] {
+    func fetchVideoFile(limit: Int) async -> [VideoAssetFile] {
         let processor = AssetLoader(limit: limit, assetType: .video)
-        let assets = try run(loader: processor)
         
-        return await cachingProxy.fetchVideo(assets)
-    }
-}
-
-struct AssetLoader: AespaAssetLoading {
-    let limit: Int
-    let assetType: PHAssetMediaType
-    
-    func load<
-        Library: AespaAssetLibraryRepresentable, Collection: AespaAssetCollectionRepresentable
-    >(
-        _ photoLibrary: Library,
-        _ assetCollection: Collection
-    ) throws -> [PHAsset] {
-        let videoFetchOptions = PHFetchOptions()
-        videoFetchOptions.fetchLimit = limit
-        videoFetchOptions.predicate = NSPredicate(format: "mediaType = %d", assetType.rawValue)
-        
-        guard let assetCollection = assetCollection as? PHAssetCollection else {
-            fatalError("Asset collection doesn't conform to PHAssetCollection")
+        do {
+            let assets = try run(loader: processor)
+            return await cachingProxy.fetchVideo(assets)
+        } catch let error {
+            Logger.log(error: error)
+            return []
         }
-
-        var assets = [PHAsset]()
-        let assetsFetchResult = PHAsset.fetchAssets(in: assetCollection, options: videoFetchOptions)
-        assetsFetchResult.enumerateObjects { (asset, index, stop) in
-            assets.append(asset)
-        }
-        
-        return assets
     }
 }

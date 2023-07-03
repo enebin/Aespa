@@ -39,7 +39,7 @@ struct GalleryView: View {
                         spacing: 5
                     ) {
                         ForEach(viewModel.photoFiles) { file in
-                            let image = Image(uiImage: file.thumbnail ?? UIImage())
+                            let image = Image(uiImage: file.image)
                             
                             image
                                 .resizable()

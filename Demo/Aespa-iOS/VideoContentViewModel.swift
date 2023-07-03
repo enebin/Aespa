@@ -27,8 +27,8 @@ class VideoContentViewModel: ObservableObject {
     @Published var videoAlbumCover: Image?
     @Published var photoAlbumCover: Image?
     
-    @Published var videoFiles: [VideoFile] = []
-    @Published var photoFiles: [PhotoFile] = []
+    @Published var videoFiles: [VideoAssetFile] = []
+    @Published var photoFiles: [PhotoAssetFile] = []
     
     init() {
         let option = AespaOption(albumName: "Aespa-Demo-App")
@@ -85,19 +85,18 @@ class VideoContentViewModel: ObservableObject {
     
     func fetchVideoFiles() {
         // File fetching task can cause low reponsiveness when called from main thread
-        DispatchQueue.global().async {
-            let fetchedFiles = self.aespaSession.fetchVideoFiles()
-            
-            DispatchQueue.main.async {
-                self.videoFiles = fetchedFiles
-            }
+        Task(priority: .utility) {
+            let fetchedFiles = await aespaSession.fetchVideoFiles()
+            self.videoFiles = fetchedFiles
         }
     }
     
     func fetchPhotoFiles() {
         // File fetching task can cause low reponsiveness when called from main thread
-        let fetchedFiles = self.aespaSession.fetchPhotoFiles()
-        self.photoFiles = fetchedFiles
+        Task(priority: .utility) {
+            let fetchedFiles = await aespaSession.fetchPhotoFiles()
+            self.photoFiles = fetchedFiles
+        }
     }
 }
 

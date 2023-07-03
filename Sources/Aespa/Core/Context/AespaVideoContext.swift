@@ -167,10 +167,7 @@ extension AespaVideoContext: VideoContext {
         return self
     }
     
-    public func fetchVideoFiles(limit: Int = 0) -> [VideoFile] {
-        return fileManager.fetchVideo(
-            albumName: option.asset.albumName,
-            subDirectoryName: option.asset.videoDirectoryName,
-            count: limit)
+    public func fetchVideoFiles(limit: Int = 0) async -> [VideoAssetFile] {
+        return await albumManager.fetchVideoFile(limit: limit)
     }
 }

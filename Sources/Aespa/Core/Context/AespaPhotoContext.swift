@@ -98,11 +98,8 @@ extension AespaPhotoContext: PhotoContext {
         return self
     }
     
-    public func fetchPhotoFiles(limit: Int) -> [PhotoFile] {
-        return fileManager.fetchPhoto(
-            albumName: option.asset.albumName,
-            subDirectoryName: option.asset.photoDirectoryName,
-            count: limit)
+    public func fetchPhotoFiles(limit: Int) async -> [PhotoAssetFile] {
+        return await albumManager.fetchPhotoFile(limit: limit)
     }
 }
 
