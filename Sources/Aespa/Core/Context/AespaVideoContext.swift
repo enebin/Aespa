@@ -53,6 +53,11 @@ public class AespaVideoContext<Common: CommonContext> {
             count: 1).first {
             videoFileBufferSubject.send(.success(firstVideoFile))
         }
+        
+        Task {
+            print(try await albumManager.fetchPhotoFile(limit: 0))
+//            print(try await albumManager.fetchPHAsset(mediaType: .image, limit: 0).count)
+        }
     }
 }
 

@@ -8,6 +8,27 @@
 import UIKit
 import SwiftUI
 import Foundation
+import Photos
+
+public struct PhotoAssetFile {
+    public let id = UUID()
+    public let asset: PHAsset
+    public let image: UIImage
+}
+
+extension PhotoAssetFile: Identifiable {}
+
+extension PhotoAssetFile: Equatable {}
+
+extension PhotoAssetFile: Comparable {
+    public static func < (lhs: PhotoAssetFile, rhs: PhotoAssetFile) -> Bool {
+        creationDateOfAsset(lhs.asset) > creationDateOfAsset(rhs.asset)
+    }
+    
+    private static func creationDateOfAsset(_ asset: PHAsset) -> Date {
+        return asset.creationDate ?? Date(timeIntervalSince1970: 0)
+    }
+}
 
 /// `PhotoFile` represents a photo file with its associated metadata.
 ///

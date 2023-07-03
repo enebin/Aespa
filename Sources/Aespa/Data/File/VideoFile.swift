@@ -9,6 +9,35 @@ import UIKit
 import SwiftUI
 import AVFoundation
 
+
+public struct VideoAssetFile {
+    public let id: UUID = UUID()
+    public let asset: AVAsset
+    public let thumbnail: UIImage?
+}
+
+extension VideoAssetFile: Identifiable {}
+
+extension VideoAssetFile: Equatable {}
+
+extension VideoAssetFile: Comparable {
+    public static func < (lhs: VideoAssetFile, rhs: VideoAssetFile) -> Bool {
+        creationDateOfAsset(lhs.asset) > creationDateOfAsset(rhs.asset)
+    }
+    
+    private static func creationDateOfAsset(_ asset: AVAsset) -> Date {
+        if
+            let creationDateMetadataItem = asset.creationDate,
+            let creationDateString = creationDateMetadataItem.stringValue,
+            let creationDate = ISO8601DateFormatter().date(from: creationDateString)
+        {
+            return creationDate
+        } else {
+            return Date(timeIntervalSince1970: 0)
+        }
+    }
+}
+
 /// `VideoFile` represents a video file with its associated metadata.
 ///
 /// This struct holds information about the video file, including the path to the video file (`path`),
