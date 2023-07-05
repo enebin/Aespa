@@ -1,15 +1,17 @@
 //
-//  VideoAssetAdditionProcessor.swift
+//  AssetAdditionProcessor.swift
 //  
 //
-//  Created by 이영빈 on 2023/06/02.
+//  Created by 이영빈 on 2023/07/05.
 //
 
 import Photos
 import Foundation
 
-struct VideoAssetAdditionProcessor: AespaAssetProcessing {
+
+struct AssetAdditionProcessor: AespaAssetProcessing {
     let filePath: URL
+    let mediaType: MediaType
 
     func process<
         T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable
@@ -25,24 +27,27 @@ struct VideoAssetAdditionProcessor: AespaAssetProcessing {
             throw error
         }
 
-        try await add(video: filePath, to: assetCollection, photoLibrary)
+        try await add(filePath, to: assetCollection, photoLibrary)
     }
 
-    /// Add the video to the app's album roll
+    /// Add the file to the app's album roll
     func add<
         T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable
-    >(video path: URL,
-      to album: U,
-      _ photoLibrary: T
+    >(
+        _ path: URL,
+        to album: U,
+        _ photoLibrary: T
     ) async throws {
-        guard album.canAdd(video: path) else {
-            throw AespaError.album(reason: .notVideoURL)
+        let placeholder: PHObjectPlaceholder
+        switch mediaType {
+        case .photo:
+            placeholder = try AssetGenerator.generateImageAsset(at: path)
+        case .video:
+            placeholder = try AssetGenerator.generateVideoAsset(at: path)
         }
 
         return try await photoLibrary.performChanges {
             guard
-                let assetChangeRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: path),
-                let placeholder = assetChangeRequest.placeholderForCreatedAsset,
                 let albumChangeRequest = PHAssetCollectionChangeRequest(for: album.underlyingAssetCollection)
             else {
                 Logger.log(error: AespaError.album(reason: .unabledToAccess))
@@ -52,7 +57,7 @@ struct VideoAssetAdditionProcessor: AespaAssetProcessing {
             let enumeration = NSArray(object: placeholder)
             albumChangeRequest.addAssets(enumeration)
             
-            Logger.log(message: "File is added to album")
+            Logger.log(message: "\(mediaType.rawValue) file is added to album")
         }
     }
 }

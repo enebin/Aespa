@@ -150,11 +150,6 @@ extension VideoContentView {
     }
 }
 
-enum MediaType {
-    case video
-    case photo
-}
-
 struct VideoContentView_Previews: PreviewProvider {
     static var previews: some View {
         VideoContentView()

@@ -102,7 +102,7 @@ extension AespaVideoContext: VideoContext {
                 let videoFilePath = try await recorder.stopRecording()
                 let videoFile = VideoFileGenerator.generate(with: videoFilePath, date: Date())
 
-                try await albumManager.addToAlbum(filePath: videoFilePath)
+                try await albumManager.addToAlbum(filePath: videoFilePath, medieType: .video)
                 videoFileBufferSubject.send(.success(videoFile))
 
                 isRecording = false

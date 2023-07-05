@@ -39,13 +39,9 @@ class AespaCoreAlbumManager {
 }
 
 extension AespaCoreAlbumManager {
-    func addToAlbum(filePath: URL) async throws {
-        let processor = VideoAssetAdditionProcessor(filePath: filePath)
-        try await run(processor: processor)
-    }
-
-    func addToAlbum(imageData: Data) async throws {
-        let processor = PhotoAssetAdditionProcessor(imageData: imageData)
+    // TODO: change name
+    func addToAlbum(filePath: URL, medieType: MediaType) async throws {
+        let processor = AssetAdditionProcessor(filePath: filePath, mediaType: medieType)
         try await run(processor: processor)
     }
 }
