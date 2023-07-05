@@ -6,35 +6,34 @@
 //
 
 import UIKit
+import Photos
 import SwiftUI
 import AVFoundation
 
 
 public struct VideoAssetFile {
-    public let id: UUID = UUID()
+    private let phAsset: PHAsset
     public let asset: AVAsset
     public let thumbnail: UIImage?
+    
+    public init(phAsset: PHAsset, asset: AVAsset, thumbnail: UIImage?) {
+        self.phAsset = phAsset
+        self.asset = asset
+        self.thumbnail = thumbnail
+    }
 }
 
-extension VideoAssetFile: Identifiable {}
+extension VideoAssetFile: Identifiable {
+    public var id: String {
+        phAsset.localIdentifier
+    }
+}
 
 extension VideoAssetFile: Equatable {}
 
 extension VideoAssetFile: Comparable {
     public static func < (lhs: VideoAssetFile, rhs: VideoAssetFile) -> Bool {
-        creationDateOfAsset(lhs.asset) > creationDateOfAsset(rhs.asset)
-    }
-    
-    private static func creationDateOfAsset(_ asset: AVAsset) -> Date {
-        if
-            let creationDateMetadataItem = asset.creationDate,
-            let creationDateString = creationDateMetadataItem.stringValue,
-            let creationDate = ISO8601DateFormatter().date(from: creationDateString)
-        {
-            return creationDate
-        } else {
-            return Date(timeIntervalSince1970: 0)
-        }
+        lhs.phAsset.creationDate ?? Date(timeIntervalSince1970: 0) > rhs.phAsset.creationDate ?? Date(timeIntervalSince1970: 0)
     }
 }
 

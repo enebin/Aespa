@@ -18,16 +18,21 @@ struct AssetLoader: AespaAssetLoading {
         _ photoLibrary: Library,
         _ assetCollection: Collection
     ) throws -> [PHAsset] {
-        let videoFetchOptions = PHFetchOptions()
-        videoFetchOptions.fetchLimit = limit
-        videoFetchOptions.predicate = NSPredicate(format: "mediaType = %d", assetType.rawValue)
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.fetchLimit = limit
+        fetchOptions.predicate = NSPredicate(format: "mediaType = %d", assetType.rawValue)
+        fetchOptions.sortDescriptors = [
+            NSSortDescriptor(
+                key: "creationDate",
+                ascending: false)
+        ]
         
         guard let assetCollection = assetCollection as? PHAssetCollection else {
             fatalError("Asset collection doesn't conform to PHAssetCollection")
         }
 
         var assets = [PHAsset]()
-        let assetsFetchResult = PHAsset.fetchAssets(in: assetCollection, options: videoFetchOptions)
+        let assetsFetchResult = PHAsset.fetchAssets(in: assetCollection, options: fetchOptions)
         assetsFetchResult.enumerateObjects { (asset, index, stop) in
             assets.append(asset)
         }

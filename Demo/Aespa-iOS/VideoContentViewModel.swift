@@ -87,7 +87,7 @@ class VideoContentViewModel: ObservableObject {
         // File fetching task can cause low reponsiveness when called from main thread
         Task(priority: .utility) {
             let fetchedFiles = await aespaSession.fetchVideoFiles()
-            self.videoFiles = fetchedFiles
+            DispatchQueue.main.async { self.videoFiles = fetchedFiles }
         }
     }
     
@@ -95,7 +95,7 @@ class VideoContentViewModel: ObservableObject {
         // File fetching task can cause low reponsiveness when called from main thread
         Task(priority: .utility) {
             let fetchedFiles = await aespaSession.fetchPhotoFiles()
-            self.photoFiles = fetchedFiles
+            DispatchQueue.main.async { self.photoFiles = fetchedFiles }
         }
     }
 }

@@ -19,11 +19,12 @@ struct AssetCachingProxy {
     // Fetch videos using async/await
     func fetchVideo(_ assets: [PHAsset]) async -> [VideoAssetFile] {
         var assetFiles: [VideoAssetFile] = []
-
+        
         await withTaskGroup(of: VideoAssetFile?.self) { group in
             for asset in assets {
                 group.addTask(priority: .utility) {
                     let option = PHVideoRequestOptions()
+                    
                     option.version = .original
                     option.deliveryMode = .automatic
                     option.isNetworkAccessAllowed = true
@@ -31,20 +32,22 @@ struct AssetCachingProxy {
                     let avAsset = await self.requestAVAsset(forVideo: asset, options: option)
                     
                     let requestOptions = PHImageRequestOptions()
+                    requestOptions.deliveryMode = .opportunistic
                     requestOptions.isNetworkAccessAllowed = true
                     requestOptions.resizeMode = .exact
+                    requestOptions.isSynchronous = true
                     
                     let image = await self.requestImage(
                         for: asset,
                         targetSize: .init(
-                            width: PHImageManagerMaximumSize.width / 2,
-                            height: PHImageManagerMaximumSize.height / 2),
-                        contentMode: .aspectFill,
+                            width: PHImageManagerMaximumSize.width,
+                            height: PHImageManagerMaximumSize.height),
+                        contentMode: .default,
                         options: requestOptions
                     )
                     
                     if let avAsset {
-                        return VideoAssetFile(asset: avAsset, thumbnail: image)
+                        return VideoAssetFile(phAsset: asset, asset: avAsset, thumbnail: image)
                     } else {
                         return nil
                     }
@@ -56,7 +59,11 @@ struct AssetCachingProxy {
             }
         }
         
-        return assetFiles
+        assetFiles.sorted {
+            $0 < $1
+        }
+        
+        return assetFiles.sorted()
     }
     
     // Fetch photos using async/await
@@ -67,13 +74,15 @@ struct AssetCachingProxy {
             for asset in assets {
                 group.addTask(priority: .utility) {
                     let requestOptions = PHImageRequestOptions()
+                    requestOptions.deliveryMode = .opportunistic
                     requestOptions.isNetworkAccessAllowed = true
                     requestOptions.resizeMode = .exact
+                    requestOptions.isSynchronous = true
                     
                     let image = await self.requestImage(
                         for: asset,
                         targetSize: PHImageManagerMaximumSize,
-                        contentMode: .aspectFill,
+                        contentMode: .default,
                         options: requestOptions
                     )
                     
@@ -90,7 +99,7 @@ struct AssetCachingProxy {
             }
         }
         
-        return assetFiles
+        return assetFiles.sorted()
     }
 }
 

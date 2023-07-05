@@ -11,12 +11,15 @@ import Foundation
 import Photos
 
 public struct PhotoAssetFile {
-    public let id = UUID()
     public let asset: PHAsset
     public let image: UIImage
 }
 
-extension PhotoAssetFile: Identifiable {}
+extension PhotoAssetFile: Identifiable {
+    public var id: String {
+        asset.localIdentifier
+    }
+}
 
 extension PhotoAssetFile: Equatable {}
 
