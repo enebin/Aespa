@@ -10,8 +10,7 @@ import Foundation
 
 
 struct AssetAdditionProcessor: AespaAssetProcessing {
-    let filePath: URL
-    let mediaType: MediaType
+    let asset: PHObject
 
     func process<
         T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable
@@ -27,25 +26,17 @@ struct AssetAdditionProcessor: AespaAssetProcessing {
             throw error
         }
 
-        try await add(filePath, to: assetCollection, photoLibrary)
+        try await add(asset, to: assetCollection, photoLibrary)
     }
 
     /// Add the file to the app's album roll
     func add<
         T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable
     >(
-        _ path: URL,
+        _ asset: PHObject,
         to album: U,
         _ photoLibrary: T
     ) async throws {
-        let placeholder: PHObjectPlaceholder
-        switch mediaType {
-        case .photo:
-            placeholder = try AssetGenerator.generateImageAsset(at: path)
-        case .video:
-            placeholder = try AssetGenerator.generateVideoAsset(at: path)
-        }
-
         return try await photoLibrary.performChanges {
             guard
                 let albumChangeRequest = PHAssetCollectionChangeRequest(for: album.underlyingAssetCollection)
@@ -54,10 +45,10 @@ struct AssetAdditionProcessor: AespaAssetProcessing {
                 return
             }
 
-            let enumeration = NSArray(object: placeholder)
+            let enumeration = NSArray(object: asset)
             albumChangeRequest.addAssets(enumeration)
             
-            Logger.log(message: "\(mediaType.rawValue) file is added to album")
+            Logger.log(message: "File is added to album")
         }
     }
 }

@@ -39,9 +39,8 @@ class AespaCoreAlbumManager {
 }
 
 extension AespaCoreAlbumManager {
-    // TODO: change name
-    func addToAlbum(filePath: URL, medieType: MediaType) async throws {
-        let processor = AssetAdditionProcessor(filePath: filePath, mediaType: medieType)
+    func addToAlbum(asset: PHObject) async throws {
+        let processor = AssetAdditionProcessor(asset: asset)
         try await run(processor: processor)
     }
 }

@@ -122,7 +122,12 @@ private extension AespaPhotoContext {
             fileName: option.asset.fileNameHandler())
         
         try fileManager.write(data: rawPhotoData, to: filePath)
-        try await albumManager.addToAlbum(filePath: filePath, medieType: .photo)
+        
+        if option.asset.synchronizeWithAlbum {
+            let placeholder = try AssetGenerator.generateImageAsset(at: filePath)
+            try await albumManager.addToAlbum(asset: placeholder)
+            URLIdentifierBidirectionalMap.add(address: filePath, localIdentifier: placeholder.localIdentifier)
+        }
 
         let photoFile = PhotoFileGenerator.generate(
             with: filePath,

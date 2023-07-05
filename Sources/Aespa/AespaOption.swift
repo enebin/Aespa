@@ -74,6 +74,9 @@ public extension AespaOption {
 
         /// The rule for naming video files.
         let fileExtension: String
+        
+        // TODO: dd
+        let synchronizeWithAlbum: Bool
 
         init(
             albumName: String,
@@ -81,6 +84,7 @@ public extension AespaOption {
             photoDirectoryName: String = "photo",
             useVideoFileCache: Bool = true,
             fileExtension: FileExtension = .mp4,
+            synchronizeWithAlbum: Bool = true,
             fileNameHandler: @escaping FileNamingRule = FileNamingRulePreset.Timestamp().rule
         ) {
             self.albumName = albumName
@@ -89,6 +93,7 @@ public extension AespaOption {
             
             self.useVideoFileCache = useVideoFileCache
             self.fileExtension = fileExtension.rawValue
+            self.synchronizeWithAlbum = synchronizeWithAlbum
             self.fileNameHandler = fileNameHandler
         }
     }
