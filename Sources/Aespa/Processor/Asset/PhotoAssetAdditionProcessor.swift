@@ -26,10 +26,9 @@ struct PhotoAssetAdditionProcessor: AespaAssetProcessing {
         }
 
         try await add(imageData: imageData, to: assetCollection, photoLibrary)
-        Logger.log(message: "File is added to album")
     }
-
-    /// Add the video to the app's album roll
+    
+    /// Add the photo to the app's album roll
     func add<
         T: AespaAssetLibraryRepresentable, U: AespaAssetCollectionRepresentable
     >(
@@ -41,6 +40,20 @@ struct PhotoAssetAdditionProcessor: AespaAssetProcessing {
             // Request creating an asset from the image.
             let creationRequest = PHAssetCreationRequest.forAsset()
             creationRequest.addResource(with: .photo, data: imageData, options: nil)
+            
+            // Add the asset to the desired album.
+            guard
+                let placeholder = creationRequest.placeholderForCreatedAsset,
+                let albumChangeRequest = PHAssetCollectionChangeRequest(for: album.underlyingAssetCollection)
+            else {
+                Logger.log(error: AespaError.album(reason: .unabledToAccess))
+                return
+            }
+            
+            let enumeration = NSArray(object: placeholder)
+            albumChangeRequest.addAssets(enumeration)
+            
+            Logger.log(message: "Photo is added to album")
         }
     }
 }
