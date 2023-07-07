@@ -17,14 +17,6 @@ struct PhotoAssetAdditionProcessor: AespaAssetProcessing {
         _ photoLibrary: Library,
         _ assetCollection: Collection
     ) async throws {
-        guard
-            case .authorized = await photoLibrary.requestAuthorization(for: .addOnly)
-        else {
-            let error = AespaError.album(reason: .unabledToAccess)
-            Logger.log(error: error)
-            throw error
-        }
-
         try await add(imageData: imageData, to: assetCollection, photoLibrary)
     }
     

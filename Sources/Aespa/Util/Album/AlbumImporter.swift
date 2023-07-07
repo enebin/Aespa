@@ -10,7 +10,10 @@ import Foundation
 import Photos
 import UIKit
 
+
 struct AlbumImporter {
+    private static let lock = NSRecursiveLock()
+
     static func getAlbum<
         Library: AespaAssetLibraryRepresentable,
         Collection: AespaAssetCollectionRepresentable
@@ -20,6 +23,9 @@ struct AlbumImporter {
         retry: Bool = true,
         _ fetchOptions: PHFetchOptions = .init()
     ) throws -> Collection {
+        lock.lock()
+        defer { lock.unlock() }
+
         let album: Collection? = photoLibrary.fetchAlbum(title: name, fetchOptions: fetchOptions)
 
         if let album {
@@ -36,8 +42,13 @@ struct AlbumImporter {
         name: String,
         in photoLibrary: Library
     ) throws {
+        lock.lock()
+        defer { lock.unlock() }
+
         try photoLibrary.performChangesAndWait {
             PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: name)
         }
+        
+        Logger.log(message: "The album \(name) is created.")
     }
 }
