@@ -25,3 +25,7 @@ protocol AespaAssetProcessing {
     where Library: AespaAssetLibraryRepresentable,
           Collection: AespaAssetCollectionRepresentable
 }
+
+protocol AespaFileProcessing {
+    func process(_ fileManager: FileManager) throws
+}

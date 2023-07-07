@@ -150,7 +150,7 @@ public protocol VideoContext {
     ///
     /// - Note: If `autoVideoOrientation` option is enabled,
     ///   it sets the orientation according to the current device orientation.
-    func startRecording(_ onComplete: @escaping CompletionHandler)
+    func startRecording(at path: URL?, _ onComplete: @escaping CompletionHandler)
 
     /// Stops the current recording session and saves the video file.
     ///
@@ -208,7 +208,7 @@ public protocol VideoContext {
     ) -> VideoContextType
 
 
-    func fetchVideoFiles(limit: Int) async -> [VideoAssetFile]
+    func fetchVideoFiles(limit: Int) async -> [VideoAsset]
 }
 
 /// A protocol that defines the behaviors and properties specific to the photo context.
@@ -272,6 +272,5 @@ public protocol PhotoContext {
     func custom(_ setting: AVCapturePhotoSettings) -> PhotoContextType
     
     // MARK: - Utilities
-
-    func fetchPhotoFiles(limit: Int) async -> [PhotoAssetFile]
+    func fetchPhotoFiles(limit: Int) async -> [PhotoAsset]
 }

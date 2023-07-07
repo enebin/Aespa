@@ -22,7 +22,6 @@ import AVFoundation
 open class AespaSession {
     let option: AespaOption
     let coreSession: AespaCoreSession
-    private let fileManager: AespaCoreFileManager
     private let albumManager: AespaCoreAlbumManager
     
     private let recorder: AespaCoreRecorder
@@ -48,7 +47,6 @@ open class AespaSession {
             session: session,
             recorder: .init(core: session),
             camera: .init(core: session),
-            fileManager: .init(enableCaching: option.asset.useVideoFileCache),
             albumManager: .init(albumName: option.asset.albumName)
         )
     }
@@ -58,14 +56,12 @@ open class AespaSession {
         session: AespaCoreSession,
         recorder: AespaCoreRecorder,
         camera: AespaCoreCamera,
-        fileManager: AespaCoreFileManager,
         albumManager: AespaCoreAlbumManager
     ) {
         self.option = option
         self.coreSession = session
         self.recorder = recorder
         self.camera = camera
-        self.fileManager = fileManager
         self.albumManager = albumManager
         
         self.previewLayerSubject = .init(nil)
@@ -81,7 +77,6 @@ open class AespaSession {
             coreSession: coreSession,
             camera: camera,
             albumManager: albumManager,
-            fileManager: fileManager,
             option: option)
         
         self.videoContext = AespaVideoContext(
@@ -89,7 +84,6 @@ open class AespaSession {
             coreSession: coreSession,
             recorder: recorder,
             albumManager: albumManager,
-            fileManager: fileManager,
             option: option)
     }
 
@@ -292,8 +286,8 @@ extension AespaSession: VideoContext {
         videoContext.isMuted
     }
 
-    public func startRecording(_ onComplete: @escaping CompletionHandler = { _ in }) {
-        videoContext.startRecording(onComplete)
+    public func startRecording(at path: URL? = nil, _ onComplete: @escaping CompletionHandler = { _ in }) {
+        videoContext.startRecording(at: path, onComplete)
     }
     
     public func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }) {
@@ -327,7 +321,7 @@ extension AespaSession: VideoContext {
         videoContext.torch(mode: mode, level: level, onComplete)
     }
     
-    public func fetchVideoFiles(limit: Int = 0) async -> [VideoAssetFile] {
+    public func fetchVideoFiles(limit: Int = 0) async -> [VideoAsset] {
         return await videoContext.fetchVideoFiles(limit: limit)
     }
 }
@@ -365,7 +359,7 @@ extension AespaSession: PhotoContext {
         photoContext.custom(setting)
     }
     
-    public func fetchPhotoFiles(limit: Int = 0) async -> [PhotoAssetFile] {
+    public func fetchPhotoFiles(limit: Int = 0) async -> [PhotoAsset] {
         return await photoContext.fetchPhotoFiles(limit: limit)
     }
 }

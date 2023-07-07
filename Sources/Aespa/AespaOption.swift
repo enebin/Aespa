@@ -64,6 +64,8 @@ public extension AespaOption {
         /// The name of the album where recorded photos will be saved.
         let photoDirectoryName: String
 
+        let synchronizeWithLocalAlbum: Bool
+        
         /// A `Boolean` flag that determines to use in-memory cache for `VideoFile`
         ///
         /// It's set `true` by default.
@@ -79,6 +81,7 @@ public extension AespaOption {
             albumName: String,
             videoDirectoryName: String = "video",
             photoDirectoryName: String = "photo",
+            synchronizeWithLocalAlbum: Bool = true,
             useVideoFileCache: Bool = true,
             fileExtension: FileExtension = .mp4,
             fileNameHandler: @escaping FileNamingRule = FileNamingRulePreset.Timestamp().rule
@@ -87,6 +90,7 @@ public extension AespaOption {
             self.videoDirectoryName = videoDirectoryName
             self.photoDirectoryName = photoDirectoryName
             
+            self.synchronizeWithLocalAlbum = true
             self.useVideoFileCache = useVideoFileCache
             self.fileExtension = fileExtension.rawValue
             self.fileNameHandler = fileNameHandler

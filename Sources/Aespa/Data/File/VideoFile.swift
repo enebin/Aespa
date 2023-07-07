@@ -11,29 +11,48 @@ import SwiftUI
 import AVFoundation
 
 
-public struct VideoAssetFile {
+public struct VideoAsset {
     private let phAsset: PHAsset
     public let asset: AVAsset
-    public let thumbnail: UIImage?
+    public let thumbnail: UIImage
     
-    public init(phAsset: PHAsset, asset: AVAsset, thumbnail: UIImage?) {
+    public init(phAsset: PHAsset, asset: AVAsset, thumbnail: UIImage) {
         self.phAsset = phAsset
         self.asset = asset
         self.thumbnail = thumbnail
     }
 }
 
-extension VideoAssetFile: Identifiable {
+extension VideoAsset: Identifiable {
     public var id: String {
         phAsset.localIdentifier
     }
 }
 
-extension VideoAssetFile: Equatable {}
+extension VideoAsset: Equatable {}
 
-extension VideoAssetFile: Comparable {
-    public static func < (lhs: VideoAssetFile, rhs: VideoAssetFile) -> Bool {
-        lhs.phAsset.creationDate ?? Date(timeIntervalSince1970: 0) > rhs.phAsset.creationDate ?? Date(timeIntervalSince1970: 0)
+extension VideoAsset: Comparable {
+    public static func < (lhs: VideoAsset, rhs: VideoAsset) -> Bool {
+        creationDateOfAsset(lhs.phAsset) > creationDateOfAsset(rhs.phAsset)
+    }
+    
+    private static func creationDateOfAsset(_ asset: PHAsset) -> Date {
+        return asset.creationDate ?? Date(timeIntervalSince1970: 0)
+    }
+}
+
+public extension VideoAsset {
+    var toVideoFile: VideoFile {
+        VideoFile(
+            creationDate: phAsset.creationDate ?? Date(timeIntervalSince1970: 0),
+            path: nil,
+            thumbnail: thumbnail)
+    }
+    
+    /// An optional thumbnail generated from the video with SwiftUI `Image` type.
+    /// This will be `nil` if the thumbnail could not be generated for some reason.
+    var thumbnailImage: Image {
+        Image(uiImage: thumbnail)
     }
 }
 
@@ -44,42 +63,26 @@ extension VideoAssetFile: Comparable {
 /// generated from the video.
 public struct VideoFile {
     /// A `Date` value keeps the date it's generated
-    public let generatedDate: Date
+    public let creationDate: Date
 
     /// The path to the video file.
-    public let path: URL
+    public let path: URL?
 
     /// An optional thumbnail generated from the video with `UIImage` type.
     /// This will be `nil` if the thumbnail could not be generated for some reason.
-    public var thumbnail: UIImage?
-}
-
-extension VideoFile: Identifiable {
-    public var id: URL {
-        self.path
-    }
-}
-
-extension VideoFile: Equatable {
-    public static func == (lhs: VideoFile, rhs: VideoFile) -> Bool {
-        lhs.path == rhs.path
-    }
+    public var thumbnail: UIImage
 }
 
 extension VideoFile: Comparable {
     public static func < (lhs: VideoFile, rhs: VideoFile) -> Bool {
-        lhs.generatedDate > rhs.generatedDate
+        lhs.creationDate > rhs.creationDate
     }
 }
 
 public extension VideoFile {
     /// An optional thumbnail generated from the video with SwiftUI `Image` type.
     /// This will be `nil` if the thumbnail could not be generated for some reason.
-    var thumbnailImage: Image? {
-        if let thumbnail {
-            return Image(uiImage: thumbnail)
-        }
-        
-        return nil
+    var thumbnailImage: Image {
+        Image(uiImage: thumbnail)
     }
 }

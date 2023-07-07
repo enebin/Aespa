@@ -9,18 +9,13 @@ import UIKit
 import Foundation
 
 struct PhotoFileGenerator {
-    static func generate(with path: URL, date: Date) -> PhotoFile {
+    static func generate(data: Data, date: Date) -> PhotoFile {
         return PhotoFile(
-            generatedDate: date,
-            path: path,
-            thumbnail: PhotoFileGenerator.generateThumbnail(for: path))
+            creationDate: date,
+            image: PhotoFileGenerator.generateImage(from: data) ?? UIImage())
     }
     
-    static func generateThumbnail(for path: URL) -> UIImage? {
-        guard let data = try? Data(contentsOf: path) else {
-            return nil
-        }
-           
+    static func generateImage(from data: Data) -> UIImage? {
         guard let compressedImageData = UIImage(data: data)?.jpegData(compressionQuality: 0.5) else {
             return nil
         }

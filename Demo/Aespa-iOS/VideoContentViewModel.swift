@@ -27,8 +27,8 @@ class VideoContentViewModel: ObservableObject {
     @Published var videoAlbumCover: Image?
     @Published var photoAlbumCover: Image?
     
-    @Published var videoFiles: [VideoAssetFile] = []
-    @Published var photoFiles: [PhotoAssetFile] = []
+    @Published var videoFiles: [VideoAsset] = []
+    @Published var photoFiles: [PhotoAsset] = []
     
     init() {
         let option = AespaOption(albumName: "Aespa-Demo-App")

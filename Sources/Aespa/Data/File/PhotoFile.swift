@@ -10,21 +10,21 @@ import SwiftUI
 import Foundation
 import Photos
 
-public struct PhotoAssetFile {
+public struct PhotoAsset {
     public let asset: PHAsset
-    public let image: UIImage
+    public let uiimage: UIImage
 }
 
-extension PhotoAssetFile: Identifiable {
+extension PhotoAsset: Identifiable {
     public var id: String {
         asset.localIdentifier
     }
 }
 
-extension PhotoAssetFile: Equatable {}
+extension PhotoAsset: Equatable {}
 
-extension PhotoAssetFile: Comparable {
-    public static func < (lhs: PhotoAssetFile, rhs: PhotoAssetFile) -> Bool {
+extension PhotoAsset: Comparable {
+    public static func < (lhs: PhotoAsset, rhs: PhotoAsset) -> Bool {
         creationDateOfAsset(lhs.asset) > creationDateOfAsset(rhs.asset)
     }
     
@@ -33,50 +33,42 @@ extension PhotoAssetFile: Comparable {
     }
 }
 
-/// `PhotoFile` represents a photo file with its associated metadata.
+public extension PhotoAsset {
+    var toPhotoFile: PhotoFile {
+        PhotoFile(
+            creationDate: asset.creationDate ?? Date(timeIntervalSince1970: 0),
+            image: uiimage)
+    }
+    
+    var image: Image {
+        return Image(uiImage: uiimage)
+    }
+}
+
+/// `PhotoFile` represents a photo file with its associated metadata.PhotoFile
 ///
 /// This struct holds information about the video file, including the path to the video file (`path`),
 /// and an optional thumbnail image (`thumbnail`)
 /// generated from the photo.
 public struct PhotoFile {
     /// A `Date` value keeps the date it's generated
-    public let generatedDate: Date
-    
-    /// The path to the photo file data. It's saved in the form of `Data.
-    /// If you want to load it directly you should encode it to any image type.
-    public let path: URL
+    public let creationDate: Date
 
     /// An optional thumbnail generated from the video with `UIImage` type.
     /// This will be `nil` if the thumbnail could not be generated for some reason.
-    public var thumbnail: UIImage?
-}
-
-extension PhotoFile: Identifiable {
-    public var id: URL {
-        self.path
-    }
-}
-
-extension PhotoFile: Equatable {
-    public static func == (lhs: PhotoFile, rhs: PhotoFile) -> Bool {
-        lhs.path == rhs.path
-    }
+    public var image: UIImage
 }
 
 extension PhotoFile: Comparable {
     public static func < (lhs: PhotoFile, rhs: PhotoFile) -> Bool {
-        lhs.generatedDate > rhs.generatedDate
+        lhs.creationDate > rhs.creationDate
     }
 }
 
 public extension PhotoFile {
     /// An optional thumbnail generated from the video with SwiftUI `Image` type.
     /// This will be `nil` if the thumbnail could not be generated for some reason.
-    var thumbnailImage: Image? {
-        if let thumbnail {
-            return Image(uiImage: thumbnail)
-        }
-        
-        return nil
+    var thumbnailImage: Image {
+        return Image(uiImage: image)
     }
 }

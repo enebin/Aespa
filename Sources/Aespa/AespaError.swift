@@ -78,5 +78,7 @@ public extension AespaError {
                 "Cannot take a video because camera permissions are denied."
         case notSupported =
                 "Unsuportted file type."
+        case alreadyExist =
+                "File already exists. Cannot overwrite the file."
     }
 }

@@ -17,10 +17,10 @@ struct AssetCachingProxy {
     }
 
     // Fetch videos using async/await
-    func fetchVideo(_ assets: [PHAsset]) async -> [VideoAssetFile] {
-        var assetFiles: [VideoAssetFile] = []
+    func fetchVideo(_ assets: [PHAsset]) async -> [VideoAsset] {
+        var assetFiles: [VideoAsset] = []
         
-        await withTaskGroup(of: VideoAssetFile?.self) { group in
+        await withTaskGroup(of: VideoAsset?.self) { group in
             for asset in assets {
                 group.addTask(priority: .utility) {
                     let option = PHVideoRequestOptions()
@@ -47,7 +47,7 @@ struct AssetCachingProxy {
                     )
                     
                     if let avAsset {
-                        return VideoAssetFile(phAsset: asset, asset: avAsset, thumbnail: image)
+                        return VideoAsset(phAsset: asset, asset: avAsset, thumbnail: image ?? UIImage())
                     } else {
                         return nil
                     }
@@ -58,19 +58,15 @@ struct AssetCachingProxy {
                 if let assetFile { assetFiles.append(assetFile) }
             }
         }
-        
-        assetFiles.sorted {
-            $0 < $1
-        }
-        
+
         return assetFiles.sorted()
     }
     
     // Fetch photos using async/await
-    func fetchPhoto(_ assets: [PHAsset]) async -> [PhotoAssetFile] {
-        var assetFiles: [PhotoAssetFile] = []
+    func fetchPhoto(_ assets: [PHAsset]) async -> [PhotoAsset] {
+        var assetFiles: [PhotoAsset] = []
 
-        await withTaskGroup(of: PhotoAssetFile?.self) { group in
+        await withTaskGroup(of: PhotoAsset?.self) { group in
             for asset in assets {
                 group.addTask(priority: .utility) {
                     let requestOptions = PHImageRequestOptions()
@@ -87,7 +83,7 @@ struct AssetCachingProxy {
                     )
                     
                     if let image {
-                        return PhotoAssetFile(asset: asset, image: image)
+                        return PhotoAsset(asset: asset, uiimage: image)
                     } else {
                         return nil
                     }

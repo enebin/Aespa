@@ -17,7 +17,6 @@ public class AespaVideoContext<Common: CommonContext> {
     private let commonContext: Common
     private let coreSession: AespaCoreSession
     private let albumManager: AespaCoreAlbumManager
-    private let fileManager: AespaCoreFileManager
     private let option: AespaOption
 
     private let recorder: AespaCoreRecorder
@@ -32,14 +31,12 @@ public class AespaVideoContext<Common: CommonContext> {
         coreSession: AespaCoreSession,
         recorder: AespaCoreRecorder,
         albumManager: AespaCoreAlbumManager,
-        fileManager: AespaCoreFileManager,
         option: AespaOption
     ) {
         self.commonContext = commonContext
         self.coreSession = coreSession
         self.recorder = recorder
         self.albumManager = albumManager
-        self.fileManager = fileManager
         self.option = option
         
         self.videoFileBufferSubject = .init(nil)
@@ -47,11 +44,12 @@ public class AespaVideoContext<Common: CommonContext> {
         self.isRecording = false
         
         // Add first video file to buffer if it exists
-        if let firstVideoFile = fileManager.fetchVideo(
-            albumName: option.asset.albumName,
-            subDirectoryName: option.asset.videoDirectoryName,
-            count: 1).first {
-            videoFileBufferSubject.send(.success(firstVideoFile))
+        Task(priority: .utility) {
+            guard let firstVideoAsset = await albumManager.fetchVideoFile(limit: 1).first else {
+                return
+            }
+            
+            videoFileBufferSubject.send(.success(firstVideoAsset.toVideoFile))
         }
     }
 }
@@ -75,36 +73,31 @@ extension AespaVideoContext: VideoContext {
         .eraseToAnyPublisher()
     }
     
-    public func startRecording(_ onComplete: @escaping CompletionHandler = { _ in }) {
-        do {
-            let fileName = option.asset.fileNameHandler()
-            let filePath = try FilePathProvider.requestFilePath(
-                from: fileManager.systemFileManager,
-                directoryName: option.asset.albumName,
-                subDirectoryName: option.asset.videoDirectoryName,
-                fileName: fileName,
-                extension: "mp4")
-            
-            if option.session.autoVideoOrientationEnabled {
-                commonContext.orientation(to: UIDevice.current.orientation.toVideoOrientation, onComplete)
-            }
-            
-            recorder.startRecording(in: filePath, onComplete)
-            isRecording = true
-        } catch let error {
-            onComplete(.failure(error))
+    public func startRecording(at path: URL? = nil, _ onComplete: @escaping CompletionHandler = { _ in }) {
+        let fileName = option.asset.fileNameHandler()
+        let filePath = path ?? FilePathProvider.requestTemporaryFilePath(fileName: fileName, extension: option.asset.fileExtension)
+        
+        if option.session.autoVideoOrientationEnabled {
+            commonContext.orientation(to: UIDevice.current.orientation.toVideoOrientation, onComplete)
         }
+        
+        recorder.startRecording(in: filePath, onComplete)
+        isRecording = true
     }
     
     public func stopRecording(_ onCompelte: @escaping ResultHandler<VideoFile> = { _ in }) {
         Task(priority: .utility) {
             do {
                 let videoFilePath = try await recorder.stopRecording()
+                
+                if option.asset.synchronizeWithLocalAlbum {
+                    try await albumManager.addToAlbum(filePath: videoFilePath)
+                    // delete
+                }
+                
                 let videoFile = VideoFileGenerator.generate(with: videoFilePath, date: Date())
-
-                try await albumManager.addToAlbum(filePath: videoFilePath)
                 videoFileBufferSubject.send(.success(videoFile))
-
+                
                 isRecording = false
                 onCompelte(.success(videoFile))
             } catch let error {
@@ -162,7 +155,7 @@ extension AespaVideoContext: VideoContext {
         return self
     }
     
-    public func fetchVideoFiles(limit: Int = 0) async -> [VideoAssetFile] {
+    public func fetchVideoFiles(limit: Int = 0) async -> [VideoAsset] {
         return await albumManager.fetchVideoFile(limit: limit)
     }
 }

@@ -62,11 +62,11 @@ extension AespaCoreAlbumManager {
         try await run(processor: processor)
     }
     
-    func fetchPhotoFile(limit: Int) async -> [PhotoAssetFile] {
-        let processor = AssetLoader(limit: limit, assetType: .image)
+    func fetchPhotoFile(limit: Int) async -> [PhotoAsset] {
+        let loader = AssetLoader(limit: limit, assetType: .image)
 
         do {
-            let assets = try run(loader: processor)
+            let assets = try run(loader: loader)
             return await cachingProxy.fetchPhoto(assets)
         } catch let error {
             Logger.log(error: error)
@@ -74,7 +74,7 @@ extension AespaCoreAlbumManager {
         }
     }
     
-    func fetchVideoFile(limit: Int) async -> [VideoAssetFile] {
+    func fetchVideoFile(limit: Int) async -> [VideoAsset] {
         let processor = AssetLoader(limit: limit, assetType: .video)
         
         do {

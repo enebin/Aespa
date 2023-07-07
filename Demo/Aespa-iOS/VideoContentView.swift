@@ -15,7 +15,7 @@ struct VideoContentView: View {
     @State var showSetting = false
     @State var showGallery = false
     
-    @State var captureMode: MediaType = .video
+    @State var captureMode: AssetType = .video
     
     @ObservedObject private var viewModel = VideoContentViewModel()
     
@@ -32,8 +32,8 @@ struct VideoContentView: View {
                 ZStack(alignment: .center) {
                     // Mode change
                     Picker("Capture Modes", selection: $captureMode) {
-                        Text("Video").tag(MediaType.video)
-                        Text("Photo").tag(MediaType.photo)
+                        Text("Video").tag(AssetType.video)
+                        Text("Photo").tag(AssetType.photo)
                     }
                     .pickerStyle(.segmented)
                     .background(Color.black.opacity(0.7))
@@ -150,7 +150,7 @@ extension VideoContentView {
     }
 }
 
-enum MediaType {
+enum AssetType {
     case video
     case photo
 }
