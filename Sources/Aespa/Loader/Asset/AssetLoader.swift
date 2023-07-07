@@ -33,7 +33,7 @@ struct AssetLoader: AespaAssetLoading {
 
         var assets = [PHAsset]()
         let assetsFetchResult = PHAsset.fetchAssets(in: assetCollection, options: fetchOptions)
-        assetsFetchResult.enumerateObjects { (asset, index, stop) in
+        assetsFetchResult.enumerateObjects { (asset, _, _) in
             assets.append(asset)
         }
         

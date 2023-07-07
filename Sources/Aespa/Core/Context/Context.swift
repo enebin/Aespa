@@ -207,7 +207,12 @@ public protocol VideoContext {
         _ onComplete: @escaping CompletionHandler
     ) -> VideoContextType
 
-
+    /// Asynchronously fetches a specified number of `VideoAsset` instances from local album.
+    ///
+    /// - Parameter limit: The maximum number of video files to fetch.
+    ///     Pass `0` to fetch all assets in the album.
+    ///
+    /// - Returns: An array of `VideoAsset` instances, representing the fetched video files.
     func fetchVideoFiles(limit: Int) async -> [VideoAsset]
 }
 
@@ -272,5 +277,11 @@ public protocol PhotoContext {
     func custom(_ setting: AVCapturePhotoSettings) -> PhotoContextType
     
     // MARK: - Utilities
+    /// Asynchronously fetches a specified number of `PhotoAsset` instances from local album.
+    ///
+    /// - Parameter limit: The maximum number of photo files to fetch.
+    ///     Pass `0` to fetch all assets in the album.
+    ///
+    /// - Returns: An array of `PhotoAsset` instances, representing the fetched photo files.
     func fetchPhotoFiles(limit: Int) async -> [PhotoAsset]
 }

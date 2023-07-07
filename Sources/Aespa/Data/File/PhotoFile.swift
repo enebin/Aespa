@@ -8,54 +8,16 @@
 import UIKit
 import SwiftUI
 import Foundation
-import Photos
 
-public struct PhotoAsset {
-    public let asset: PHAsset
-    public let uiimage: UIImage
-}
-
-extension PhotoAsset: Identifiable {
-    public var id: String {
-        asset.localIdentifier
-    }
-}
-
-extension PhotoAsset: Equatable {}
-
-extension PhotoAsset: Comparable {
-    public static func < (lhs: PhotoAsset, rhs: PhotoAsset) -> Bool {
-        creationDateOfAsset(lhs.asset) > creationDateOfAsset(rhs.asset)
-    }
-    
-    private static func creationDateOfAsset(_ asset: PHAsset) -> Date {
-        return asset.creationDate ?? Date(timeIntervalSince1970: 0)
-    }
-}
-
-public extension PhotoAsset {
-    var toPhotoFile: PhotoFile {
-        PhotoFile(
-            creationDate: asset.creationDate ?? Date(timeIntervalSince1970: 0),
-            image: uiimage)
-    }
-    
-    var image: Image {
-        return Image(uiImage: uiimage)
-    }
-}
-
-/// `PhotoFile` represents a photo file with its associated metadata.PhotoFile
+/// `PhotoFile` struct models a photo file along with its related metadata.
 ///
-/// This struct holds information about the video file, including the path to the video file (`path`),
-/// and an optional thumbnail image (`thumbnail`)
-/// generated from the photo.
+/// The struct represents different details about a photo file, such as its creation date and the image itself.
+/// To get more meta data from the image, you should refer to `PhotoAsset`
 public struct PhotoFile {
-    /// A `Date` value keeps the date it's generated
+    /// A `Date` value indicating the moment the photo was taken.
     public let creationDate: Date
 
-    /// An optional thumbnail generated from the video with `UIImage` type.
-    /// This will be `nil` if the thumbnail could not be generated for some reason.
+    /// The captured image of type `UIImage`.
     public var image: UIImage
 }
 
@@ -66,8 +28,7 @@ extension PhotoFile: Comparable {
 }
 
 public extension PhotoFile {
-    /// An optional thumbnail generated from the video with SwiftUI `Image` type.
-    /// This will be `nil` if the thumbnail could not be generated for some reason.
+    /// The captured image presented as a SwiftUI `Image`.
     var thumbnailImage: Image {
         return Image(uiImage: image)
     }

@@ -115,7 +115,6 @@ private extension AespaPhotoContext {
             try await albumManager.addToAlbum(imageData: rawPhotoData)
         }
         
-        
         let photoFile = PhotoFileGenerator.generate(
             data: rawPhotoData,
             date: Date())

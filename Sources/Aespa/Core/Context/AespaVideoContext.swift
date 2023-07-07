@@ -75,7 +75,9 @@ extension AespaVideoContext: VideoContext {
     
     public func startRecording(at path: URL? = nil, _ onComplete: @escaping CompletionHandler = { _ in }) {
         let fileName = option.asset.fileNameHandler()
-        let filePath = path ?? FilePathProvider.requestTemporaryFilePath(fileName: fileName, extension: option.asset.fileExtension)
+        let filePath = path ?? FilePathProvider.requestTemporaryFilePath(
+            fileName: fileName,
+            extension: option.asset.fileExtension)
         
         if option.session.autoVideoOrientationEnabled {
             commonContext.orientation(to: UIDevice.current.orientation.toVideoOrientation, onComplete)

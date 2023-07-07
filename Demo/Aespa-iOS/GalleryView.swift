@@ -40,7 +40,7 @@ struct GalleryView: View {
                     ) {
                         ForEach(viewModel.photoFiles) { file in
                             let image = file.image
-
+                            
                             image
                                 .resizable()
                                 .scaledToFill()
@@ -56,7 +56,7 @@ struct GalleryView: View {
                     ) {
                         ForEach(viewModel.videoFiles) { file in
                             let image = file.thumbnailImage
-
+                            
                             image
                                 .resizable()
                                 .scaledToFill()
@@ -65,8 +65,6 @@ struct GalleryView: View {
                     .onAppear {
                         viewModel.fetchVideoFiles()
                     }
-                default:
-                    Text(verbatim: "")
                 }
             }
         }
