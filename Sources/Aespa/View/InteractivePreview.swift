@@ -100,7 +100,7 @@ public struct InteractivePreview: View {
             ZStack {
                 preview
                     .gesture(changePositionGesture)
-                    .gesture(tapToFocusGesture(geometry))
+//                    .gesture(tapToFocusGesture(geometry)) // Currently disabled
                     .gesture(pinchZoomGesture)
                 
                 // Crosshair
