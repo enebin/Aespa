@@ -14,7 +14,6 @@ import AVFoundation
 open class AespaPhotoContext {
     private let coreSession: AespaCoreSession
     private let albumManager: AespaCoreAlbumManager
-    private let fileManager: AespaCoreFileManager
     private let option: AespaOption
     
     private let camera: AespaCoreCamera
@@ -26,24 +25,25 @@ open class AespaPhotoContext {
         coreSession: AespaCoreSession,
         camera: AespaCoreCamera,
         albumManager: AespaCoreAlbumManager,
-        fileManager: AespaCoreFileManager,
         option: AespaOption
     ) {
         self.coreSession = coreSession
         self.camera = camera
         self.albumManager = albumManager
-        self.fileManager = fileManager
         self.option = option
         
         self.photoSetting = AVCapturePhotoSettings()
         self.photoFileBufferSubject = .init(nil)
         
         // Add first video file to buffer if it exists
-        if let firstPhotoFile = fileManager.fetchPhoto(
-            albumName: option.asset.albumName,
-            subDirectoryName: option.asset.photoDirectoryName,
-            count: 1).first {
-            photoFileBufferSubject.send(.success(firstPhotoFile))
+        if option.asset.synchronizeWithLocalAlbum {
+            Task(priority: .utility) {
+                guard let firstPhotoAsset = await albumManager.fetchPhotoFile(limit: 1).first else {
+                    return
+                }
+                
+                photoFileBufferSubject.send(.success(firstPhotoAsset.toPhotoFile))
+            }
         }
     }
 }
@@ -98,38 +98,41 @@ extension AespaPhotoContext: PhotoContext {
         return self
     }
     
-    public func fetchPhotoFiles(limit: Int) -> [PhotoFile] {
-        return fileManager.fetchPhoto(
-            albumName: option.asset.albumName,
-            subDirectoryName: option.asset.photoDirectoryName,
-            count: limit)
+    public func fetchPhotoFiles(limit: Int) async -> [PhotoAsset] {
+        guard option.asset.synchronizeWithLocalAlbum else {
+            Logger.log(
+                message:
+                    "'option.asset.synchronizeWithLocalAlbum' is set to false" +
+                    "so no photos will be fetched from the local album. " +
+                    "If you intended to fetch photos," +
+                    "please ensure 'option.asset.synchronizeWithLocalAlbum' is set to true."
+            )
+            return []
+        }
+        
+        return await albumManager.fetchPhotoFile(limit: limit)
     }
 }
 
 private extension AespaPhotoContext {
     func capturePhotoWithError() async throws -> PhotoFile {
         let setting = AVCapturePhotoSettings(from: photoSetting)
-        let rawPhotoAsset = try await camera.capture(setting: setting)
+        let capturePhoto = try await camera.capture(setting: setting)
         
-        guard let rawPhotoData = rawPhotoAsset.fileDataRepresentation() else {
+        guard let rawPhotoData = capturePhoto.fileDataRepresentation() else {
             throw AespaError.file(reason: .unableToFlatten)
         }
-
-        let filePath = try FilePathProvider.requestFilePath(
-            from: fileManager.systemFileManager,
-            directoryName: option.asset.albumName,
-            subDirectoryName: option.asset.photoDirectoryName,
-            fileName: option.asset.fileNameHandler())
         
-        try fileManager.write(data: rawPhotoData, to: filePath)
-        try await albumManager.addToAlbum(imageData: rawPhotoData)
-
+        if option.asset.synchronizeWithLocalAlbum {
+            // Register to album
+            try await albumManager.addToAlbum(imageData: rawPhotoData)
+        }
+        
         let photoFile = PhotoFileGenerator.generate(
-            with: filePath,
+            data: rawPhotoData,
             date: Date())
         
         photoFileBufferSubject.send(.success(photoFile))
-
         return photoFile
     }
 }

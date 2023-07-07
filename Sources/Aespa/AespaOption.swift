@@ -16,15 +16,15 @@ public typealias FileNamingRule = () -> String
 public struct AespaOption {
     /// `Asset` configuration object which encapsulates options related to the media assets such as
     /// the album name, file extension and naming convention for the files.
-    public let asset: Asset
+    public var asset: Asset
     
     /// `Session` configuration object which holds the settings to be applied for the `Aespa` session,
     /// such as auto video orientation.
-    public let session: Session
+    public var session: Session
     
     /// `Log` configuration object which determines the logging behaviour during the session,
     /// such as enabling or disabling logging.
-    public let log: Log
+    public var log: Log
     
     /// Creates an `AespaOption` with specified album name and an option to enable logging.
     ///
@@ -56,30 +56,27 @@ public extension AespaOption {
     /// such as the album name, file naming rule, and file extension.
     struct Asset {
         /// The name of the album where recorded assets will be saved.
-        let albumName: String
+        public var albumName: String
         
         /// The name of the album where recorded videos will be saved.
-        let videoDirectoryName: String
+        public var videoDirectoryName: String
         
         /// The name of the album where recorded photos will be saved.
-        let photoDirectoryName: String
+        public var photoDirectoryName: String
 
-        /// A `Boolean` flag that determines to use in-memory cache for `VideoFile`
-        ///
-        /// It's set `true` by default.
-        let useVideoFileCache: Bool
+        public var synchronizeWithLocalAlbum: Bool
 
         /// The file extension for the recorded videos.
-        let fileNameHandler: FileNamingRule
+        public var fileNameHandler: FileNamingRule
 
         /// The rule for naming video files.
-        let fileExtension: String
+        public var fileExtension: String
 
         init(
             albumName: String,
             videoDirectoryName: String = "video",
             photoDirectoryName: String = "photo",
-            useVideoFileCache: Bool = true,
+            synchronizeWithLocalAlbum: Bool = true,
             fileExtension: FileExtension = .mp4,
             fileNameHandler: @escaping FileNamingRule = FileNamingRulePreset.Timestamp().rule
         ) {
@@ -87,7 +84,7 @@ public extension AespaOption {
             self.videoDirectoryName = videoDirectoryName
             self.photoDirectoryName = photoDirectoryName
             
-            self.useVideoFileCache = useVideoFileCache
+            self.synchronizeWithLocalAlbum = true
             self.fileExtension = fileExtension.rawValue
             self.fileNameHandler = fileNameHandler
         }

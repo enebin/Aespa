@@ -11,6 +11,7 @@ import Foundation
 class MockImage {
     let dirPath: URL
     let path: URL
+    let data: Data
     
     init() {
         let fileName = "image"
@@ -19,6 +20,7 @@ class MockImage {
         path = dirPath.appendingPathComponent(fileName)
         
         let imageData = UIImage(systemName: "person")!.pngData()!
+        self.data = imageData
         try! imageData.write(to: path)
     }
 }

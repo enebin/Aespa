@@ -9,50 +9,27 @@ import UIKit
 import SwiftUI
 import Foundation
 
-/// `PhotoFile` represents a photo file with its associated metadata.
+/// `PhotoFile` struct models a photo file along with its related metadata.
 ///
-/// This struct holds information about the video file, including the path to the video file (`path`),
-/// and an optional thumbnail image (`thumbnail`)
-/// generated from the photo.
+/// The struct represents different details about a photo file, such as its creation date and the image itself.
+/// To get more meta data from the image, you should refer to `PhotoAsset`
 public struct PhotoFile {
-    /// A `Date` value keeps the date it's generated
-    public let generatedDate: Date
-    
-    /// The path to the photo file data. It's saved in the form of `Data.
-    /// If you want to load it directly you should encode it to any image type.
-    public let path: URL
+    /// A `Date` value indicating the moment the photo was taken.
+    public let creationDate: Date
 
-    /// An optional thumbnail generated from the video with `UIImage` type.
-    /// This will be `nil` if the thumbnail could not be generated for some reason.
-    public var thumbnail: UIImage?
-}
-
-extension PhotoFile: Identifiable {
-    public var id: URL {
-        self.path
-    }
-}
-
-extension PhotoFile: Equatable {
-    public static func == (lhs: PhotoFile, rhs: PhotoFile) -> Bool {
-        lhs.path == rhs.path
-    }
+    /// The captured image of type `UIImage`.
+    public var image: UIImage
 }
 
 extension PhotoFile: Comparable {
     public static func < (lhs: PhotoFile, rhs: PhotoFile) -> Bool {
-        lhs.generatedDate > rhs.generatedDate
+        lhs.creationDate > rhs.creationDate
     }
 }
 
 public extension PhotoFile {
-    /// An optional thumbnail generated from the video with SwiftUI `Image` type.
-    /// This will be `nil` if the thumbnail could not be generated for some reason.
-    var thumbnailImage: Image? {
-        if let thumbnail {
-            return Image(uiImage: thumbnail)
-        }
-        
-        return nil
+    /// The captured image presented as a SwiftUI `Image`.
+    var thumbnailImage: Image {
+        return Image(uiImage: image)
     }
 }

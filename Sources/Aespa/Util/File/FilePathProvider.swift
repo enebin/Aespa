@@ -8,6 +8,19 @@
 import UIKit
 
 struct FilePathProvider {
+    static func requestTemporaryFilePath(
+        from fileManager: FileManager = .default,
+        fileName: String,
+        extension: String?
+    ) -> URL {
+        let directoryPath = fileManager.temporaryDirectory
+        let filePath = directoryPath
+            .appendingPathComponent(fileName)
+            .appendingPathExtension(`extension` ?? "")
+
+        return filePath
+    }
+    
     static func requestFilePath(
         from fileManager: FileManager,
         directoryName: String,

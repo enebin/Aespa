@@ -28,3 +28,12 @@ extension AVCaptureDevice.Position {
         return sortedDevices.first
     }
 }
+
+import UIKit
+
+extension AVCapturePhoto {
+    var image: UIImage? {
+        guard let imageData = fileDataRepresentation() else { return nil }
+        return UIImage(data: imageData)
+    }
+}

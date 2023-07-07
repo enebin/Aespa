@@ -11,9 +11,9 @@ import AVFoundation
 struct VideoFileGenerator {
     static func generate(with path: URL, date: Date) -> VideoFile {
         return VideoFile(
-            generatedDate: date,
+            creationDate: date,
             path: path,
-            thumbnail: VideoFileGenerator.generateThumbnail(for: path))
+            thumbnail: VideoFileGenerator.generateThumbnail(for: path) ?? UIImage())
     }
 
     static func generateThumbnail(for path: URL) -> UIImage? {

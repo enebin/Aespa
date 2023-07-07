@@ -33,7 +33,7 @@ final class GeneratorTests: XCTestCase {
         let date = Date()
         let videoFile = VideoFileGenerator.generate(with: path, date: date)
         
-        XCTAssertEqual(videoFile.generatedDate, date)
+        XCTAssertEqual(videoFile.creationDate, date)
         XCTAssertEqual(videoFile.path, path)
         XCTAssertNotNil(videoFile.thumbnail) // Thumbnail should be generated when init
     }
@@ -50,21 +50,11 @@ final class GeneratorTests: XCTestCase {
     }
     
     func testPhotoFile_generate() {
-        let path = mockImage.path
-        
+        let data = mockImage.data
         let date = Date()
-        let photoFile = PhotoFileGenerator.generate(with: path, date: date)
+        let photoFile = PhotoFileGenerator.generate(data: data, date: date)
         
-        XCTAssertEqual(photoFile.generatedDate, date)
-        XCTAssertEqual(photoFile.path, path)
-        XCTAssertNotNil(photoFile.thumbnail) // Thumbnail should be generated when init
-    }
-    
-    func testPhotoFile_generateThumbnail() {
-        let path = mockImage.path
-
-        let thumbnail = PhotoFileGenerator.generateThumbnail(for: path)
-        
-        XCTAssertNotNil(thumbnail)
+        XCTAssertEqual(photoFile.creationDate, date)
+        XCTAssertNotNil(photoFile.image) // Thumbnail should be generated when init
     }
 }

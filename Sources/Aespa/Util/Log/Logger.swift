@@ -28,7 +28,9 @@ class Logger {
                 " Method: \(method) |" +
                 " Error: \(error) |" +
                 " Description: \(error.localizedDescription) |" +
-                " Message: \(message)"
+                (
+                    message.isEmpty ? "" : " Message: \(message)"
+                )
             )
         }
     }

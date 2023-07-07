@@ -100,7 +100,7 @@ public struct InteractivePreview: View {
             ZStack {
                 preview
                     .gesture(changePositionGesture)
-                    .gesture(tapToFocusGesture(geometry))
+//                    .gesture(tapToFocusGesture(geometry)) // Currently disabled
                     .gesture(pinchZoomGesture)
                 
                 // Crosshair
@@ -147,11 +147,8 @@ private extension InteractivePreview {
                     x: point.x / geometry.size.width,
                     y: point.y / geometry.size.height
                 )
-                print(point)
                 
-                session.focus(mode: .autoFocus, point: point) { _ in
-                    print("Done")
-                }
+                session.focus(mode: .autoFocus, point: point)
                 focusingLocation = value.location
                 
                 if option.enableShowingCrosshair {
@@ -186,7 +183,6 @@ private extension InteractivePreview {
     }
     
     func showCrosshair() {
-        print(option.enableShowingCrosshair)
         guard option.enableShowingCrosshair else { return }
         
         // Cancel the previous task

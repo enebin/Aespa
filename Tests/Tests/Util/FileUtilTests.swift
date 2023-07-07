@@ -32,7 +32,7 @@ final class FileGeneratorTests: XCTestCase {
         let file = VideoFileGenerator.generate(with: filePath, date: date)
         
         XCTAssertEqual(file.path, filePath)
-        XCTAssertEqual(file.generatedDate, date)
+        XCTAssertEqual(file.creationDate, date)
     }
 
     func testGenerateThumbnail() throws {
