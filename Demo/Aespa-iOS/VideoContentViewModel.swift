@@ -32,7 +32,6 @@ class VideoContentViewModel: ObservableObject {
     
     init() {
         var option = AespaOption(albumName: "Aespa-Demo-App")
-        option.asset.synchronizeWithLocalAlbum = false
         self.aespaSession = Aespa.session(with: option)
         
         // Common setting
