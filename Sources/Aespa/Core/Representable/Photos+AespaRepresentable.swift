@@ -32,7 +32,6 @@ extension PHPhotoLibrary: AespaAssetLibraryRepresentable {
         fetchOptions: PHFetchOptions
     ) -> Collection? {
         fetchOptions.predicate = NSPredicate(format: "title = %@", title)
-
         let collections = PHAssetCollection.fetchAssetCollections(
             with: .album, subtype: .any, options: fetchOptions
         )

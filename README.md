@@ -133,9 +133,8 @@ graph LR;
 ### `InteractivePreview`
 One of our main feature, `InteractivePreview` provides a comprehensive and intuitive way for users to interact directly with the camera preview. 
 
-| Features               | Description                                                                                                      |
+| Features               | Description                                                             |
 |------------------------|------------------------------------------------------------------------------------------------------------------|
-| Tap to focus           | Adjusts the focus of the camera based on the tapped area on the screen.                                          |
 | Double tap to change camera  | Switches between the front and back camera upon double tapping.                                                  |
 | Pinch zoom          | Allows zooming in or out on the preview by using a pinch gesture.                                                |
 
@@ -203,6 +202,8 @@ https://github.com/enebin/Aespa.git
 import Aespa
 
 let aespaOption = AespaOption(albumName: "YOUR_ALBUM_NAME")
+// If you don't need album add this line
+// aespaOption.asset.synchronizeWithLocalAlbum = false
 let aespaSession = Aespa.session(with: aespaOption)
 ```
 
@@ -242,13 +243,13 @@ aespaSession.capturePhoto()
 aespaSession.stopRecording { result in
     switch result {
     case .success(let file):
-        //
+        print(file.path) // file://some/path
     case .failure(let error):
         print(error)
     }
 }
 
-// or 
+// or... 
 aespaSession.fetchVideoFiles(limit: 1)
 
 // or you can use publisher

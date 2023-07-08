@@ -150,7 +150,7 @@ public protocol VideoContext {
     ///
     /// - Note: If `autoVideoOrientation` option is enabled,
     ///   it sets the orientation according to the current device orientation.
-    func startRecording(_ onComplete: @escaping CompletionHandler)
+    func startRecording(at path: URL?, _ onComplete: @escaping CompletionHandler)
 
     /// Stops the current recording session and saves the video file.
     ///
@@ -207,17 +207,13 @@ public protocol VideoContext {
         _ onComplete: @escaping CompletionHandler
     ) -> VideoContextType
 
-    /// Fetches a list of recorded video files.
-    /// The number of files fetched is controlled by the limit parameter.
+    /// Asynchronously fetches a specified number of `VideoAsset` instances from local album.
     ///
-    /// It is recommended not to be called in the main thread.
+    /// - Parameter limit: The maximum number of video files to fetch.
+    ///     Pass `0` to fetch all assets in the album.
     ///
-    /// - Parameters:
-    ///   - limit: An integer specifying the maximum number of video files to fetch.
-    ///     Fetch all files if `limit` is zero(`0`)
-    ///
-    /// - Returns: An array of `VideoFile` instances.
-    func fetchVideoFiles(limit: Int) -> [VideoFile]
+    /// - Returns: An array of `VideoAsset` instances, representing the fetched video files.
+    func fetchVideoFiles(limit: Int) async -> [VideoAsset]
 }
 
 /// A protocol that defines the behaviors and properties specific to the photo context.
@@ -281,33 +277,11 @@ public protocol PhotoContext {
     func custom(_ setting: AVCapturePhotoSettings) -> PhotoContextType
     
     // MARK: - Utilities
-    /// Fetches a list of captured photo files.
-    /// The number of files fetched is controlled by the limit parameter.
+    /// Asynchronously fetches a specified number of `PhotoAsset` instances from local album.
     ///
-    /// It is recommended not to be called in main thread.
+    /// - Parameter limit: The maximum number of photo files to fetch.
+    ///     Pass `0` to fetch all assets in the album.
     ///
-    /// - Parameter limit: An integer specifying the maximum number of files to fetch.
-    ///
-    /// - Returns: An array of `PhotoFile` instances.
-    func fetchPhotoFiles(limit: Int) -> [PhotoFile]
-}
-
-// MARK: Non-throwing methods
-// These methods encapsulate error handling within the method itself rather than propagating it to the caller.
-// This means any errors that occur during the execution of these methods will be caught and logged, not thrown.
-// Although it simplifies error handling, this approach may not be recommended because
-// it offers less control to callers.
-// Developers are encouraged to use methods that throw errors, to gain finer control over error handling.
-extension PhotoContext {
-    /// Fetches a list of captured photo files.
-    /// The number of files fetched is controlled by the limit parameter.
-    ///
-    /// It is recommended not to be called in main thread.
-    ///
-    /// - Parameter limit: An integer specifying the maximum number of files to fetch.
-    ///     If the limit is set to 0 (default), all recorded video files will be fetched.
-    /// - Returns: An array of `PhotoFile` instances.
-    public func fetchPhotoFiles(limit: Int = 0) -> [PhotoFile] {
-        fetchPhotoFiles(limit: limit)
-    }
+    /// - Returns: An array of `PhotoAsset` instances, representing the fetched photo files.
+    func fetchPhotoFiles(limit: Int) async -> [PhotoAsset]
 }

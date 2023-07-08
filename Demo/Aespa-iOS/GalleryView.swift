@@ -11,10 +11,10 @@ import SwiftUI
 struct GalleryView: View {
     @ObservedObject var viewModel: VideoContentViewModel
     
-    @Binding private var mediaType: MediaType
+    @Binding private var mediaType: AssetType
     
     init(
-        mediaType: Binding<MediaType>,
+        mediaType: Binding<AssetType>,
         contentViewModel viewModel: VideoContentViewModel
     ) {
         self._mediaType = mediaType
@@ -24,8 +24,8 @@ struct GalleryView: View {
     var body: some View {
         VStack(alignment: .center) {
             Picker("File", selection: $mediaType) {
-                Text("Video").tag(MediaType.video)
-                Text("Photo").tag(MediaType.photo)
+                Text("Video").tag(AssetType.video)
+                Text("Photo").tag(AssetType.photo)
             }
             .pickerStyle(.segmented)
             .frame(width: 200)
@@ -39,7 +39,7 @@ struct GalleryView: View {
                         spacing: 5
                     ) {
                         ForEach(viewModel.photoFiles) { file in
-                            let image = Image(uiImage: file.thumbnail ?? UIImage())
+                            let image = file.image
                             
                             image
                                 .resizable()
@@ -55,7 +55,7 @@ struct GalleryView: View {
                         spacing: 5
                     ) {
                         ForEach(viewModel.videoFiles) { file in
-                            let image = Image(uiImage: file.thumbnail ?? UIImage())
+                            let image = file.thumbnailImage
                             
                             image
                                 .resizable()

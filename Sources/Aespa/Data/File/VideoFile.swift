@@ -7,51 +7,35 @@
 
 import UIKit
 import SwiftUI
-import AVFoundation
 
-/// `VideoFile` represents a video file with its associated metadata.
+/// `VideoFile` represents a video file along with its related metadata.
 ///
-/// This struct holds information about the video file, including the path to the video file (`path`),
-/// and an optional thumbnail image (`thumbnail`)
-/// generated from the video.
+/// This struct encapsulates various information about a video file, such as the file's path (`path`)
+/// and a thumbnail image (`thumbnail`) derived from the video content.
+///
+/// - Warning: The path is temporary and will be removed once the application terminates.
 public struct VideoFile {
-    /// A `Date` value keeps the date it's generated
-    public let generatedDate: Date
+    /// A `Date` value representing when the video file was created.
+    public let creationDate: Date
 
-    /// The path to the video file.
-    public let path: URL
+    /// The temporary path of the recorded video file.
+    ///
+    /// - Warning: This path is temporary and will be removed when the application terminates.
+    public let path: URL?
 
-    /// An optional thumbnail generated from the video with `UIImage` type.
-    /// This will be `nil` if the thumbnail could not be generated for some reason.
-    public var thumbnail: UIImage?
-}
-
-extension VideoFile: Identifiable {
-    public var id: URL {
-        self.path
-    }
-}
-
-extension VideoFile: Equatable {
-    public static func == (lhs: VideoFile, rhs: VideoFile) -> Bool {
-        lhs.path == rhs.path
-    }
+    /// A thumbnail image, of type `UIImage`, generated from the video.
+    public var thumbnail: UIImage
 }
 
 extension VideoFile: Comparable {
     public static func < (lhs: VideoFile, rhs: VideoFile) -> Bool {
-        lhs.generatedDate > rhs.generatedDate
+        lhs.creationDate > rhs.creationDate
     }
 }
 
 public extension VideoFile {
-    /// An optional thumbnail generated from the video with SwiftUI `Image` type.
-    /// This will be `nil` if the thumbnail could not be generated for some reason.
-    var thumbnailImage: Image? {
-        if let thumbnail {
-            return Image(uiImage: thumbnail)
-        }
-        
-        return nil
+    /// A thumbnail image, of type SwiftUI `Image`, generated from the video.
+    var thumbnailImage: Image {
+        Image(uiImage: thumbnail)
     }
 }

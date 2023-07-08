@@ -46,10 +46,6 @@ final class AssetProcessorTests: XCTestCase {
         verify(library)
             .performChanges(anyClosure())
             .with(returnType: Void.self)
-        
-        verify(library)
-            .requestAuthorization(for: equal(to: accessLevel))
-            .with(returnType: PHAuthorizationStatus.self)
     }
 
     func testPhotoAddition() async throws {
@@ -67,9 +63,5 @@ final class AssetProcessorTests: XCTestCase {
         verify(library)
             .performChanges(anyClosure())
             .with(returnType: Void.self)
-        
-        verify(library)
-            .requestAuthorization(for: equal(to: accessLevel))
-            .with(returnType: PHAuthorizationStatus.self)
     }
 }
