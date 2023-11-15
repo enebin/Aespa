@@ -212,10 +212,9 @@ let aespaSession = Aespa.session(with: aespaOption)
 ``` Swift
 // Common setting
 aespaSession
-    .autofocusing(mode: .continuousAutoFocus)
+    .focus(mode: .continuousAutoFocus)
     .orientation(to: .portrait)
     .quality(to: .high)
-    .customize(WideColorCameraTuner())
 
 // Photo-only setting
 aespaSession
