@@ -50,6 +50,9 @@ open class Aespa {
             return
         }
 
-        core.terminateSession(onComplete)
+        core.terminateSession { result in
+            self.core = nil
+            onComplete(result)
+        }
     }
 }
