@@ -18,6 +18,10 @@ protocol AespaCaptureConnectionRepresentable {
 
 extension AVCaptureConnection: AespaCaptureConnectionRepresentable {
     func orientation(to orientation: AVCaptureVideoOrientation) {
+        guard self.isVideoOrientationSupported else {
+            return
+        }
+        
         self.videoOrientation = orientation
     }
 
