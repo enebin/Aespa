@@ -98,26 +98,6 @@ extension AespaPhotoContext: PhotoContext {
         return self
     }
     
-    @available(*, deprecated, message: "Please use `video` instead.")
-    @discardableResult
-    public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
-        photoSetting.flashMode = mode
-        return self
-    }
-    
-    @available(*, deprecated, message: "Please use `video` instead.")
-    @discardableResult
-    public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
-        photoSetting.isAutoRedEyeReductionEnabled = enabled
-        return self
-    }
-    
-    @available(*, deprecated, message: "Please use `video` instead.")
-    public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
-        photoSetting = setting
-        return self
-    }
-    
     public func fetchPhotoFiles(limit: Int) async -> [PhotoAsset] {
         guard option.asset.synchronizeWithLocalAlbum else {
             Logger.log(
@@ -155,4 +135,28 @@ private extension AespaPhotoContext {
         photoFileBufferSubject.send(.success(photoFile))
         return photoFile
     }
+}
+
+// MARK: - Deprecated methods
+extension AespaPhotoContext {
+    @available(*, deprecated, message: "Please use `photo` instead.")
+    @discardableResult
+    public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
+        photoSetting.flashMode = mode
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `photo` instead.")
+    @discardableResult
+    public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
+        photoSetting.isAutoRedEyeReductionEnabled = enabled
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `photo` instead.")
+    public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
+        photoSetting = setting
+        return self
+    }
+    
 }

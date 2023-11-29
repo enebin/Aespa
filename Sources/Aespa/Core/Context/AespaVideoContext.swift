@@ -139,6 +139,24 @@ extension AespaVideoContext: VideoContext {
         return self
     }
     
+    public func fetchVideoFiles(limit: Int = 0) async -> [VideoAsset] {
+        guard option.asset.synchronizeWithLocalAlbum else {
+            Logger.log(
+                message:
+                    "'option.asset.synchronizeWithLocalAlbum' is set to false" +
+                    "so no photos will be fetched from the local album. " +
+                    "If you intended to fetch photos," +
+                    "please ensure 'option.asset.synchronizeWithLocalAlbum' is set to true."
+            )
+            return []
+        }
+        
+        return await albumManager.fetchVideoFile(limit: limit)
+    }
+}
+
+// MARK: - Deprecated methods
+extension AespaVideoContext {
     @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func mute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
@@ -191,20 +209,5 @@ extension AespaVideoContext: VideoContext {
         coreSession.run(tuner, onComplete)
         
         return self
-    }
-    
-    public func fetchVideoFiles(limit: Int = 0) async -> [VideoAsset] {
-        guard option.asset.synchronizeWithLocalAlbum else {
-            Logger.log(
-                message:
-                    "'option.asset.synchronizeWithLocalAlbum' is set to false" +
-                    "so no photos will be fetched from the local album. " +
-                    "If you intended to fetch photos," +
-                    "please ensure 'option.asset.synchronizeWithLocalAlbum' is set to true."
-            )
-            return []
-        }
-        
-        return await albumManager.fetchVideoFile(limit: limit)
     }
 }

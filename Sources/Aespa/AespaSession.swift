@@ -243,7 +243,93 @@ extension AespaSession: CommonContext {
         
         return self
     }
+}
+
+extension AespaSession: VideoContext {
+    public typealias AespaVideoSessionContext = AespaVideoContext<AespaSession>
+
+    public var underlyingVideoContext: AespaVideoSessionContext {
+        videoContext
+    }
+
+    public var videoFilePublisher: AnyPublisher<Result<VideoFile, Error>, Never> {
+        videoContext.videoFilePublisher
+    }
+
+    public var isRecording: Bool {
+        videoContext.isRecording
+    }
+
+    public var isMuted: Bool {
+        videoContext.isMuted
+    }
+
+    public func startRecording(at path: URL? = nil, _ onComplete: @escaping CompletionHandler = { _ in }) {
+        videoContext.startRecording(at: path, onComplete)
+    }
     
+    public func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }) {
+        videoContext.stopRecording(completionHandler)
+    }
+    
+    public func fetchVideoFiles(limit: Int = 0) async -> [VideoAsset] {
+        return await videoContext.fetchVideoFiles(limit: limit)
+    }
+    
+    @discardableResult
+    public func video(_ videoContextOption: VideoContextOption, onComplete: CompletionHandler? = nil) -> AespaVideoSessionContext {
+        let onComplete = onComplete ?? { _ in }
+        return videoContext.video(videoContextOption, onComplete: onComplete)
+    }
+}
+
+extension AespaSession: PhotoContext {
+    public var underlyingPhotoContext: AespaPhotoContext {
+        photoContext
+    }
+    
+    public var photoFilePublisher: AnyPublisher<Result<PhotoFile, Error>, Never> {
+        photoContext.photoFilePublisher
+    }
+    
+    public var currentSetting: AVCapturePhotoSettings {
+        photoContext.currentSetting
+    }
+
+    public func capturePhoto(_ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void = { _ in }) {
+        photoContext.capturePhoto(completionHandler)
+
+    }
+    
+    public func fetchPhotoFiles(limit: Int = 0) async -> [PhotoAsset] {
+        return await photoContext.fetchPhotoFiles(limit: limit)
+    }
+    
+    @discardableResult
+    public func photo(_ photoContextOption: PhotoContextOption, onComplete: CompletionHandler? = nil) -> AespaPhotoContext {
+        let onComplete = onComplete ?? { _ in }
+        return photoContext.photo(photoContextOption, onComplete: onComplete)
+    }
+}
+
+extension AespaSession {
+    func startSession(_ onComplete: @escaping CompletionHandler) {
+        do {
+            try coreSession.start()
+            previewLayerSubject.send(previewLayer)
+        } catch let error {
+            onComplete(.failure(error))
+        }
+    }
+    
+    func terminateSession(_ onComplete: @escaping CompletionHandler) {
+        let tuner = SessionTerminationTuner()
+        coreSession.run(tuner, onComplete)
+    }
+}
+
+// MARK: - Deprecated methods
+extension AespaSession {
     @available(*, deprecated, message: "Please use `common` instead.")
     @discardableResult
     public func quality(
@@ -314,57 +400,19 @@ extension AespaSession: CommonContext {
         coreSession.run(tuner, onComplete)
         return self
     }
-}
-
-extension AespaSession: VideoContext {
-    public typealias AespaVideoSessionContext = AespaVideoContext<AespaSession>
-
-    public var underlyingVideoContext: AespaVideoSessionContext {
-        videoContext
-    }
-
-    public var videoFilePublisher: AnyPublisher<Result<VideoFile, Error>, Never> {
-        videoContext.videoFilePublisher
-    }
-
-    public var isRecording: Bool {
-        videoContext.isRecording
-    }
-
-    public var isMuted: Bool {
-        videoContext.isMuted
-    }
-
-    public func startRecording(at path: URL? = nil, _ onComplete: @escaping CompletionHandler = { _ in }) {
-        videoContext.startRecording(at: path, onComplete)
-    }
     
-    public func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }) {
-        videoContext.stopRecording(completionHandler)
-    }
-    
-    public func fetchVideoFiles(limit: Int = 0) async -> [VideoAsset] {
-        return await videoContext.fetchVideoFiles(limit: limit)
-    }
-    
-    @discardableResult
-    public func video(_ videoContextOption: VideoContextOption, onComplete: CompletionHandler? = nil) -> AespaVideoSessionContext {
-        let onComplete = onComplete ?? { _ in }
-        return videoContext.video(videoContextOption, onComplete: onComplete)
-    }
-
     @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func mute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
         videoContext.mute(onComplete)
     }
-
+    
     @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func unmute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
         videoContext.unmute(onComplete)
     }
-
+    
     @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func stabilization(
@@ -383,67 +431,22 @@ extension AespaSession: VideoContext {
     ) -> AespaVideoSessionContext {
         videoContext.torch(mode: mode, level: level, onComplete)
     }
-}
-
-extension AespaSession: PhotoContext {
-    public var underlyingPhotoContext: AespaPhotoContext {
-        photoContext
-    }
     
-    public var photoFilePublisher: AnyPublisher<Result<PhotoFile, Error>, Never> {
-        photoContext.photoFilePublisher
-    }
-    
-    public var currentSetting: AVCapturePhotoSettings {
-        photoContext.currentSetting
-    }
-
-    public func capturePhoto(_ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void = { _ in }) {
-        photoContext.capturePhoto(completionHandler)
-
-    }
-    
-    @discardableResult
-    public func photo(_ photoContextOption: PhotoContextOption, onComplete: CompletionHandler? = nil) -> AespaPhotoContext {
-        let onComplete = onComplete ?? { _ in }
-        return photoContext.photo(photoContextOption, onComplete: onComplete)
-    }
-    
-    @available(*, deprecated, message: "Please use `video` instead.")
+    @available(*, deprecated, message: "Please use `photo` instead.")
     @discardableResult
     public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
         photoContext.flashMode(to: mode)
     }
     
-    @available(*, deprecated, message: "Please use `video` instead.")
+    @available(*, deprecated, message: "Please use `photo` instead.")
     @discardableResult
     public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
         photoContext.redEyeReduction(enabled: enabled)
     }
     
-    @available(*, deprecated, message: "Please use `video` instead.")
+    @available(*, deprecated, message: "Please use `photo` instead.")
     @discardableResult
     public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
         photoContext.custom(setting)
-    }
-    
-    public func fetchPhotoFiles(limit: Int = 0) async -> [PhotoAsset] {
-        return await photoContext.fetchPhotoFiles(limit: limit)
-    }
-}
-
-extension AespaSession {
-    func startSession(_ onComplete: @escaping CompletionHandler) {
-        do {
-            try coreSession.start()
-            previewLayerSubject.send(previewLayer)
-        } catch let error {
-            onComplete(.failure(error))
-        }
-    }
-    
-    func terminateSession(_ onComplete: @escaping CompletionHandler) {
-        let tuner = SessionTerminationTuner()
-        coreSession.run(tuner, onComplete)
     }
 }
