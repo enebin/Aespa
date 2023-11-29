@@ -179,13 +179,15 @@ public protocol VideoContext {
     
     /// Applies a specified configuration or action to the video session context.
     ///
-    /// This method offers a unified interface to configure various aspects of a video session, such as muting, unmuting,
-    /// stabilization, and torch settings. It takes a `VideoContextOption` enum value which encapsulates the desired action or configuration.
+    /// This method offers a unified interface to configure various aspects of
+    /// a video session, such as muting, unmuting, stabilization, and torch settings.
+    /// It takes a `VideoContextOption` enum value which encapsulates the desired action or configuration.
     ///
     /// The method delegates the action to the `videoContext` object, applying the corresponding settings or changes.
     ///
     /// - Parameters:
-    ///   - videoContextOption: An enum value of `VideoContextOption` specifying the action or configuration to be applied.
+    ///   - videoContextOption: An enum value of `VideoContextOption` 
+    ///                         specifying the action or configuration to be applied.
     ///   - onComplete: An optional completion handler that is called after the action is applied.
     ///                 If not provided, a default handler that does nothing will be used.
     ///
@@ -308,7 +310,6 @@ public protocol PhotoContext {
         onComplete: CompletionHandler?
     ) -> PhotoContextType
 
-    
     /// Sets the flash mode for the camera and returns the updated `AespaPhotoContext` instance.
     /// The returned instance can be used for chaining configuration.
     ///
@@ -343,12 +344,14 @@ public protocol PhotoContext {
 }
 
 // MARK: - Context options
-/// Enum representing various configuration options for an AespaSession.
+/// Enum representing various configuration options for an `AespaSession`.
 ///
 /// `CommonContextOption` provides a standardized way to configure different aspects of the session.
 /// Each case corresponds to a specific configurable property of the session, such as quality, camera position,
 /// orientation, focus, zoom, and more.
-/// It's designed to be used with the `common` method of `AespaSession` to apply these configurations in a unified and streamlined manner.
+///
+/// It's designed to be used with the `common` method of `AespaSession`
+/// to apply these configurations in a unified and streamlined manner.
 public enum CommonContextOption {
     /// Sets the quality preset for the video recording session.
     ///
@@ -400,6 +403,12 @@ public enum CommonContextOption {
     case custom(tuner: AespaSessionTuning)
 }
 
+/// Enum representing various configuration options for a video recording session.
+///
+/// `VideoContextOption` allows for the configuration of different aspects of a video recording session.
+/// It includes options for audio control, video stabilization, torch settings, and custom configurations.
+///
+/// It's designed to be used with methods of `AespaSession` to apply these configurations in a streamlined manner.
 public enum VideoContextOption {
     /// Mutes the audio input for the video recording session.
     case mute
@@ -431,6 +440,12 @@ public enum VideoContextOption {
     case custom(tuner: AespaSessionTuning)
 }
 
+/// Enum representing various configuration options for a photo capturing session .
+///
+/// `PhotoContextOption` enables the configuration of different aspects of a photo capturing session.
+/// It includes options for flash mode, red-eye reduction, and applying custom photo settings.
+///
+/// These options are designed to be used with methods of `AespaSession` to apply configurations effectively.
 public enum PhotoContextOption {
     /// Sets the flash mode for the camera and returns the updated `AespaPhotoContext` instance.
     /// The returned instance can be used for chaining configuration.

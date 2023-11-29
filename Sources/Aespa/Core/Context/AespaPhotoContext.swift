@@ -82,7 +82,10 @@ extension AespaPhotoContext: PhotoContext {
     }
     
     @discardableResult
-    public func photo(_ photoContextOption: PhotoContextOption, onComplete: CompletionHandler? = nil) -> AespaPhotoContext {
+    public func photo(
+        _ photoContextOption: PhotoContextOption,
+        onComplete: CompletionHandler? = nil
+    ) -> AespaPhotoContext {
         let onComplete = onComplete ?? { _ in }
         
         switch photoContextOption {

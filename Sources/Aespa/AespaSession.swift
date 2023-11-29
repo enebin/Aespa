@@ -277,7 +277,10 @@ extension AespaSession: VideoContext {
     }
     
     @discardableResult
-    public func video(_ videoContextOption: VideoContextOption, onComplete: CompletionHandler? = nil) -> AespaVideoSessionContext {
+    public func video(
+        _ videoContextOption: VideoContextOption,
+        onComplete: CompletionHandler? = nil
+    ) -> AespaVideoSessionContext {
         let onComplete = onComplete ?? { _ in }
         return videoContext.video(videoContextOption, onComplete: onComplete)
     }
@@ -306,7 +309,10 @@ extension AespaSession: PhotoContext {
     }
     
     @discardableResult
-    public func photo(_ photoContextOption: PhotoContextOption, onComplete: CompletionHandler? = nil) -> AespaPhotoContext {
+    public func photo(
+        _ photoContextOption: PhotoContextOption,
+        onComplete: CompletionHandler? = nil
+    ) -> AespaPhotoContext {
         let onComplete = onComplete ?? { _ in }
         return photoContext.photo(photoContextOption, onComplete: onComplete)
     }

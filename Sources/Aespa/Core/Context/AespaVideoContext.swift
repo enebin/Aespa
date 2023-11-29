@@ -112,7 +112,10 @@ extension AespaVideoContext: VideoContext {
     }
     
     @discardableResult
-    public func video(_ videoContextOption: VideoContextOption, onComplete: CompletionHandler? = nil) -> AespaVideoContext {
+    public func video(
+        _ videoContextOption: VideoContextOption,
+        onComplete: CompletionHandler? = nil
+    ) -> AespaVideoContext {
         let onComplete = onComplete ?? { _ in }
 
         switch videoContextOption {
