@@ -202,74 +202,7 @@ extension AespaSession: CommonContext {
     public var underlyingCommonContext: AespaSession {
         self
     }
-
-    /// Enum representing various configuration options for an AespaSession.
-    ///
-    /// `CommonContextOption` provides a standardized way to configure different aspects of the session.
-    /// Each case corresponds to a specific configurable property of the session, such as quality, camera position,
-    /// orientation, focus, zoom, and more. 
-    /// It's designed to be used with the `common` method of `AespaSession` to apply these configurations in a unified and streamlined manner.
-    public enum CommonContextOption {
-        /// Sets the quality preset for the video recording session.
-        ///
-        /// - Parameters:
-        ///   - preset: An `AVCaptureSession.Preset` value indicating the quality preset to be set.
-        case quality(preset: AVCaptureSession.Preset)
-        
-        /// Sets the camera position for the video recording session.
-        ///
-        /// It refers to `AespaOption.Session.cameraDevicePreference` when choosing the camera device.
-        ///
-        /// - Parameters:
-        ///   - position: An `AVCaptureDevice.Position` value indicating the camera position to be set.
-        case position(position: AVCaptureDevice.Position)
-        
-        /// Sets the orientation for the session.
-        ///
-        /// - Parameters:
-        ///   - orientation: An `AVCaptureVideoOrientation` value indicating the orientation to be set.
-        ///
-        /// - Note: It sets the orientation of the video you are recording,
-        ///     not the orientation of the `AVCaptureVideoPreviewLayer`.
-        case orientation(orientation: AVCaptureVideoOrientation)
-        
-        /// Sets the autofocusing mode for the video recording session.
-        ///
-        /// - Parameters:
-        ///   - mode: The focus mode(`AVCaptureDevice.FocusMode`) for the session.
-        ///   - point: The point in the camera's field of view that the auto focus should prioritize.
-        case focus(mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil)
-        
-        /// Sets the zoom factor for the video recording session.
-        ///
-        /// - Parameters:
-        ///   - factor: A `CGFloat` value indicating the zoom factor to be set.
-        case zoom(factor: CGFloat)
-        
-        /// Changes monitoring status.
-        ///
-        /// - Parameters:
-        ///   - enabled: A boolean value to set monitoring status.
-        case changeMonitoring(enabled: Bool)
-        
-        /// This function provides a way to use a custom tuner to modify the current session.
-        /// The tuner must conform to `AespaSessionTuning`.
-        ///
-        /// - Parameters:
-        ///   - tuner: An instance that conforms to `AespaSessionTuning`.
-        case custom(tuner: AespaSessionTuning)
-    }
-
-    /// Applies the specified configuration to the session.
-    ///
-    /// This method provides a unified way to configure the session using `CommonContextOption`.
-    /// It applies the selected configuration by creating and running the appropriate tuner.
-    ///
-    /// - Parameters:
-    ///   - commonContextOption: The configuration option to be applied to the session.
-    ///   - onComplete: An optional completion handler called after the configuration is applied.
-    ///
-    /// - Returns: The instance of `AespaSession`, allowing for method chaining.
+    
     @discardableResult
     public func common(
         _ commonContextOption: CommonContextOption,
@@ -409,17 +342,30 @@ extension AespaSession: VideoContext {
     public func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }) {
         videoContext.stopRecording(completionHandler)
     }
+    
+    public func fetchVideoFiles(limit: Int = 0) async -> [VideoAsset] {
+        return await videoContext.fetchVideoFiles(limit: limit)
+    }
+    
+    @discardableResult
+    public func video(_ videoContextOption: VideoContextOption, onComplete: CompletionHandler? = nil) -> AespaVideoSessionContext {
+        let onComplete = onComplete ?? { _ in }
+        return videoContext.video(videoContextOption, onComplete: onComplete)
+    }
 
+    @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func mute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
         videoContext.mute(onComplete)
     }
 
+    @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func unmute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
         videoContext.unmute(onComplete)
     }
 
+    @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func stabilization(
         mode: AVCaptureVideoStabilizationMode,
@@ -428,6 +374,7 @@ extension AespaSession: VideoContext {
         videoContext.stabilization(mode: mode, onComplete)
     }
     
+    @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func torch(
         mode: AVCaptureDevice.TorchMode,
@@ -435,10 +382,6 @@ extension AespaSession: VideoContext {
         _ onComplete: @escaping CompletionHandler = { _ in }
     ) -> AespaVideoSessionContext {
         videoContext.torch(mode: mode, level: level, onComplete)
-    }
-    
-    public func fetchVideoFiles(limit: Int = 0) async -> [VideoAsset] {
-        return await videoContext.fetchVideoFiles(limit: limit)
     }
 }
 

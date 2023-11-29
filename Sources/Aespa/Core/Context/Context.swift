@@ -17,6 +17,7 @@ public typealias CompletionHandler = (Result<Void, Error>) -> Void
 /// that produces a value of type `T`, with potential errors.
 public typealias ResultHandler<T> = (Result<T, Error>) -> Void
 
+// MARK: - Contexts
 /// A protocol that defines the common behaviors and properties that all context types must implement.
 ///
 /// It includes methods to control the quality, position, orientation, and auto-focusing behavior
@@ -26,6 +27,21 @@ public protocol CommonContext {
     associatedtype CommonContextType: CommonContext & VideoContext & PhotoContext
     ///
     var underlyingCommonContext: CommonContextType { get }
+    
+    /// Applies the specified configuration to the session.
+    ///
+    /// This method provides a unified way to configure the session using `CommonContextOption`.
+    /// It applies the selected configuration by creating and running the appropriate tuner.
+    ///
+    /// - Parameters:
+    ///   - commonContextOption: The configuration option to be applied to the session.
+    ///   - onComplete: An optional completion handler called after the configuration is applied.
+    ///
+    /// - Returns: The instance of `AespaSession`, allowing for method chaining.
+    @discardableResult func common(
+        _ commonContextOption: CommonContextOption,
+        onComplete: CompletionHandler?
+    ) -> CommonContextType
 
     /// Sets the quality preset for the video recording session.
     ///
@@ -161,6 +177,24 @@ public protocol VideoContext {
     ///  and the video file is saved or failed.
     func stopRecording(_ onComplete: @escaping (Result<VideoFile, Error>) -> Void)
     
+    /// Applies a specified configuration or action to the video session context.
+    ///
+    /// This method offers a unified interface to configure various aspects of a video session, such as muting, unmuting,
+    /// stabilization, and torch settings. It takes a `VideoContextOption` enum value which encapsulates the desired action or configuration.
+    ///
+    /// The method delegates the action to the `videoContext` object, applying the corresponding settings or changes.
+    ///
+    /// - Parameters:
+    ///   - videoContextOption: An enum value of `VideoContextOption` specifying the action or configuration to be applied.
+    ///   - onComplete: An optional completion handler that is called after the action is applied.
+    ///                 If not provided, a default handler that does nothing will be used.
+    ///
+    /// - Returns: The instance of `AespaVideoSessionContext`, allowing for method chaining.
+    @discardableResult func video(
+        _ videoContextOption: VideoContextOption,
+        onComplete: CompletionHandler?)
+    -> VideoContextType
+
     /// Mutes the audio input for the video recording session.
     ///
     /// - Parameter onComplete: A closure to handle any errors that occur when muting the audio.
@@ -284,4 +318,93 @@ public protocol PhotoContext {
     ///
     /// - Returns: An array of `PhotoAsset` instances, representing the fetched photo files.
     func fetchPhotoFiles(limit: Int) async -> [PhotoAsset]
+}
+
+// MARK: - Context options
+/// Enum representing various configuration options for an AespaSession.
+///
+/// `CommonContextOption` provides a standardized way to configure different aspects of the session.
+/// Each case corresponds to a specific configurable property of the session, such as quality, camera position,
+/// orientation, focus, zoom, and more.
+/// It's designed to be used with the `common` method of `AespaSession` to apply these configurations in a unified and streamlined manner.
+public enum CommonContextOption {
+    /// Sets the quality preset for the video recording session.
+    ///
+    /// - Parameters:
+    ///   - preset: An `AVCaptureSession.Preset` value indicating the quality preset to be set.
+    case quality(preset: AVCaptureSession.Preset)
+    
+    /// Sets the camera position for the video recording session.
+    ///
+    /// It refers to `AespaOption.Session.cameraDevicePreference` when choosing the camera device.
+    ///
+    /// - Parameters:
+    ///   - position: An `AVCaptureDevice.Position` value indicating the camera position to be set.
+    case position(position: AVCaptureDevice.Position)
+    
+    /// Sets the orientation for the session.
+    ///
+    /// - Parameters:
+    ///   - orientation: An `AVCaptureVideoOrientation` value indicating the orientation to be set.
+    ///
+    /// - Note: It sets the orientation of the video you are recording,
+    ///     not the orientation of the `AVCaptureVideoPreviewLayer`.
+    case orientation(orientation: AVCaptureVideoOrientation)
+    
+    /// Sets the autofocusing mode for the video recording session.
+    ///
+    /// - Parameters:
+    ///   - mode: The focus mode(`AVCaptureDevice.FocusMode`) for the session.
+    ///   - point: The point in the camera's field of view that the auto focus should prioritize.
+    case focus(mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil)
+    
+    /// Sets the zoom factor for the video recording session.
+    ///
+    /// - Parameters:
+    ///   - factor: A `CGFloat` value indicating the zoom factor to be set.
+    case zoom(factor: CGFloat)
+    
+    /// Changes monitoring status.
+    ///
+    /// - Parameters:
+    ///   - enabled: A boolean value to set monitoring status.
+    case changeMonitoring(enabled: Bool)
+    
+    /// This function provides a way to use a custom tuner to modify the current session.
+    /// The tuner must conform to `AespaSessionTuning`.
+    ///
+    /// - Parameters:
+    ///   - tuner: An instance that conforms to `AespaSessionTuning`.
+    case custom(tuner: AespaSessionTuning)
+}
+
+public enum VideoContextOption {
+    /// Mutes the audio input for the video recording session.
+    case mute
+    
+    /// Unmutes the audio input for the video recording session.
+    case unmute
+    
+    /// Sets the stabilization mode for the video recording session.
+    ///
+    /// - Parameters:
+    ///   - mode: An `AVCaptureVideoStabilizationMode` value indicating the stabilization mode to be set.
+    case stabilization(mode: AVCaptureVideoStabilizationMode)
+    
+    /// Sets the torch mode and level for the video recording session.
+    ///
+    /// - Parameters:
+    ///   - mode: The desired torch mode (AVCaptureDevice.TorchMode).
+    ///   - level: The desired torch level as a Float between 0.0 and 1.0.
+    ///
+    /// - Note: This function might throw an error if the torch mode is not supported,
+    ///   or the specified level is not within the acceptable range.
+    case torch(mode: AVCaptureDevice.TorchMode, level: Float)
+    
+    /// This function provides a way to use a custom tuner to modify the current session.
+    /// The tuner must conform to `AespaSessionTuning`.
+    ///
+    /// - Parameters:
+    ///   - tuner: An instance that conforms to `AespaSessionTuning`.
+    case custom(tuner: AespaSessionTuning)
 }

@@ -31,7 +31,7 @@ class VideoContentViewModel: ObservableObject {
     @Published var photoFiles: [PhotoAsset] = []
     
     init() {
-        var option = AespaOption(albumName: "Aespa-Demo-App")
+        let option = AespaOption(albumName: "Aespa-Demo-App")
         self.aespaSession = Aespa.session(with: option)
         
         // Common setting
@@ -53,8 +53,8 @@ class VideoContentViewModel: ObservableObject {
         
         // Video-only setting
         aespaSession
-            .mute()
-            .stabilization(mode: .auto)
+            .video(.mute)
+            .video(.stabilization(mode: .auto))
         
         // Prepare video album cover
         aespaSession.videoFilePublisher

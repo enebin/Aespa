@@ -60,9 +60,7 @@ struct SettingView: View {
                 }
                 .modifier(TitledPicker(title: "Mute"))
                 .onChange(of: isMuted) { newValue in
-                    _ = newValue ?
-                    viewModel.aespaSession.mute() :
-                    viewModel.aespaSession.unmute()
+                    viewModel.aespaSession.video(newValue ? .mute : .unmute)
                 }
             }
             

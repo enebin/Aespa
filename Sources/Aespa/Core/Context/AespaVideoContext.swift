@@ -112,6 +112,35 @@ extension AespaVideoContext: VideoContext {
     }
     
     @discardableResult
+    public func video(_ videoContextOption: VideoContextOption, onComplete: CompletionHandler? = nil) -> AespaVideoContext {
+        let onComplete = onComplete ?? { _ in }
+
+        switch videoContextOption {
+        case .mute:
+            let tuner = AudioTuner(isMuted: true)
+            coreSession.run(tuner, onComplete)
+            
+        case .unmute:
+            let tuner = AudioTuner(isMuted: false)
+            coreSession.run(tuner, onComplete)
+            
+        case .stabilization(let mode):
+            let tuner = VideoStabilizationTuner(stabilzationMode: mode)
+            coreSession.run(tuner, onComplete)
+            
+        case .torch(let mode, let level):
+            let tuner = TorchTuner(level: level, torchMode: mode)
+            coreSession.run(tuner, onComplete)
+            
+        case .custom(let tuner):
+            coreSession.run(tuner, onComplete)
+        }
+        
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `video` instead.")
+    @discardableResult
     public func mute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
         let tuner = AudioTuner(isMuted: true)
         coreSession.run(tuner, onComplete)
@@ -119,6 +148,7 @@ extension AespaVideoContext: VideoContext {
         return self
     }
     
+    @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func unmute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
         let tuner = AudioTuner(isMuted: false)
@@ -127,6 +157,7 @@ extension AespaVideoContext: VideoContext {
         return self
     }
     
+    @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func stabilization(
         mode: AVCaptureVideoStabilizationMode,
@@ -138,6 +169,7 @@ extension AespaVideoContext: VideoContext {
         return self
     }
     
+    @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func torch(
         mode: AVCaptureDevice.TorchMode,
@@ -150,6 +182,8 @@ extension AespaVideoContext: VideoContext {
         return self
     }
     
+    @available(*, deprecated, message: "Please use `video` instead.")
+    @discardableResult
     public func customize<T: AespaSessionTuning>(
         _ tuner: T,
         _ onComplete: @escaping CompletionHandler = { _ in }
