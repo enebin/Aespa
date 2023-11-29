@@ -82,19 +82,22 @@ extension AespaPhotoContext: PhotoContext {
     }
     
     @discardableResult
-    public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
-        photoSetting.flashMode = mode
-        return self
-    }
-    
-    @discardableResult
-    public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
-        photoSetting.isAutoRedEyeReductionEnabled = enabled
-        return self
-    }
-    
-    public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
-        photoSetting = setting
+    public func photo(
+        _ photoContextOption: PhotoContextOption,
+        onComplete: CompletionHandler? = nil
+    ) -> AespaPhotoContext {
+        let onComplete = onComplete ?? { _ in }
+        
+        switch photoContextOption {
+        case .flashMode(let flashMode):
+            photoSetting.flashMode = flashMode
+        case .redEyeReduction(let enabled):
+            photoSetting.isAutoRedEyeReductionEnabled = enabled
+        case .custom(let aVCapturePhotoSettings):
+            photoSetting = aVCapturePhotoSettings
+        }
+        
+        onComplete(.success(()))
         return self
     }
     
@@ -135,4 +138,28 @@ private extension AespaPhotoContext {
         photoFileBufferSubject.send(.success(photoFile))
         return photoFile
     }
+}
+
+// MARK: - Deprecated methods
+extension AespaPhotoContext {
+    @available(*, deprecated, message: "Please use `photo` instead.")
+    @discardableResult
+    public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
+        photoSetting.flashMode = mode
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `photo` instead.")
+    @discardableResult
+    public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
+        photoSetting.isAutoRedEyeReductionEnabled = enabled
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `photo` instead.")
+    public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
+        photoSetting = setting
+        return self
+    }
+    
 }

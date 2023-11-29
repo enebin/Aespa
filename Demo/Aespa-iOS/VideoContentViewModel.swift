@@ -31,16 +31,16 @@ class VideoContentViewModel: ObservableObject {
     @Published var photoFiles: [PhotoAsset] = []
     
     init() {
-        var option = AespaOption(albumName: "Aespa-Demo-App")
+        let option = AespaOption(albumName: "YOUR_ALBUM_NAME")
         self.aespaSession = Aespa.session(with: option)
-        
+
         // Common setting
         aespaSession
-            .focus(mode: .continuousAutoFocus)
-            .changeMonitoring(enabled: true)
-            .orientation(to: .portrait)
-            .quality(to: .high)
-            .custom(WideColorCameraTuner()) { result in
+            .common(.focus(mode: .continuousAutoFocus))
+            .common(.changeMonitoring(enabled: true))
+            .common(.orientation(orientation: .portrait))
+            .common(.quality(preset: .high))
+            .common(.custom(tuner: WideColorCameraTuner())) { result in
                 if case .failure(let error) = result {
                     print("Error: ", error)
                 }
@@ -48,14 +48,14 @@ class VideoContentViewModel: ObservableObject {
         
         // Photo-only setting
         aespaSession
-            .flashMode(to: .on)
-            .redEyeReduction(enabled: true)
-        
+            .photo(.flashMode(mode: .on))
+            .photo(.redEyeReduction(enabled: true))
+
         // Video-only setting
         aespaSession
-            .mute()
-            .stabilization(mode: .auto)
-        
+            .video(.mute)
+            .video(.stabilization(mode: .auto))
+
         // Prepare video album cover
         aespaSession.videoFilePublisher
             .receive(on: DispatchQueue.main)

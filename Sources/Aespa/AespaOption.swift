@@ -102,6 +102,7 @@ public extension AespaOption {
 
     /// `Log` provides an option for enabling or disabling logging.
     struct Log {
+        /// Enable logging
         public var loggingEnabled: Bool = true
     }
 }

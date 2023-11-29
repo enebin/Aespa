@@ -20,6 +20,20 @@
                ReferencedContainer = "container:TestHostApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "NO"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "63F07BF32B170E870003BC1E"
+               BuildableName = "ExampleCode.app"
+               BlueprintName = "ExampleCode"
+               ReferencedContainer = "container:TestHostApp.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -29,7 +43,8 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:Test.xctestplan">
+            reference = "container:Test.xctestplan"
+            default = "YES">
          </TestPlanReference>
       </TestPlans>
       <Testables>
