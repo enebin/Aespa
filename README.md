@@ -198,47 +198,68 @@ https://github.com/enebin/Aespa.git
 - iOS 14.0+
 
 ### Getting started
-``` Swift
+```swift
 import Aespa
-
-let aespaOption = AespaOption(albumName: "YOUR_ALBUM_NAME")
-// If you don't need album add this line
-// aespaOption.asset.synchronizeWithLocalAlbum = false
-let aespaSession = Aespa.session(with: aespaOption)
 ```
+
+<!-- INSERT_CODE: GETTING_STARTED -->
+```swift
+let option = AespaOption(albumName: "YOUR_ALBUM_NAME")
+self.aespaSession = Aespa.session(with: option)
+```
+<!-- INSERT_CODE: END -->
 
 ## Implementation Exapmles
 ### Configuration
-``` Swift
+<!-- INSERT_CODE: COMMON_SETTING -->
+```swift
 // Common setting
 aespaSession
-    .focus(mode: .continuousAutoFocus)
-    .orientation(to: .portrait)
-    .quality(to: .high)
+    .common(.focus(mode: .continuousAutoFocus))
+    .common(.changeMonitoring(enabled: true))
+    .common(.orientation(orientation: .portrait))
+    .common(.quality(preset: .high))
+    .common(.custom(tuner: WideColorCameraTuner())) { result in
+        if case .failure(let error) = result {
+            print("Error: ", error)
+        }
+    }
+```
+<!-- INSERT_CODE: END -->
 
+<!-- INSERT_CODE: PHOTO_SETTING -->
+```swift
 // Photo-only setting
 aespaSession
-    .flashMode(to: .on)
-    .redEyeReduction(enabled: true)
+    .photo(.flashMode(mode: .on))
+    .photo(.redEyeReduction(enabled: true))
+```
+<!-- INSERT_CODE: END -->
 
+<!-- INSERT_CODE: VIDEO_SETTING -->
+```swift
 // Video-only setting
 aespaSession
-    .mute()
-    .stabilization(mode: .auto)         
+    .video(.mute)
+    .video(.stabilization(mode: .auto))
 ```
+<!-- INSERT_CODE: END -->
 
 ### Recording & Capture
-``` Swift
+<!-- INSERT_CODE: RECORDING_AND_CAPTURE -->
+```swift
 // Start recording
 aespaSession.startRecording()
 // Later... stop recording
 aespaSession.stopRecording()
-
 // Capture photo
 aespaSession.capturePhoto()
 ```
+<!-- INSERT_CODE: END -->
+
 ### Get result
-``` Swift
+<!-- INSERT_CODE: GET_RESULT -->
+```swift
 aespaSession.stopRecording { result in
     switch result {
     case .success(let file):
@@ -248,25 +269,30 @@ aespaSession.stopRecording { result in
     }
 }
 
-// or... 
-aespaSession.fetchVideoFiles(limit: 1)
+// or...
+Task {
+    let files = await aespaSession.fetchVideoFiles(limit: 1)
+}
 
 // or you can use publisher
-aespaSession.videoFilePublisher.sink { result in ... }
+aespaSession.videoFilePublisher.sink { result in
+    print(result)
+}
 ```
+<!-- INSERT_CODE: END -->
 
 ## SwiftUI Integration
 Aespa also provides a super-easy way to integrate video capture functionality into SwiftUI applications. `AespaSession` includes a helper method to create a SwiftUI `UIViewRepresentable` that provides a preview of the video capture.
 
 ### Example usage
-
+<!-- INSERT_CODE: SWIFTUI_INTEGRATION -->
 ```swift
 import Aespa
 import SwiftUI
 
 struct VideoContentView: View {
     @StateObject private var viewModel = VideoContentViewModel()
-    
+
     var body: some View {
         ZStack {
             viewModel.preview
@@ -284,20 +310,24 @@ class VideoContentViewModel: ObservableObject {
     var preview: some View {
         aespaSession.interactivePreview()
     }
-    
-    init() {
-        let option = AespaOption(albumName: "Aespa-Demo")
-        self.aespaSession = Aespa.session(with: option)
-    
-        aespaSession
-            .autofocusing(mode: .continuousAutoFocus)
-            .orientation(to: .portrait)
-            .quality(to: .high)
 
-        // Other settings...
+    init() {
+        let option = AespaOption(albumName: "YOUR_ALBUM_NAME")
+        self.aespaSession = Aespa.session(with: option)
+
+        setUp()
+    }
+
+    func setUp() {
+        aespaSession
+            .common(.quality(preset: .high))
+
+        // Other options
+        // ...
     }
 }
 ```
+<!-- INSERT_CODE: END -->
 
 > **Note**
 > 
