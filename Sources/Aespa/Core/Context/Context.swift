@@ -287,6 +287,28 @@ public protocol PhotoContext {
         _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void
     )
     
+    /// Configures the photo session context based on the specified option.
+    ///
+    /// This method streamlines the configuration of various aspects of a photo session, such as setting the flash mode,
+    /// enabling red-eye reduction, or applying custom photo settings. It leverages the `PhotoContextOption` enum to
+    /// represent these configurations in a unified way.
+    ///
+    /// The method applies the chosen configuration to the `photoContext` object.
+    ///
+    /// - Parameters:
+    ///   - photoContextOption: An enum value of `PhotoContextOption` indicating the configuration to be applied.
+    ///   - onComplete: An optional completion handler that is called after the configuration is applied.
+    ///                 If not provided, a default handler that does nothing will be used.
+    ///
+    /// - Note: `onComplete` alwyas returns `success`
+    ///
+    /// - Returns: The instance of `AespaPhotoContext`, allowing for method chaining.
+    @discardableResult func photo(
+        _ photoContextOption: PhotoContextOption,
+        onComplete: CompletionHandler?
+    ) -> PhotoContextType
+
+    
     /// Sets the flash mode for the camera and returns the updated `AespaPhotoContext` instance.
     /// The returned instance can be used for chaining configuration.
     ///
@@ -407,4 +429,27 @@ public enum VideoContextOption {
     /// - Parameters:
     ///   - tuner: An instance that conforms to `AespaSessionTuning`.
     case custom(tuner: AespaSessionTuning)
+}
+
+public enum PhotoContextOption {
+    /// Sets the flash mode for the camera and returns the updated `AespaPhotoContext` instance.
+    /// The returned instance can be used for chaining configuration.
+    ///
+    /// - Parameter mode: The `AVCaptureDevice.FlashMode` to set for the camera.
+    case flashMode(mode: AVCaptureDevice.FlashMode)
+    
+    /// Sets the red eye reduction mode for the camera and returns the updated `AespaPhotoContext` instance.
+    /// The returned instance can be used for chaining configuration.
+    ///
+    /// - Parameter enabled: A boolean indicating whether the red eye reduction should be enabled or not.
+    case redEyeReduction(enabled: Bool)
+    
+    /// Updates the photo capturing settings for the `AespaPhotoContext` instance.
+    ///
+    /// - Note: This method can be potentially risky to use, as it overrides the existing capture settings.
+    ///  Not all `AVCapturePhotoSettings` are supported, for instance, live photos are not supported.
+    ///  It's recommended to understand the implications of the settings before applying them.
+    ///
+    /// - Parameter setting: The `AVCapturePhotoSettings` to use for photo capturing.
+    case custom(avCapturePhotoSettings: AVCapturePhotoSettings)
 }

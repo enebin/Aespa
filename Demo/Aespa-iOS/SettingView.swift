@@ -72,7 +72,7 @@ struct SettingView: View {
                 }
                 .modifier(TitledPicker(title: "Flash mode"))
                 .onChange(of: flashMode) { newValue in
-                    viewModel.aespaSession.flashMode(to: newValue)
+                    viewModel.aespaSession.photo(.flashMode(mode: newValue))
                 }
             }
         }

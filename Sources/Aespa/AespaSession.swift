@@ -404,15 +404,24 @@ extension AespaSession: PhotoContext {
     }
     
     @discardableResult
+    public func photo(_ photoContextOption: PhotoContextOption, onComplete: CompletionHandler? = nil) -> AespaPhotoContext {
+        let onComplete = onComplete ?? { _ in }
+        return photoContext.photo(photoContextOption, onComplete: onComplete)
+    }
+    
+    @available(*, deprecated, message: "Please use `video` instead.")
+    @discardableResult
     public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
         photoContext.flashMode(to: mode)
     }
-
+    
+    @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
         photoContext.redEyeReduction(enabled: enabled)
     }
     
+    @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
         photoContext.custom(setting)

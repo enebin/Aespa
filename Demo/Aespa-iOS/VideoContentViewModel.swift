@@ -48,9 +48,9 @@ class VideoContentViewModel: ObservableObject {
         
         // Photo-only setting
         aespaSession
-            .flashMode(to: .on)
-            .redEyeReduction(enabled: true)
-        
+            .photo(.flashMode(mode: .on))
+            .photo(.redEyeReduction(enabled: true))
+            
         // Video-only setting
         aespaSession
             .video(.mute)
