@@ -39,7 +39,7 @@ struct SettingView: View {
                 }
                 .modifier(TitledPicker(title: "Asset quality"))
                 .onChange(of: quality) { newValue in
-                    viewModel.aespaSession.quality(to: newValue)
+                    viewModel.aespaSession.common(.quality(preset: newValue))
                 }
                 
                 Picker("Focus", selection: $focusMode) {
@@ -49,7 +49,7 @@ struct SettingView: View {
                 }
                 .modifier(TitledPicker(title: "Focus mode"))
                 .onChange(of: focusMode) { newValue in
-                    viewModel.aespaSession.focus(mode: newValue)
+                    viewModel.aespaSession.common(.focus(mode: newValue))
                 }
             }
             

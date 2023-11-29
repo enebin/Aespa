@@ -124,7 +124,7 @@ private extension InteractivePreview {
         
         return TapGesture(count: 2).onEnded {
             let nextPosition: AVCaptureDevice.Position = (currentCameraPosition == .back) ? .front : .back
-            session.position(to: nextPosition)
+            session.common(.position(position: nextPosition))
         }
     }
     
@@ -148,7 +148,7 @@ private extension InteractivePreview {
                     y: point.y / geometry.size.height
                 )
                 
-                session.focus(mode: .autoFocus, point: point)
+                session.common(.focus(mode: .autoFocus))
                 focusingLocation = value.location
                 
                 if option.enableShowingCrosshair {
@@ -168,7 +168,7 @@ private extension InteractivePreview {
                 let videoZoomFactor = scale * previousZoomFactor
                 if (videoZoomFactor <= maxZoomFactor) {
                     let newZoomFactor = max(1.0, min(videoZoomFactor, maxZoomFactor))
-                    session.zoom(factor: newZoomFactor)
+                    session.common(.zoom(factor: newZoomFactor))
                 }
             }
             .onEnded { (scale) in
@@ -179,7 +179,7 @@ private extension InteractivePreview {
     
     func resetFocusMode() {
         guard session.isRunning else { return }
-        session.focus(mode: preferredFocusMode)
+        session.common(.focus(mode: preferredFocusMode))
     }
     
     func showCrosshair() {

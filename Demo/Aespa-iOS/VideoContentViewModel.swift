@@ -36,11 +36,11 @@ class VideoContentViewModel: ObservableObject {
         
         // Common setting
         aespaSession
-            .focus(mode: .continuousAutoFocus)
-            .changeMonitoring(enabled: true)
-            .orientation(to: .portrait)
-            .quality(to: .high)
-            .custom(WideColorCameraTuner()) { result in
+            .common(.focus(mode: .continuousAutoFocus))
+            .common(.changeMonitoring(enabled: true))
+            .common(.orientation(orientation: .portrait))
+            .common(.quality(preset: .high))
+            .common(.custom(tuner: WideColorCameraTuner())) { result in
                 if case .failure(let error) = result {
                     print("Error: ", error)
                 }
