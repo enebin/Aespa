@@ -196,10 +196,11 @@ public protocol VideoContext {
     ///                 If not provided, a default handler that does nothing will be used.
     ///
     /// - Returns: The instance of `AespaVideoSessionContext`, allowing for method chaining.
-    @discardableResult func video(
+    @discardableResult 
+    func video(
         _ videoContextOption: VideoContextOption,
-        onComplete: CompletionHandler?)
-    -> VideoContextType
+        onComplete: CompletionHandler?
+    ) -> VideoContextType
 
     /// Mutes the audio input for the video recording session.
     ///
@@ -285,11 +286,12 @@ public protocol PhotoContext {
     /// the completion handler.
     ///
     /// - Parameters:
+    ///   - autoVideoOrientationEnabled: A Boolean value that determines whether photo orientation should be automatic.
     ///   - completionHandler: A closure to be invoked once the photo capture process is completed. This
     ///     closure takes a `Result` type where `Success` contains a `PhotoFile` object and
     ///     `Failure` contains an `Error` object. By default, the closure does nothing.
-    ///
     func capturePhoto(
+        autoVideoOrientationEnabled: Bool,
         _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void
     )
     

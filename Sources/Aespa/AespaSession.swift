@@ -303,8 +303,11 @@ extension AespaSession: PhotoContext {
         photoContext.currentSetting
     }
 
-    public func capturePhoto(_ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void = { _ in }) {
-        photoContext.capturePhoto(completionHandler)
+    public func capturePhoto(
+        autoVideoOrientationEnabled: Bool = false,
+        _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void = { _ in }
+    ) {
+        photoContext.capturePhoto(autoVideoOrientationEnabled: autoVideoOrientationEnabled, completionHandler)
 
     }
     

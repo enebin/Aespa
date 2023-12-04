@@ -104,7 +104,7 @@ struct VideoContentView: View {
                                 isRecording = true
                             }
                         case .photo:
-                            viewModel.aespaSession.capturePhoto()
+                            viewModel.aespaSession.capturePhoto(autoVideoOrientationEnabled: true)
                         }
                     }
                 }
