@@ -37,8 +37,16 @@ class AespaCoreRecorder: NSObject {
 }
 
 extension AespaCoreRecorder {
-    func startRecording(in filePath: URL, _ onComplete: @escaping CompletionHandler) {
-        run(processor: StartRecordProcessor(filePath: filePath, delegate: self), onComplete)
+    func startRecording(
+        in filePath: URL,
+        _ autoVideoOrientationEnabled: Bool,
+        _ onComplete: @escaping CompletionHandler
+    ) {
+        run(processor: StartRecordProcessor(
+            filePath: filePath,
+            delegate: self,
+            autoVideoOrientationEnabled: autoVideoOrientationEnabled),
+            onComplete)
     }
     
     func stopRecording() async throws -> URL {

@@ -163,10 +163,14 @@ public protocol VideoContext {
     /// Starts the video recording session.
     ///
     /// - Parameter onComplete: A closure to handle any errors that occur during recording.
+    /// - Parameter autoVideoOrientationEnabled: A Boolean value that determines whether video orientation should be automatic.
     ///
-    /// - Note: If `autoVideoOrientation` option is enabled,
+    /// - Note: If `autoVideoOrientationEnabled` option is enabled,
     ///   it sets the orientation according to the current device orientation.
-    func startRecording(at path: URL?, _ onComplete: @escaping CompletionHandler)
+    func startRecording(
+        at path: URL?,
+        autoVideoOrientationEnabled: Bool,
+        _ onComplete: @escaping CompletionHandler)
 
     /// Stops the current recording session and saves the video file.
     ///

@@ -75,17 +75,17 @@ extension AespaVideoContext: VideoContext {
         .eraseToAnyPublisher()
     }
     
-    public func startRecording(at path: URL? = nil, _ onComplete: @escaping CompletionHandler = { _ in }) {
+    public func startRecording(
+        at path: URL? = nil,
+        autoVideoOrientationEnabled: Bool = false,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) {
         let fileName = option.asset.fileNameHandler()
         let filePath = path ?? FilePathProvider.requestTemporaryFilePath(
             fileName: fileName,
             extension: option.asset.fileExtension)
         
-        if option.session.autoVideoOrientationEnabled {
-            commonContext.orientation(to: UIDevice.current.orientation.toVideoOrientation, onComplete)
-        }
-        
-        recorder.startRecording(in: filePath, onComplete)
+        recorder.startRecording(in: filePath, autoVideoOrientationEnabled, onComplete)
         isRecording = true
     }
     

@@ -264,8 +264,12 @@ extension AespaSession: VideoContext {
         videoContext.isMuted
     }
 
-    public func startRecording(at path: URL? = nil, _ onComplete: @escaping CompletionHandler = { _ in }) {
-        videoContext.startRecording(at: path, onComplete)
+    public func startRecording(
+        at path: URL? = nil,
+        autoVideoOrientationEnabled: Bool = false,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) {
+        videoContext.startRecording(at: path, autoVideoOrientationEnabled: autoVideoOrientationEnabled, onComplete)
     }
     
     public func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }) {
