@@ -13,18 +13,22 @@ public enum AespaError: LocalizedError {
     case permission(reason: PermissionErrorReason)
     case album(reason: AlbumErrorReason)
     case file(reason: FileErrorReason)
+    case connection(reason: ConnectionErrorReason)
+
 
     public var errorDescription: String? {
         switch self {
-        case .session(reason: let reason):
+        case .session(let reason):
             return reason.rawValue
-        case .device(reason: let reason):
+        case .device(let reason):
             return reason.rawValue
-        case .permission(reason: let reason):
+        case .permission(let reason):
             return reason.rawValue
-        case .album(reason: let reason):
+        case .album(let reason):
             return reason.rawValue
-        case .file(reason: let reason):
+        case .file(let reason):
+            return reason.rawValue
+        case .connection(let reason):
             return reason.rawValue
         }
     }
@@ -80,5 +84,10 @@ public extension AespaError {
                 "Unsuportted file type."
         case alreadyExist =
                 "File already exists. Cannot overwrite the file."
+    }
+
+    enum ConnectionErrorReason: String {
+        case cannotChangeVideoOrientation =
+                "Changing orientation is not supported currently. This behavior will be ignored."
     }
 }

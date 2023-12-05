@@ -26,7 +26,7 @@ final class CapturePhotoOutputProcessorTests: XCTestCase {
     func testCapture() throws {
         let setting = AVCapturePhotoSettings()
         let delegate = MockDelegate()
-        let processor = CapturePhotoProcessor(setting: setting, delegate: delegate)
+        let processor = CapturePhotoProcessor(setting: setting, delegate: delegate, autoVideoOrientationEnabled: false)
         
         stub(photoOutput) { proxy in
             when(proxy.capturePhoto(with: equal(to: setting), delegate: equal(to: delegate))).thenDoNothing()

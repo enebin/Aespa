@@ -68,11 +68,12 @@ extension AespaPhotoContext: PhotoContext {
     }
     
     public func capturePhoto(
+        autoVideoOrientationEnabled: Bool = false,
         _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void
     ) {
         Task(priority: .utility) {
             do {
-                let photoFile = try await self.capturePhotoWithError()
+                let photoFile = try await self.capturePhotoWithError(autoVideoOrientationEnabled: autoVideoOrientationEnabled)
                 completionHandler(.success(photoFile))
             } catch let error {
                 Logger.log(error: error)
@@ -82,19 +83,22 @@ extension AespaPhotoContext: PhotoContext {
     }
     
     @discardableResult
-    public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
-        photoSetting.flashMode = mode
-        return self
-    }
-    
-    @discardableResult
-    public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
-        photoSetting.isAutoRedEyeReductionEnabled = enabled
-        return self
-    }
-    
-    public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
-        photoSetting = setting
+    public func photo(
+        _ photoContextOption: PhotoContextOption,
+        onComplete: CompletionHandler? = nil
+    ) -> AespaPhotoContext {
+        let onComplete = onComplete ?? { _ in }
+        
+        switch photoContextOption {
+        case .flashMode(let flashMode):
+            photoSetting.flashMode = flashMode
+        case .redEyeReduction(let enabled):
+            photoSetting.isAutoRedEyeReductionEnabled = enabled
+        case .custom(let aVCapturePhotoSettings):
+            photoSetting = aVCapturePhotoSettings
+        }
+        
+        onComplete(.success(()))
         return self
     }
     
@@ -115,9 +119,9 @@ extension AespaPhotoContext: PhotoContext {
 }
 
 private extension AespaPhotoContext {
-    func capturePhotoWithError() async throws -> PhotoFile {
+    func capturePhotoWithError(autoVideoOrientationEnabled: Bool) async throws -> PhotoFile {
         let setting = AVCapturePhotoSettings(from: photoSetting)
-        let capturePhoto = try await camera.capture(setting: setting)
+        let capturePhoto = try await camera.capture(setting: setting, autoVideoOrientationEnabled: autoVideoOrientationEnabled)
         
         guard let rawPhotoData = capturePhoto.fileDataRepresentation() else {
             throw AespaError.file(reason: .unableToFlatten)
@@ -134,5 +138,28 @@ private extension AespaPhotoContext {
         
         photoFileBufferSubject.send(.success(photoFile))
         return photoFile
+    }
+}
+
+// MARK: - Deprecated methods
+extension AespaPhotoContext {
+    @available(*, deprecated, message: "Please use `photo` instead.")
+    @discardableResult
+    public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
+        photoSetting.flashMode = mode
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `photo` instead.")
+    @discardableResult
+    public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
+        photoSetting.isAutoRedEyeReductionEnabled = enabled
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `photo` instead.")
+    public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
+        photoSetting = setting
+        return self
     }
 }

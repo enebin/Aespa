@@ -77,7 +77,7 @@ struct VideoContentView: View {
                         
                         // Position change + button
                         Button(action: {
-                            viewModel.aespaSession.position(to: isFront ? .back : .front)
+                            viewModel.aespaSession.common(.position(position: isFront ? .back : .front))
                             isFront.toggle()
                         }) {
                             Image(systemName: "arrow.triangle.2.circlepath.camera.fill")
@@ -100,11 +100,11 @@ struct VideoContentView: View {
                                 viewModel.aespaSession.stopRecording()
                                 isRecording = false
                             } else {
-                                viewModel.aespaSession.startRecording()
+                                viewModel.aespaSession.startRecording(autoVideoOrientationEnabled: true)
                                 isRecording = true
                             }
                         case .photo:
-                            viewModel.aespaSession.capturePhoto()
+                            viewModel.aespaSession.capturePhoto(autoVideoOrientationEnabled: true)
                         }
                     }
                 }

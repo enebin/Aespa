@@ -181,6 +181,7 @@ open class AespaSession {
             throw AespaError.permission(reason: .denied)
         }
 
+        // Check if session is running
         guard coreSession.isRunning else {
             throw AespaError.session(reason: .notRunning)
         }
@@ -203,66 +204,43 @@ extension AespaSession: CommonContext {
     }
     
     @discardableResult
-    public func quality(
-        to preset: AVCaptureSession.Preset,
-        _ onComplete: @escaping CompletionHandler = { _ in }
+    public func common(
+        _ commonContextOption: CommonContextOption,
+        onComplete: CompletionHandler? = nil
     ) -> AespaSession {
-        let tuner = QualityTuner(videoQuality: preset)
-        coreSession.run(tuner, onComplete)
-        return self
-    }
-    
-    @discardableResult
-    public func position(
-        to position: AVCaptureDevice.Position,
-        _ onComplete: @escaping CompletionHandler = { _ in }
-    ) -> AespaSession {
-        let tuner = CameraPositionTuner(position: position,
-                                        devicePreference: option.session.cameraDevicePreference)
-        coreSession.run(tuner, onComplete)
-        return self
-    }
-    
-    @discardableResult
-    public func orientation(
-        to orientation: AVCaptureVideoOrientation,
-        _ onComplete: @escaping CompletionHandler = { _ in }
-    ) -> AespaSession {
-        let tuner = VideoOrientationTuner(orientation: orientation)
-        coreSession.run(tuner, onComplete)
-        return self
-    }
-    
-    @discardableResult
-    public func focus(
-        mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil,
-        _ onComplete: @escaping CompletionHandler = { _ in }
-    ) -> AespaSession {
-        let tuner = FocusTuner(mode: mode, point: point)
-        coreSession.run(tuner, onComplete)
-        return self
-    }
-    
-    @discardableResult
-    public func zoom(factor: CGFloat, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
-        let tuner = ZoomTuner(zoomFactor: factor)
-        coreSession.run(tuner, onComplete)
-        return self
-    }
+        let onComplete = onComplete ?? { _ in }
+        
+        switch commonContextOption {
+        case .quality(let preset):
+            let tuner = QualityTuner(videoQuality: preset)
+            coreSession.run(tuner, onComplete)
+            
+        case .position(let position):
+            let tuner = CameraPositionTuner(
+                position: position,
+                devicePreference: option.session.cameraDevicePreference)
+            coreSession.run(tuner, onComplete)
+            
+        case .orientation(let orientation):
+            let tuner = VideoOrientationTuner(orientation: orientation)
+            coreSession.run(tuner, onComplete)
 
-    @discardableResult
-    public func changeMonitoring(enabled: Bool, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
-        let tuner = ChangeMonitoringTuner(isSubjectAreaChangeMonitoringEnabled: enabled)
-        coreSession.run(tuner, onComplete)
-        return self
-    }
-
-    @discardableResult
-    public func custom<T: AespaSessionTuning>(
-        _ tuner: T,
-        _ onComplete: @escaping CompletionHandler = { _ in }
-    ) -> AespaSession {
-        coreSession.run(tuner, onComplete)
+        case .focus(let mode, let point):
+            let tuner = FocusTuner(mode: mode, point: point)
+            coreSession.run(tuner, onComplete)
+            
+        case .zoom(let factor):
+            let tuner = ZoomTuner(zoomFactor: factor)
+            coreSession.run(tuner, onComplete)
+            
+        case .changeMonitoring(let enabled):
+            let tuner = ChangeMonitoringTuner(isSubjectAreaChangeMonitoringEnabled: enabled)
+            coreSession.run(tuner, onComplete)
+            
+        case .custom(let tuner):
+            coreSession.run(tuner, onComplete)
+        }
+        
         return self
     }
 }
@@ -286,43 +264,29 @@ extension AespaSession: VideoContext {
         videoContext.isMuted
     }
 
-    public func startRecording(at path: URL? = nil, _ onComplete: @escaping CompletionHandler = { _ in }) {
-        videoContext.startRecording(at: path, onComplete)
+    public func startRecording(
+        at path: URL? = nil,
+        autoVideoOrientationEnabled: Bool = false,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) {
+        videoContext.startRecording(at: path, autoVideoOrientationEnabled: autoVideoOrientationEnabled, onComplete)
     }
     
     public func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }) {
         videoContext.stopRecording(completionHandler)
     }
-
-    @discardableResult
-    public func mute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
-        videoContext.mute(onComplete)
-    }
-
-    @discardableResult
-    public func unmute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
-        videoContext.unmute(onComplete)
-    }
-
-    @discardableResult
-    public func stabilization(
-        mode: AVCaptureVideoStabilizationMode,
-        _ onComplete: @escaping CompletionHandler = { _ in }
-    ) -> AespaVideoSessionContext {
-        videoContext.stabilization(mode: mode, onComplete)
-    }
-    
-    @discardableResult
-    public func torch(
-        mode: AVCaptureDevice.TorchMode,
-        level: Float,
-        _ onComplete: @escaping CompletionHandler = { _ in }
-    ) -> AespaVideoSessionContext {
-        videoContext.torch(mode: mode, level: level, onComplete)
-    }
     
     public func fetchVideoFiles(limit: Int = 0) async -> [VideoAsset] {
         return await videoContext.fetchVideoFiles(limit: limit)
+    }
+    
+    @discardableResult
+    public func video(
+        _ videoContextOption: VideoContextOption,
+        onComplete: CompletionHandler? = nil
+    ) -> AespaVideoSessionContext {
+        let onComplete = onComplete ?? { _ in }
+        return videoContext.video(videoContextOption, onComplete: onComplete)
     }
 }
 
@@ -339,28 +303,25 @@ extension AespaSession: PhotoContext {
         photoContext.currentSetting
     }
 
-    public func capturePhoto(_ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void = { _ in }) {
-        photoContext.capturePhoto(completionHandler)
+    public func capturePhoto(
+        autoVideoOrientationEnabled: Bool = false,
+        _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void = { _ in }
+    ) {
+        photoContext.capturePhoto(autoVideoOrientationEnabled: autoVideoOrientationEnabled, completionHandler)
 
-    }
-    
-    @discardableResult
-    public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
-        photoContext.flashMode(to: mode)
-    }
-
-    @discardableResult
-    public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
-        photoContext.redEyeReduction(enabled: enabled)
-    }
-    
-    @discardableResult
-    public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
-        photoContext.custom(setting)
     }
     
     public func fetchPhotoFiles(limit: Int = 0) async -> [PhotoAsset] {
         return await photoContext.fetchPhotoFiles(limit: limit)
+    }
+    
+    @discardableResult
+    public func photo(
+        _ photoContextOption: PhotoContextOption,
+        onComplete: CompletionHandler? = nil
+    ) -> AespaPhotoContext {
+        let onComplete = onComplete ?? { _ in }
+        return photoContext.photo(photoContextOption, onComplete: onComplete)
     }
 }
 
@@ -377,5 +338,128 @@ extension AespaSession {
     func terminateSession(_ onComplete: @escaping CompletionHandler) {
         let tuner = SessionTerminationTuner()
         coreSession.run(tuner, onComplete)
+    }
+}
+
+// MARK: - Deprecated methods
+extension AespaSession {
+    @available(*, deprecated, message: "Please use `common` instead.")
+    @discardableResult
+    public func quality(
+        to preset: AVCaptureSession.Preset,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaSession {
+        let tuner = QualityTuner(videoQuality: preset)
+        coreSession.run(tuner, onComplete)
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `common` instead.")
+    @discardableResult
+    public func position(
+        to position: AVCaptureDevice.Position,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaSession {
+        let tuner = CameraPositionTuner(position: position,
+                                        devicePreference: option.session.cameraDevicePreference)
+        coreSession.run(tuner, onComplete)
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `common` instead.")
+    @discardableResult
+    public func orientation(
+        to orientation: AVCaptureVideoOrientation,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaSession {
+        let tuner = VideoOrientationTuner(orientation: orientation)
+        coreSession.run(tuner, onComplete)
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `common` instead.")
+    @discardableResult
+    public func focus(
+        mode: AVCaptureDevice.FocusMode, point: CGPoint? = nil,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaSession {
+        let tuner = FocusTuner(mode: mode, point: point)
+        coreSession.run(tuner, onComplete)
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `common` instead.")
+    @discardableResult
+    public func zoom(factor: CGFloat, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
+        let tuner = ZoomTuner(zoomFactor: factor)
+        coreSession.run(tuner, onComplete)
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `common` instead.")
+    @discardableResult
+    public func changeMonitoring(enabled: Bool, _ onComplete: @escaping CompletionHandler = { _ in }) -> AespaSession {
+        let tuner = ChangeMonitoringTuner(isSubjectAreaChangeMonitoringEnabled: enabled)
+        coreSession.run(tuner, onComplete)
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `common` instead.")
+    @discardableResult
+    public func custom<T: AespaSessionTuning>(
+        _ tuner: T,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaSession {
+        coreSession.run(tuner, onComplete)
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `video` instead.")
+    @discardableResult
+    public func mute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
+        videoContext.mute(onComplete)
+    }
+    
+    @available(*, deprecated, message: "Please use `video` instead.")
+    @discardableResult
+    public func unmute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoSessionContext {
+        videoContext.unmute(onComplete)
+    }
+    
+    @available(*, deprecated, message: "Please use `video` instead.")
+    @discardableResult
+    public func stabilization(
+        mode: AVCaptureVideoStabilizationMode,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoSessionContext {
+        videoContext.stabilization(mode: mode, onComplete)
+    }
+    
+    @available(*, deprecated, message: "Please use `video` instead.")
+    @discardableResult
+    public func torch(
+        mode: AVCaptureDevice.TorchMode,
+        level: Float,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoSessionContext {
+        videoContext.torch(mode: mode, level: level, onComplete)
+    }
+    
+    @available(*, deprecated, message: "Please use `photo` instead.")
+    @discardableResult
+    public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
+        photoContext.flashMode(to: mode)
+    }
+    
+    @available(*, deprecated, message: "Please use `photo` instead.")
+    @discardableResult
+    public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
+        photoContext.redEyeReduction(enabled: enabled)
+    }
+    
+    @available(*, deprecated, message: "Please use `photo` instead.")
+    @discardableResult
+    public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
+        photoContext.custom(setting)
     }
 }

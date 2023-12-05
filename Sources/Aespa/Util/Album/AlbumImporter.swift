@@ -10,7 +10,6 @@ import Foundation
 import Photos
 import UIKit
 
-
 struct AlbumImporter {
     private static let lock = NSRecursiveLock()
 

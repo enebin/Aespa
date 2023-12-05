@@ -75,17 +75,17 @@ extension AespaVideoContext: VideoContext {
         .eraseToAnyPublisher()
     }
     
-    public func startRecording(at path: URL? = nil, _ onComplete: @escaping CompletionHandler = { _ in }) {
+    public func startRecording(
+        at path: URL? = nil,
+        autoVideoOrientationEnabled: Bool = false,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) {
         let fileName = option.asset.fileNameHandler()
         let filePath = path ?? FilePathProvider.requestTemporaryFilePath(
             fileName: fileName,
             extension: option.asset.fileExtension)
         
-        if option.session.autoVideoOrientationEnabled {
-            commonContext.orientation(to: UIDevice.current.orientation.toVideoOrientation, onComplete)
-        }
-        
-        recorder.startRecording(in: filePath, onComplete)
+        recorder.startRecording(in: filePath, autoVideoOrientationEnabled, onComplete)
         isRecording = true
     }
     
@@ -112,49 +112,32 @@ extension AespaVideoContext: VideoContext {
     }
     
     @discardableResult
-    public func mute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
-        let tuner = AudioTuner(isMuted: true)
-        coreSession.run(tuner, onComplete)
-        
-        return self
-    }
-    
-    @discardableResult
-    public func unmute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
-        let tuner = AudioTuner(isMuted: false)
-        coreSession.run(tuner, onComplete)
-        
-        return self
-    }
-    
-    @discardableResult
-    public func stabilization(
-        mode: AVCaptureVideoStabilizationMode,
-        _ onComplete: @escaping CompletionHandler = { _ in }
+    public func video(
+        _ videoContextOption: VideoContextOption,
+        onComplete: CompletionHandler? = nil
     ) -> AespaVideoContext {
-        let tuner = VideoStabilizationTuner(stabilzationMode: mode)
-        coreSession.run(tuner, onComplete)
-        
-        return self
-    }
-    
-    @discardableResult
-    public func torch(
-        mode: AVCaptureDevice.TorchMode,
-        level: Float,
-        _ onComplete: @escaping CompletionHandler = { _ in }
-    ) -> AespaVideoContext {
-        let tuner = TorchTuner(level: level, torchMode: mode)
-        coreSession.run(tuner, onComplete)
-        
-        return self
-    }
-    
-    public func customize<T: AespaSessionTuning>(
-        _ tuner: T,
-        _ onComplete: @escaping CompletionHandler = { _ in }
-    ) -> AespaVideoContext {
-        coreSession.run(tuner, onComplete)
+        let onComplete = onComplete ?? { _ in }
+
+        switch videoContextOption {
+        case .mute:
+            let tuner = AudioTuner(isMuted: true)
+            coreSession.run(tuner, onComplete)
+            
+        case .unmute:
+            let tuner = AudioTuner(isMuted: false)
+            coreSession.run(tuner, onComplete)
+            
+        case .stabilization(let mode):
+            let tuner = VideoStabilizationTuner(stabilzationMode: mode)
+            coreSession.run(tuner, onComplete)
+            
+        case .torch(let mode, let level):
+            let tuner = TorchTuner(level: level, torchMode: mode)
+            coreSession.run(tuner, onComplete)
+            
+        case .custom(let tuner):
+            coreSession.run(tuner, onComplete)
+        }
         
         return self
     }
@@ -172,5 +155,62 @@ extension AespaVideoContext: VideoContext {
         }
         
         return await albumManager.fetchVideoFile(limit: limit)
+    }
+}
+
+// MARK: - Deprecated methods
+extension AespaVideoContext {
+    @available(*, deprecated, message: "Please use `video` instead.")
+    @discardableResult
+    public func mute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
+        let tuner = AudioTuner(isMuted: true)
+        coreSession.run(tuner, onComplete)
+        
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `video` instead.")
+    @discardableResult
+    public func unmute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {
+        let tuner = AudioTuner(isMuted: false)
+        coreSession.run(tuner, onComplete)
+        
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `video` instead.")
+    @discardableResult
+    public func stabilization(
+        mode: AVCaptureVideoStabilizationMode,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoContext {
+        let tuner = VideoStabilizationTuner(stabilzationMode: mode)
+        coreSession.run(tuner, onComplete)
+        
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `video` instead.")
+    @discardableResult
+    public func torch(
+        mode: AVCaptureDevice.TorchMode,
+        level: Float,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoContext {
+        let tuner = TorchTuner(level: level, torchMode: mode)
+        coreSession.run(tuner, onComplete)
+        
+        return self
+    }
+    
+    @available(*, deprecated, message: "Please use `video` instead.")
+    @discardableResult
+    public func customize<T: AespaSessionTuning>(
+        _ tuner: T,
+        _ onComplete: @escaping CompletionHandler = { _ in }
+    ) -> AespaVideoContext {
+        coreSession.run(tuner, onComplete)
+        
+        return self
     }
 }
