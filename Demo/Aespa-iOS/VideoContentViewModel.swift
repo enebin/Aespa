@@ -15,10 +15,10 @@ class VideoContentViewModel: ObservableObject {
     let aespaSession: AespaSession
     
     var preview: some View {
-        return aespaSession.interactivePreview()
+        aespaSession.interactivePreview()
         
         // Or you can give some options
-//        let option = InteractivePreviewOption(enableShowingCrosshair: false)
+//        let option = InteractivePreviewOption(enableZoom: true)
 //        return aespaSession.interactivePreview(option: option)
     }
     
