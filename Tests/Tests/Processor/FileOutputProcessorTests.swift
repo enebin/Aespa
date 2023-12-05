@@ -26,7 +26,7 @@ final class FileOutputProcessorTests: XCTestCase {
     func testStartRecording() throws {
         let url = URL(string: "/data/some.mp4")!
         let delegate = MockDelegate()
-        let processor = StartRecordProcessor(filePath: url, delegate: delegate)
+        let processor = StartRecordProcessor(filePath: url, delegate: delegate, autoVideoOrientationEnabled: false)
         
         stub(fileOutput) { proxy in
             when(proxy.getConnection(

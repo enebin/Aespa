@@ -31,6 +31,8 @@ final class ConnectionTunerTests: XCTestCase {
             when(proxy.orientation(to: equal(to: orientation))).then { value in
                 when(proxy.videoOrientation.get).thenReturn(orientation)
             }
+            
+            when(proxy.isVideoOrientationSupported.get).thenReturn(true)
         }
         
         try tuner.tune(connection)
