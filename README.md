@@ -21,11 +21,6 @@ let aespaSession = Aespa.session(with: aespaOption)
 - **Latest API documentation** can be found in [here](https://enebin.github.io/Aespa/documentation/aespa/)
 
 ### Index
-Introduction
-Aespa is a robust and intuitive Swift package for video capturing, built with a focus on the ease of setting up and usage.
-
-It is designed to be easy to use from beginners to intermediate developers. If you're new to video recording on iOS or if you're looking to simplify your existing camera setup, Aespa could be the perfect fit for your project.
-
 - [Introduction](#Introduction)
     - [Super Easy to Use](#Super-Easy-to-Use)
     - [No more delegate](#No-more-delegate)
@@ -47,14 +42,16 @@ It is designed to be easy to use from beginners to intermediate developers. If y
 ---
 
 ## Introduction
-Aespa is a robust and intuitive Swift package for video capturing, built with a focus on the ease of setting up and usage. 
 
-It is designed to be easy to use from beginners to intermediate developers.  If you're new to video recording on iOS or if you're looking to simplify your existing camera setup, Aespa could be the perfect fit for your project.
+Aespa is a robust and intuitive Swift package for video and photo capturing, built with a focus on the ease of setting up and usage.
 
-### ✅ Super easy to use
+It is designed to be easy to use from beginners to intermediate developers. If you're new to video recording on iOS or if you're looking to simplify your existing camera setup, Aespa could be the perfect fit for your project.
+
+
+#### Super easy to use
 
 <details>
-<summary> Zip the boring configuration routine </summary>
+<summary> Zip the boring configuration for session & album </summary>
 
 *Before*
 ``` mermaid
@@ -70,7 +67,7 @@ FO --> PHCollectionListChangeRequest
 **Aespa**
 ``` mermaid
 graph LR
-   User --"AespaOption"--> Aespa --"Aespa.configure()"--> Session
+   User --> Aespa --> Session & Album
 ```
 
 - Aespa provides an accessible API that abstracts the complexity of `AVFoundation`, allowing you to manage video capturing tasks with ease.
@@ -100,7 +97,7 @@ AS --> D["Fetching asset files"]
 
 </details>
 
-### ✅ No more delegate
+#### No more delegate
 <details>
 
 <summary> Combine support </summary>
@@ -117,7 +114,7 @@ graph LR;
 
 </details>
 
-### ✅ Also
+#### Also
 - Automated system permission management.
 - Seamless image and video capture within a single preview session.
 - Thread-safe.
@@ -128,18 +125,9 @@ graph LR;
 
 > **Note**
 > 
-> You can access our **official documentation** for the most comprehensive and up-to-date explanations in [here](https://enebin.github.io/Aespa/documentation/aespa/)
+> You can access our **official documentation** for more comprehensive and up-to-date explanations in [here](https://enebin.github.io/Aespa/documentation/aespa/)
 
-### `InteractivePreview`
-One of our main feature, `InteractivePreview` provides a comprehensive and intuitive way for users to interact directly with the camera preview. 
-
-| Features               | Description                                                             |
-|------------------------|------------------------------------------------------------------------------------------------------------------|
-| Double tap to change camera  | Switches between the front and back camera upon double tapping.                                                  |
-| Pinch zoom          | Allows zooming in or out on the preview by using a pinch gesture.                                                |
-
-
-### More manual options
+### Manual options
 | Common                           | Description                                                                                                      |
 |----------------------------------|------------------------------------------------------------------------------------------------------------------|
 | ✨ `zoom`                        | Modifies the zoom factor.                                                                                        |
@@ -170,6 +158,14 @@ One of our main feature, `InteractivePreview` provides a comprehensive and intui
 | `customize`                      | Customizes the photo capture session with a specific `AVCapturePhotoSettings`.                                   |
 | ✨ `fetchPhotoFiles`                | Fetches a list of captured photos files.                                                                          |
 | `photoFilePublisher`             | Emits a `Result` object containing a latest image file data.                            |
+
+### `InteractivePreview`
+One of main features, `InteractivePreview` provides a preset session for those who don't want to do complicated configurations.
+
+| Features               | Description                                                             |
+|------------------------|------------------------------------------------------------------------------------------------------------------|
+| Double tap to change camera  | Switches between the front and back camera upon double tapping.                                                  |
+| Pinch zoom          | Allows zooming in or out on the preview by using a pinch gesture.                                                |
 
 
 ## Installation 
@@ -205,7 +201,7 @@ import Aespa
 <!-- INSERT_CODE: GETTING_STARTED -->
 ```swift
 let option = AespaOption(albumName: "YOUR_ALBUM_NAME")
-self.aespaSession = Aespa.session(with: option)
+let aespaSession = Aespa.session(with: option)
 ```
 <!-- INSERT_CODE: END -->
 
