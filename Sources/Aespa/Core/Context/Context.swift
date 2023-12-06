@@ -308,7 +308,7 @@ public protocol PhotoContext {
     ///   - onComplete: An optional completion handler that is called after the configuration is applied.
     ///                 If not provided, a default handler that does nothing will be used.
     ///
-    /// - Note: `onComplete` alwyas returns `success`
+    /// - Note: `onComplete` always returns `success`
     ///
     /// - Returns: The instance of `AespaPhotoContext`, allowing for method chaining.
     @discardableResult func photo(
