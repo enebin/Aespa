@@ -53,7 +53,7 @@ public struct InteractivePreview: View {
     @State private var previousZoomFactor: CGFloat = 1.0
     @State private var currentZoomFactor: CGFloat = 1.0
     
-    // Foocus
+    // Focus
     @State private var preferredFocusMode: AVCaptureDevice.FocusMode = .continuousAutoFocus
     @State private var focusingLocation = CGPoint.zero
 
