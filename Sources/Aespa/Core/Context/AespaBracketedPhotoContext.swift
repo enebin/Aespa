@@ -13,6 +13,7 @@ import AVFoundation
 /// This is a child context that inherits from AespaPhotoContext, with a method to take bracketed pictures
 open class AespaBracketedPhotoContext: AespaPhotoContext {
     private var bracketCount: Int
+    internal let camera: AespaBracketedCamera
 
     // Initialize with additional bracketed settings
     init(
@@ -23,6 +24,7 @@ open class AespaBracketedPhotoContext: AespaPhotoContext {
         bracketCount: Int
     ) {
         self.bracketCount = bracketCount
+        self.camera = camera
         super.init(coreSession: coreSession, camera: camera, albumManager: albumManager, option: option)
     }
 
