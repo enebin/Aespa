@@ -2,8 +2,6 @@
 /.build
 /Packages
 /*.xcodeproj
-/*.xcodeproj
-Aespa-iOS.xcodeproj
 xcuserdata/
 DerivedData/
 .swiftpm/config/registries.json

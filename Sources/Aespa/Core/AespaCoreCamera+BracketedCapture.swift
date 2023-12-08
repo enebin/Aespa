@@ -25,7 +25,7 @@ class AespaBracketedCamera: AespaCoreCamera {
         let processor = BracketedCapturePhotoProcessor(settingsArray: settings, delegate: self, autoVideoOrientationEnabled: autoVideoOrientationEnabled)
         try run(processor: processor)
 
-        return try await photoCaptureCompletion
+        try await photoCaptureCompletion
             .first()
             .timeout(10, scheduler: DispatchQueue.global()) // Timeout for the capture process
             .eraseToAnyPublisher()
@@ -43,6 +43,8 @@ class AespaBracketedCamera: AespaCoreCamera {
                 Logger.log(message: "Received photos: \(capturedPhotos)")
                 // You can process the captured photos here
             })
+
+        return []
     }
 }
 
