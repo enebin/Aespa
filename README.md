@@ -205,7 +205,7 @@ let aespaSession = Aespa.session(with: option)
 ```
 <!-- INSERT_CODE: END -->
 
-## Implementation Exapmles
+## Implementation Examples
 ### Configuration
 <!-- INSERT_CODE: COMMON_SETTING -->
 ```swift
