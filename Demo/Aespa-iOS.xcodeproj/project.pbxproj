@@ -21,6 +21,7 @@
 		0716FECF2A37326600B5AA1B /* GalleryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
 		07778FF02A31E3A000B1DC6C /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		07F81CEE2A49A21B00DEDB04 /* Aespa */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Aespa; path = ..; sourceTree = "<group>"; };
+		79C1D7FB2B209E07008F9F09 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitignore; path = ../.gitignore; sourceTree = "<group>"; };
 		9CE5B7D82A306F350058334D /* Aespa-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Aespa-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CE5B7DB2A306F350058334D /* Aespa_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aespa_iOSApp.swift; sourceTree = "<group>"; };
 		9CE5B7DD2A306F350058334D /* VideoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoContentView.swift; sourceTree = "<group>"; };
@@ -53,6 +54,7 @@
 		9CE5B7CF2A306F350058334D = {
 			isa = PBXGroup;
 			children = (
+				79C1D7FB2B209E07008F9F09 /* .gitignore */,
 				07F81CED2A49A21B00DEDB04 /* Packages */,
 				9CE5B7DA2A306F350058334D /* Aespa-iOS */,
 				9CE5B7D92A306F350058334D /* Products */,
@@ -308,7 +310,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Aespa-iOS/Preview Content\"";
-				DEVELOPMENT_TEAM = W6QHM4Y43Z;
+				DEVELOPMENT_TEAM = L2BC5TCSR5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
@@ -345,7 +347,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Aespa-iOS/Preview Content\"";
-				DEVELOPMENT_TEAM = W6QHM4Y43Z;
+				DEVELOPMENT_TEAM = L2BC5TCSR5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "";
