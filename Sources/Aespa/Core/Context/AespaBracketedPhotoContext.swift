@@ -29,15 +29,15 @@ open class AespaBracketedPhotoContext: AespaPhotoContext {
     }
 
 
-    /// Takes [bracketedCount] amount of pictures with an exposure difference of 1 point
-    func captureBracketedPhotos() async throws {
-        let settingsArray = BracketedCapturePhotoProcessor.createBracketSettings(count: bracketCount)
-        let processor = BracketedCapturePhotoProcessor(
-            settingsArray: settingsArray,
-            delegate: camera,
-            autoVideoOrientationEnabled: true // or false, based on your needs
-        )
-
-        try camera.run(processor: processor)
-    }
+//    /// Takes [bracketedCount] amount of pictures with an exposure difference of 1 point
+//    func captureBracketedPhotos() async throws {
+//        let settingsArray = BracketedCapturePhotoProcessor.createBracketSettings(count: bracketCount)
+//        let processor = BracketedCapturePhotoProcessor(
+//            settingsArray: settingsArray,
+//            delegate: camera,
+//            autoVideoOrientationEnabled: true // or false, based on your needs
+//        )
+//
+//        try camera.run(processor: processor)
+//    }
 }

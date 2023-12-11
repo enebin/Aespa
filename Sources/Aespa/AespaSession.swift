@@ -26,6 +26,7 @@ open class AespaSession {
     
     private let recorder: AespaCoreRecorder
     private let camera: AespaCoreCamera
+    internal let bracketedCamera: AespaBracketedCamera
 
     private let previewLayerSubject: CurrentValueSubject<AVCaptureVideoPreviewLayer?, Never>
     
@@ -47,6 +48,7 @@ open class AespaSession {
             session: session,
             recorder: .init(core: session),
             camera: .init(core: session),
+            bracketedCamera: .init(core: session),
             albumManager: .init(albumName: option.asset.albumName)
         )
     }
@@ -56,12 +58,14 @@ open class AespaSession {
         session: AespaCoreSession,
         recorder: AespaCoreRecorder,
         camera: AespaCoreCamera,
+        bracketedCamera: AespaBracketedCamera,
         albumManager: AespaCoreAlbumManager
     ) {
         self.option = option
         self.coreSession = session
         self.recorder = recorder
         self.camera = camera
+        self.bracketedCamera = bracketedCamera
         self.albumManager = albumManager
         
         self.previewLayerSubject = .init(nil)
