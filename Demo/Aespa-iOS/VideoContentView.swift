@@ -43,14 +43,14 @@ struct VideoContentView: View {
                     HStack {
                         Spacer()
                         
-                        Button(action: { showSetting = true }) {
+                        Button(action: { showSetting = true }, label: {
                             Image(systemName: "gear")
                                 .resizable()
                                 .foregroundColor(.white)
                                 .scaledToFit()
                                 .frame(width: 30, height: 30)
 
-                        }
+                        })
                         .padding(20)
                         .contentShape(Rectangle())
                     }
@@ -61,7 +61,8 @@ struct VideoContentView: View {
                 ZStack {
                     HStack {
                         // Album thumbnail + button
-                        Button(action: { showGallery = true }) {
+                        Button(action: { showGallery = true },
+                               label: {
                             let coverImage = (
                                 captureMode == .video
                                 ? viewModel.videoAlbumCover
@@ -69,7 +70,7 @@ struct VideoContentView: View {
                             ?? Image("")
                             
                             roundRectangleShape(with: coverImage, size: 80)
-                        }
+                        })
                         .shadow(radius: 5)
                         .contentShape(Rectangle())
                         
@@ -79,7 +80,7 @@ struct VideoContentView: View {
                         Button(action: {
                             viewModel.aespaSession.common(.position(position: isFront ? .back : .front))
                             isFront.toggle()
-                        }) {
+                        }, label: {
                             Image(systemName: "arrow.triangle.2.circlepath.camera.fill")
                                 .resizable()
                                 .foregroundColor(.white)
@@ -87,7 +88,7 @@ struct VideoContentView: View {
                                 .frame(width: 50, height: 50)
                                 .padding(20)
                                 .padding(.trailing, 20)
-                        }
+                        })
                         .shadow(radius: 5)
                         .contentShape(Rectangle())
                     }

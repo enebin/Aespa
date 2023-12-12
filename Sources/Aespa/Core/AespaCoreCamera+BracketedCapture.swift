@@ -28,7 +28,7 @@ class AespaBracketedCamera: AespaCoreCamera {
         try run(processor: processor)
 
         // Use a Future to convert the Combine Publisher to an async/await pattern
-        try await withCheckedThrowingContinuation { continuation in
+        _ = try await withCheckedThrowingContinuation { continuation in
             photoCaptureCompletion
                 .first()
                 .timeout(10, scheduler: DispatchQueue.global())

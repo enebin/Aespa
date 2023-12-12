@@ -16,7 +16,7 @@ struct BracketedPicture {
 
 extension BracketedPicture {
     var thumbnailImage: Image {
-        return photos[photos.count/2].thumbnailImage ?? Image(systemName: "photo")
+        return photos[photos.count/2].thumbnailImage
     }
 }
 

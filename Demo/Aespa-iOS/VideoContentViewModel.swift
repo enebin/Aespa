@@ -100,7 +100,6 @@ class VideoContentViewModel: ObservableObject {
     }
 }
 
-
 extension VideoContentViewModel {
     // Example for using custom session tuner
     struct WideColorCameraTuner: AespaSessionTuning {
