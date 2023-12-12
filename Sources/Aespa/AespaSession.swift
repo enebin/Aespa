@@ -35,6 +35,9 @@ open class AespaSession {
     private var videoContext: AespaVideoContext<AespaSession>!
     private var photoContext: AespaPhotoContext!
     internal var bracketedContext: AespaBracketedPhotoContext!
+    // TODO: - here's the init of the context
+    // where we calculate the amount of bracketedPictures to take.
+    // follow this rabbit hole to change it
 
     /// A `UIKit` layer that you use to display video as it is being captured by an input device.
     ///
