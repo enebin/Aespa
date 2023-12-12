@@ -17,10 +17,21 @@
 		9CE5B80B2A3070380058334D /* VideoContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE5B80A2A3070380058334D /* VideoContentViewModel.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		792D539F2B28C38F005CD21A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9CE5B7D02A306F350058334D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9CE5B7D72A306F350058334D;
+			remoteInfo = "Aespa-iOS";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		0716FECF2A37326600B5AA1B /* GalleryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
 		07778FF02A31E3A000B1DC6C /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		07F81CEE2A49A21B00DEDB04 /* Aespa */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Aespa; path = ..; sourceTree = "<group>"; };
+		792D539B2B28C38F005CD21A /* Aespa-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Aespa-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		79C1D7FB2B209E07008F9F09 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitignore; path = ../.gitignore; sourceTree = "<group>"; };
 		9CE5B7D82A306F350058334D /* Aespa-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Aespa-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CE5B7DB2A306F350058334D /* Aespa_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aespa_iOSApp.swift; sourceTree = "<group>"; };
@@ -32,6 +43,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		792D53982B28C38F005CD21A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9CE5B7D52A306F350058334D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -66,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				9CE5B7D82A306F350058334D /* Aespa-iOS.app */,
+				792D539B2B28C38F005CD21A /* Aespa-iOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -103,6 +122,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		792D539A2B28C38F005CD21A /* Aespa-iOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 792D53A12B28C38F005CD21A /* Build configuration list for PBXNativeTarget "Aespa-iOSTests" */;
+			buildPhases = (
+				792D53972B28C38F005CD21A /* Sources */,
+				792D53982B28C38F005CD21A /* Frameworks */,
+				792D53992B28C38F005CD21A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				792D53A02B28C38F005CD21A /* PBXTargetDependency */,
+			);
+			name = "Aespa-iOSTests";
+			productName = "Aespa-iOSTests";
+			productReference = 792D539B2B28C38F005CD21A /* Aespa-iOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		9CE5B7D72A306F350058334D /* Aespa-iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9CE5B7FC2A306F370058334D /* Build configuration list for PBXNativeTarget "Aespa-iOS" */;
@@ -131,9 +168,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1430;
+				LastSwiftUpdateCheck = 1510;
 				LastUpgradeCheck = 1510;
 				TargetAttributes = {
+					792D539A2B28C38F005CD21A = {
+						CreatedOnToolsVersion = 15.1;
+						TestTargetID = 9CE5B7D72A306F350058334D;
+					};
 					9CE5B7D72A306F350058334D = {
 						CreatedOnToolsVersion = 14.3;
 					};
@@ -156,11 +197,19 @@
 			projectRoot = "";
 			targets = (
 				9CE5B7D72A306F350058334D /* Aespa-iOS */,
+				792D539A2B28C38F005CD21A /* Aespa-iOSTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		792D53992B28C38F005CD21A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9CE5B7D62A306F350058334D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -173,6 +222,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		792D53972B28C38F005CD21A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9CE5B7D42A306F350058334D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -192,9 +248,65 @@
 			isa = PBXTargetDependency;
 			productRef = 792D53932B28C10F005CD21A /* SwiftLintPlugin */;
 		};
+		792D53A02B28C38F005CD21A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9CE5B7D72A306F350058334D /* Aespa-iOS */;
+			targetProxy = 792D539F2B28C38F005CD21A /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		792D53A22B28C38F005CD21A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L2BC5TCSR5;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tarrask.Aespa-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Aespa-iOS.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Aespa-iOS";
+			};
+			name = Debug;
+		};
+		792D53A32B28C38F005CD21A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L2BC5TCSR5;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tarrask.Aespa-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Aespa-iOS.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Aespa-iOS";
+			};
+			name = Release;
+		};
 		9CE5B7FA2A306F370058334D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -388,6 +500,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		792D53A12B28C38F005CD21A /* Build configuration list for PBXNativeTarget "Aespa-iOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				792D53A22B28C38F005CD21A /* Debug */,
+				792D53A32B28C38F005CD21A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		9CE5B7D32A306F350058334D /* Build configuration list for PBXProject "Aespa-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
