@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0716FED02A37326600B5AA1B /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0716FECF2A37326600B5AA1B /* GalleryView.swift */; };
-		0716FED42A3737D700B5AA1B /* Aespa in Frameworks */ = {isa = PBXBuildFile; productRef = 0716FED32A3737D700B5AA1B /* Aespa */; };
 		07778FF12A31E3A000B1DC6C /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07778FF02A31E3A000B1DC6C /* SettingView.swift */; };
+		792D53962B28C302005CD21A /* AespaBracketedCamera in Frameworks */ = {isa = PBXBuildFile; productRef = 792D53952B28C302005CD21A /* AespaBracketedCamera */; };
 		9CE5B7DC2A306F350058334D /* Aespa_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE5B7DB2A306F350058334D /* Aespa_iOSApp.swift */; };
 		9CE5B7DE2A306F350058334D /* VideoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE5B7DD2A306F350058334D /* VideoContentView.swift */; };
 		9CE5B7E02A306F370058334D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9CE5B7DF2A306F370058334D /* Assets.xcassets */; };
@@ -36,7 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0716FED42A3737D700B5AA1B /* Aespa in Frameworks */,
+				792D53962B28C302005CD21A /* AespaBracketedCamera in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,10 +114,11 @@
 			buildRules = (
 			);
 			dependencies = (
+				792D53942B28C10F005CD21A /* PBXTargetDependency */,
 			);
 			name = "Aespa-iOS";
 			packageProductDependencies = (
-				0716FED32A3737D700B5AA1B /* Aespa */,
+				792D53952B28C302005CD21A /* AespaBracketedCamera */,
 			);
 			productName = "Aespa-iOS";
 			productReference = 9CE5B7D82A306F350058334D /* Aespa-iOS.app */;
@@ -131,7 +132,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					9CE5B7D72A306F350058334D = {
 						CreatedOnToolsVersion = 14.3;
@@ -148,6 +149,7 @@
 			);
 			mainGroup = 9CE5B7CF2A306F350058334D;
 			packageReferences = (
+				792D53922B28C0F3005CD21A /* XCRemoteSwiftPackageReference "SwiftLint" */,
 			);
 			productRefGroup = 9CE5B7D92A306F350058334D /* Products */;
 			projectDirPath = "";
@@ -184,6 +186,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		792D53942B28C10F005CD21A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 792D53932B28C10F005CD21A /* SwiftLintPlugin */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		9CE5B7FA2A306F370058334D /* Debug */ = {
@@ -222,6 +231,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -282,6 +292,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -397,10 +408,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		792D53922B28C0F3005CD21A /* XCRemoteSwiftPackageReference "SwiftLint" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/SwiftLint.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.54.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		0716FED32A3737D700B5AA1B /* Aespa */ = {
+		792D53932B28C10F005CD21A /* SwiftLintPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Aespa;
+			package = 792D53922B28C0F3005CD21A /* XCRemoteSwiftPackageReference "SwiftLint" */;
+			productName = "plugin:SwiftLintPlugin";
+		};
+		792D53952B28C302005CD21A /* AespaBracketedCamera */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AespaBracketedCamera;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

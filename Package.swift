@@ -4,11 +4,11 @@
 import PackageDescription
 
 let package = Package(
-    name: "Aespa",
+    name: "AespaBracketedCamera",
     platforms: [.iOS(.v14)],
     products: [
         .library(
-            name: "Aespa",
+            name: "AespaBracketedCamera",
             targets: ["Aespa"]),
     ],
     dependencies: [],
