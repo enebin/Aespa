@@ -17,7 +17,9 @@ analyzer_rules:
 included:
   - Sources
 excluded:
-  - Tests
+  - Carthage
+  - Pods
+  - ExternalLibraryFolder
 
 # If true, SwiftLint will not fail if no lintable files are found.
 allow_zero_lintable_files: false
