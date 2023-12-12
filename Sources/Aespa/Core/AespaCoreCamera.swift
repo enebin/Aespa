@@ -11,7 +11,7 @@ import AVFoundation
 
 /// Capturing a photo and responsible for notifying the result
 class AespaCoreCamera: NSObject {
-    private let core: AespaCoreSession
+    internal let core: AespaCoreSession
 
     private let fileIOResultSubject = PassthroughSubject<Result<AVCapturePhoto, Error>, Never>()
     private var fileIOResultSubsciption: Cancellable?

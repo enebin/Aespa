@@ -12,26 +12,23 @@ import AVFoundation
 /// Takes a series of bracketed pictures with the specified config
 class AespaBracketedCamera: AespaCoreCamera {
     private var bracketedPhotos: [AVCapturePhoto] = []
-    private var dispatchGroup = DispatchGroup()
-    private var expectedPhotoCount: Int = 0
+    private var expectedPhotoCount: Int = 3
     private let photoCaptureCompletion = PassthroughSubject<[AVCapturePhoto], Error>()
     private var cancellables = Set<AnyCancellable>()
 
-    func captureBracketed(
-        settings: [AVCapturePhotoBracketSettings],
+    func captureBrackets(
         autoVideoOrientationEnabled: Bool
     ) async throws -> [AVCapturePhoto] {
-        self.expectedPhotoCount = settings.count
+        let settings = makeExposureBracketSettings()
         self.bracketedPhotos.removeAll()
 
         let processor = BracketedCapturePhotoProcessor(settingsArray: settings, 
                                                        delegate: self,
-                                                       autoVideoOrientationEnabled: autoVideoOrientationEnabled,
-                                                       dispatchGroup: dispatchGroup)
+                                                       autoVideoOrientationEnabled: autoVideoOrientationEnabled)
         try run(processor: processor)
 
         // Use a Future to convert the Combine Publisher to an async/await pattern
-        let photos: [AVCapturePhoto] = try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             photoCaptureCompletion
                 .first()
                 .timeout(10, scheduler: DispatchQueue.global())
@@ -39,17 +36,65 @@ class AespaBracketedCamera: AespaCoreCamera {
                     switch completion {
                     case .finished:
                         Logger.log(message: "Capture completed successfully.")
+                        // Resume continuation with the captured photos
+                        continuation.resume(returning: self.bracketedPhotos)
                     case .failure(let error):
                         Logger.log(error: error, message: "Capture failed with error.")
                         continuation.resume(throwing: error)
                     }
                 }, receiveValue: { capturedPhotos in
                     Logger.log(message: "Received photos: \(capturedPhotos)")
-                    continuation.resume(returning: capturedPhotos)
                 })
                 .store(in: &cancellables)
         }
-        return photos
+        return bracketedPhotos
+    }
+
+    /// This method is used to calculate the exposure of the pictures in batches of 3
+    /// - Parameter count: The amount of pictures that will be taken
+    /// - Returns: An array of arrays with exposure bracket values, sorted in ascending order
+    private func makeExposureBracketSettings() -> [AVCapturePhotoBracketSettings] {
+        let makeAutoExposureSettings = AVCaptureAutoExposureBracketedStillImageSettings
+            .autoExposureSettings(exposureTargetBias:)
+
+        let count = expectedPhotoCount
+
+        /// Here we compute the exposure values
+        /// - Parameter count: Count is the amount if pictures we want
+        /// - Returns: We return an array of floats that go from minus half count to plus half count
+        /// With the zero included, sorted in ascending order
+        let extraValues = Array(-count/2...count/2).map(Float.init).sorted()
+
+        var exposureSettings: [AVCaptureAutoExposureBracketedStillImageSettings] = extraValues.map(makeAutoExposureSettings)
+
+        var allSettings = [AVCapturePhotoBracketSettings]()
+
+        // Split the count into batches of 3 due to API limitations
+        let batches = (count + 2) / 3 // This ensures that we round up if there's a remainder
+
+        // TODO: - here we can implement RAW for better pictures
+//        guard let output = core.photoOutput else {
+//            fatalError("No available RAW photo pixel format types.")
+//        }
+//        guard let rawFormatType = output.availableRawPhotoPixelFormatTypes.first else {
+//            fatalError("No available RAW photo pixel format types.")
+//        }
+
+        let processedFormat = [AVVideoCodecKey: AVVideoCodecType.jpeg]
+
+        for _ in 0..<batches {
+            let bracketSettings = AVCapturePhotoBracketSettings(
+                rawPixelFormatType: 0,
+                processedFormat: processedFormat,
+                bracketedSettings: Array(exposureSettings.prefix(3))
+            )
+            allSettings.append(bracketSettings)
+
+            // Remove the settings that have been used
+            exposureSettings.removeFirst(min(3, exposureSettings.count))
+        }
+
+        return allSettings
     }
 }
 
@@ -59,7 +104,6 @@ extension AespaBracketedCamera {
             photoCaptureCompletion.send(completion: .failure(error))
         } else {
             bracketedPhotos.append(photo)
-            dispatchGroup.leave()
             if bracketedPhotos.count == expectedPhotoCount {
                 photoCaptureCompletion.send(bracketedPhotos)
                 photoCaptureCompletion.send(completion: .finished)

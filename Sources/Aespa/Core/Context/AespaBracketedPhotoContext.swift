@@ -12,7 +12,7 @@ import AVFoundation
 
 /// This is a child context that inherits from AespaPhotoContext, with a method to take bracketed pictures
 open class AespaBracketedPhotoContext: AespaPhotoContext {
-    private var bracketCount: Int
+    var bracketCount: Int = 3
     internal let camera: AespaBracketedCamera
 
     // Initialize with additional bracketed settings
@@ -27,17 +27,4 @@ open class AespaBracketedPhotoContext: AespaPhotoContext {
         self.camera = camera
         super.init(coreSession: coreSession, camera: camera, albumManager: albumManager, option: option)
     }
-
-
-//    /// Takes [bracketedCount] amount of pictures with an exposure difference of 1 point
-//    func captureBracketedPhotos() async throws {
-//        let settingsArray = BracketedCapturePhotoProcessor.createBracketSettings(count: bracketCount)
-//        let processor = BracketedCapturePhotoProcessor(
-//            settingsArray: settingsArray,
-//            delegate: camera,
-//            autoVideoOrientationEnabled: true // or false, based on your needs
-//        )
-//
-//        try camera.run(processor: processor)
-//    }
 }

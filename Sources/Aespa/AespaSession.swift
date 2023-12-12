@@ -34,6 +34,7 @@ open class AespaSession {
     
     private var videoContext: AespaVideoContext<AespaSession>!
     private var photoContext: AespaPhotoContext!
+    internal var bracketedContext: AespaBracketedPhotoContext!
 
     /// A `UIKit` layer that you use to display video as it is being captured by an input device.
     ///
@@ -89,6 +90,13 @@ open class AespaSession {
             recorder: recorder,
             albumManager: albumManager,
             option: option)
+
+        self.bracketedContext = AespaBracketedPhotoContext(
+            coreSession: coreSession,
+            camera: bracketedCamera,
+            albumManager: albumManager,
+            option: option,
+            bracketCount: 3)
     }
 
     // MARK: - Public variables
