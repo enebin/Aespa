@@ -12,3 +12,5 @@ Scripts/cuckoo_generator
 Scripts/run
 
 Tests/Tests/Mock/GeneratedMocks.swift
+Demo/Aespa-iOS.xcodeproj/project.pbxproj
+Demo/Aespa-iOS.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
