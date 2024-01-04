@@ -72,19 +72,22 @@ class AespaBracketedCamera: AespaCoreCamera {
         // Split the count into batches of 3 due to API limitations
         let batches = (count + 2) / 3 // This ensures that we round up if there's a remainder
 
-        // TODO: - here we can implement RAW for better pictures
-//        guard let output = core.photoOutput else {
-//            fatalError("No available RAW photo pixel format types.")
-//        }
-//        guard let rawFormatType = output.availableRawPhotoPixelFormatTypes.first else {
-//            fatalError("No available RAW photo pixel format types.")
-//        }
+        guard let output = core.photoOutput else {
+            fatalError("No available camera output.")
+        }
+        
+        // Checks if we can take ProRaw or Raw
+        let query = output.isAppleProRAWEnabled ? { AVCapturePhotoOutput.isAppleProRAWPixelFormat($0) } :
+        { AVCapturePhotoOutput.isBayerRAWPixelFormat($0) }
 
-        let processedFormat = [AVVideoCodecKey: AVVideoCodecType.jpeg]
+        // 0 means phone cannot take raw pictures
+        let rawFormatType = output.availableRawPhotoPixelFormatTypes.first(where: query) ?? 0
+
+        let processedFormat = [AVVideoCodecKey: AVVideoCodecType.hevc]
 
         for _ in 0..<batches {
             let bracketSettings = AVCapturePhotoBracketSettings(
-                rawPixelFormatType: 0,
+                rawPixelFormatType: rawFormatType,
                 processedFormat: processedFormat,
                 bracketedSettings: Array(exposureSettings.prefix(3))
             )

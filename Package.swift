@@ -5,16 +5,16 @@ import PackageDescription
 
 let package = Package(
     name: "AespaBracketedCamera",
-    platforms: [.iOS(.v14)],
+    platforms: [.iOS(.v15)],
     products: [
         .library(
             name: "AespaBracketedCamera",
-            targets: ["Aespa"]),
+            targets: ["AespaBracketedCamera"]),
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "Aespa",
+            name: "AespaBracketedCamera",
             dependencies: [])
     ]
 )

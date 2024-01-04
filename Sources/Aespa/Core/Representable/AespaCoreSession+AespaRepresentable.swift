@@ -183,6 +183,10 @@ extension AespaCoreSession: AespaCoreSessionRepresentable {
             throw AespaError.device(reason: .unableToSetOutput)
         }
 
+        // TODO: - NOT TESTED
+        // Use the Apple ProRAW format when the environment supports it.
+        photoOutput.isAppleProRAWEnabled = photoOutput.isAppleProRAWSupported
+
         self.addOutput(photoOutput)
     }
 
