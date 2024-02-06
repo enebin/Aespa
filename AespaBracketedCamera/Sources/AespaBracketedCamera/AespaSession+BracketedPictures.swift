@@ -12,6 +12,6 @@ import AVFoundation
 
 extension AespaSession {
     public func captureBracketedPhotos(count: Int, autoVideoOrientationEnabled: Bool) async throws -> [AVCapturePhoto] {
-        try await bracketedCamera.captureBrackets(autoVideoOrientationEnabled: autoVideoOrientationEnabled)
+        try await bracketedCamera.captureBrackets(count: count, autoVideoOrientationEnabled: autoVideoOrientationEnabled)
     }
 }

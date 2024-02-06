@@ -25,6 +25,9 @@ open class AespaBracketedPhotoContext: AespaPhotoContext {
     ) {
         self.bracketCount = bracketCount
         self.camera = camera
-        super.init(coreSession: coreSession, camera: camera, albumManager: albumManager, option: option)
+        super.init(coreSession: coreSession,
+                   camera: camera,
+                   albumManager: albumManager,
+                   option: option)
     }
 }

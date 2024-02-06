@@ -17,10 +17,13 @@ class AespaBracketedCamera: AespaCoreCamera {
     private var cancellables = Set<AnyCancellable>()
 
     func captureBrackets(
+        count: Int,
         autoVideoOrientationEnabled: Bool
     ) async throws -> [AVCapturePhoto] {
         let settings = makeExposureBracketSettings()
         self.bracketedPhotos.removeAll()
+
+        expectedPhotoCount = count
 
         let processor = BracketedCapturePhotoProcessor(settingsArray: settings, 
                                                        delegate: self,
