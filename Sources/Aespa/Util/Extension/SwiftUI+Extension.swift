@@ -37,6 +37,6 @@ public extension AespaSession {
         option: InteractivePreviewOption = .init()
     ) -> InteractivePreview {
         let internalPreview = Preview(of: self, gravity: gravity)
-        return InteractivePreview(internalPreview)
+        return InteractivePreview(internalPreview, option: option)
     }
 }
