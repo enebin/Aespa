@@ -15,19 +15,19 @@ import AVFoundation
 /// zooming, focusing, adjusting focus mode when moved, and showing a crosshair.
 public struct InteractivePreviewOption {
     /// Flag that controls whether the camera position can be changed. Default is `true`.
-    public var enableChangePosition = true
+    public var enableChangePosition: Bool
     
     /// Flag that controls whether zoom functionality is enabled. Default is `true`.
-    public var enableZoom = true
+    public var enableZoom: Bool
     
     /// Flag that controls whether focus can be manually adjusted. Default is `true`.
-    public var enableFocus = true
+    public var enableFocus: Bool
     
     /// Flag that controls whether the focus mode is changed when the camera is moved. Default is `true`.
-    public var enableChangeFocusModeWhenMoved = true
+    public var enableChangeFocusModeWhenMoved: Bool
     
     /// Flag that controls whether a crosshair is displayed on the preview. Default is `true`.
-    public var enableShowingCrosshair = true
+    public var enableShowingCrosshair: Bool
 
     /// Initialize the option
     public init(
