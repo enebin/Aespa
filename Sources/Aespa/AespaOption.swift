@@ -30,8 +30,9 @@ public struct AespaOption {
     ///
     /// - Parameters:
     ///   - albumName: The name of the album where recorded videos will be saved.
+    ///     If you don't want to make an album, you can set this value to `nil`
     ///   - enableLogging: A Boolean value that determines whether logging is enabled.
-    public init(albumName: String, enableLogging: Bool = true) {
+    public init(albumName: String?, enableLogging: Bool = true) {
         self.init(
             asset: Asset(albumName: albumName),
             session: Session(),
@@ -73,18 +74,24 @@ public extension AespaOption {
         public var fileExtension: String
 
         init(
-            albumName: String,
+            albumName: String?,
             videoDirectoryName: String = "video",
             photoDirectoryName: String = "photo",
             synchronizeWithLocalAlbum: Bool = true,
             fileExtension: FileExtension = .mp4,
             fileNameHandler: @escaping FileNamingRule = FileNamingRulePreset.Timestamp().rule
         ) {
-            self.albumName = albumName
+            if let albumName {
+                self.albumName = albumName
+                self.synchronizeWithLocalAlbum = synchronizeWithLocalAlbum
+            } else {
+                Logger.log(message: "Album name is not specified. It will not save and load any assets.")
+                self.albumName = "Temp" // Use a temporary album name
+                self.synchronizeWithLocalAlbum = false
+            }
             self.videoDirectoryName = videoDirectoryName
             self.photoDirectoryName = photoDirectoryName
             
-            self.synchronizeWithLocalAlbum = true
             self.fileExtension = fileExtension.rawValue
             self.fileNameHandler = fileNameHandler
         }

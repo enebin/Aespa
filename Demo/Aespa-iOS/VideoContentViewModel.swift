@@ -31,6 +31,7 @@ class VideoContentViewModel: ObservableObject {
     @Published var photoFiles: [PhotoAsset] = []
     
     init() {
+        // If you don't want to make an album, you can set `albumName` to `nil`
         let option = AespaOption(albumName: "YOUR_ALBUM_NAME")
         self.aespaSession = Aespa.session(with: option)
 

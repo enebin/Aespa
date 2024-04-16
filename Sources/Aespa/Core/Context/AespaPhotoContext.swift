@@ -106,9 +106,9 @@ extension AespaPhotoContext: PhotoContext {
         guard option.asset.synchronizeWithLocalAlbum else {
             Logger.log(
                 message:
-                    "'option.asset.synchronizeWithLocalAlbum' is set to false" +
+                    "'option.asset.synchronizeWithLocalAlbum' is set to false " +
                     "so no photos will be fetched from the local album. " +
-                    "If you intended to fetch photos," +
+                    "If you intended to fetch photos, " +
                     "please ensure 'option.asset.synchronizeWithLocalAlbum' is set to true."
             )
             return []
