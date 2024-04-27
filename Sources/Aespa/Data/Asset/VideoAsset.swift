@@ -13,7 +13,7 @@ import AVFoundation
 /// Struct to represent a video asset saved in the album.
 public struct VideoAsset {
     /// The associated `PHAsset` object from the Photos framework.
-    private let phAsset: PHAsset
+    public let phAsset: PHAsset
     
     /// The `AVAsset` representation of the video.
     public let asset: AVAsset

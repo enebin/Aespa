@@ -10,7 +10,7 @@ import Foundation
 protocol AespaAssetLoading {
     associatedtype ReturnType
     
-    func load<Library, Collection>(_ library: Library, _ collection: Collection) throws -> ReturnType
+    func loadAssets<Library, Collection>(_ library: Library, _ collection: Collection) throws -> ReturnType
     where Library: AespaAssetLibraryRepresentable,
           Collection: AespaAssetCollectionRepresentable
 }

@@ -23,6 +23,7 @@ open class AespaSession {
     let option: AespaOption
     let coreSession: AespaCoreSession
     private let albumManager: AespaCoreAlbumManager
+    private let eventManager: AespaEventManager
     
     private let recorder: AespaCoreRecorder
     private let camera: AespaCoreCamera
@@ -38,17 +39,21 @@ open class AespaSession {
     ///
     /// - Note: If you're looking for a `View` for `SwiftUI`, use `preview`
     public let previewLayer: AVCaptureVideoPreviewLayer
-
+    
     convenience init(option: AespaOption) {
         let session = AespaCoreSession(option: option)
+        let eventManager = AespaEventManager()
 
         self.init(
             option: option,
             session: session,
             recorder: .init(core: session),
             camera: .init(core: session),
-            albumManager: .init(albumName: option.asset.albumName)
-        )
+            albumManager: .init(
+                albumName: option.asset.albumName,
+                videoAssetEventSubject: eventManager.videoAssetEventPublihser,
+                photoAssetEventSubject: eventManager.photoAssetEventPublihser),
+            eventManager: eventManager)
     }
 
     init(
@@ -56,13 +61,15 @@ open class AespaSession {
         session: AespaCoreSession,
         recorder: AespaCoreRecorder,
         camera: AespaCoreCamera,
-        albumManager: AespaCoreAlbumManager
+        albumManager: AespaCoreAlbumManager,
+        eventManager: AespaEventManager
     ) {
         self.option = option
         self.coreSession = session
         self.recorder = recorder
         self.camera = camera
         self.albumManager = albumManager
+        self.eventManager = eventManager
         
         self.previewLayerSubject = .init(nil)
         
@@ -130,6 +137,19 @@ open class AespaSession {
     public var currentCameraPosition: AVCaptureDevice.Position? {
         guard let device = coreSession.videoDeviceInput?.device else { return nil }
         return device.position
+    }
+    
+    /// Publishes events related to video assets,
+    /// allowing subscribers to react to delete or add event in video assets.
+    public var videoAssetEventPublisher: AnyPublisher<AssetEvent, Never> {
+        eventManager.videoAssetEventPublihser.eraseToAnyPublisher()
+    }
+    
+    
+    /// Publishes events related to photo assets,
+    /// allowing subscribers to react to delete or add event in photo assets.
+    public var photoAssetEventPublisher: AnyPublisher<AssetEvent, Never> {
+        eventManager.photoAssetEventPublihser.eraseToAnyPublisher()
     }
     
     /// This property indicates whether the camera device is set to monitor changes in the subject area.
