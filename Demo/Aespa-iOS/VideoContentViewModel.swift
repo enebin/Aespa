@@ -31,6 +31,7 @@ class VideoContentViewModel: ObservableObject {
     @Published var photoFiles: [PhotoAsset] = []
     
     init() {
+        // If you don't want to make an album, you can set `albumName` to `nil`
         let option = AespaOption(albumName: "YOUR_ALBUM_NAME")
         self.aespaSession = Aespa.session(with: option)
 
@@ -80,6 +81,40 @@ class VideoContentViewModel: ObservableObject {
                 }
             }
             .assign(to: \.photoAlbumCover, on: self)
+            .store(in: &subscription)
+        
+        aespaSession.videoAssetEventPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                guard let self else { return }
+                
+                if case .deleted = event {
+                    self.fetchVideoFiles()
+                    
+                    // It works, but not recommended
+                    // videoFiles.remove(assets)
+                    
+                    // Update thumbnail
+                    self.videoAlbumCover = self.videoFiles.first?.thumbnailImage
+                }
+            }
+            .store(in: &subscription)
+
+        aespaSession.photoAssetEventPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                guard let self else { return }
+                
+                if case .deleted = event {
+                    self.fetchPhotoFiles()
+                    
+                    // It works, but not recommended
+                    // photoFiles.remove(assets)
+                    
+                    // Update thumbnail
+                    self.photoAlbumCover = self.photoFiles.first?.image
+                }
+            }
             .store(in: &subscription)
     }
     

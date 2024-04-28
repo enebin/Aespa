@@ -66,13 +66,14 @@ extension AespaVideoContext: VideoContext {
     }
     
     public var videoFilePublisher: AnyPublisher<Result<VideoFile, Error>, Never> {
-        videoFileBufferSubject.handleEvents(receiveOutput: { status in
-            if case .failure(let error) = status {
-                Logger.log(error: error)
-            }
-        })
-        .compactMap({ $0 })
-        .eraseToAnyPublisher()
+        videoFileBufferSubject
+            .handleEvents(receiveOutput: { status in
+                if case .failure(let error) = status {
+                    Logger.log(error: error)
+                }
+            })
+            .compactMap({ $0 })
+            .eraseToAnyPublisher()
     }
     
     public func startRecording(
@@ -146,9 +147,9 @@ extension AespaVideoContext: VideoContext {
         guard option.asset.synchronizeWithLocalAlbum else {
             Logger.log(
                 message:
-                    "'option.asset.synchronizeWithLocalAlbum' is set to false" +
+                    "'option.asset.synchronizeWithLocalAlbum' is set to false " +
                     "so no photos will be fetched from the local album. " +
-                    "If you intended to fetch photos," +
+                    "If you intended to fetch photos, " +
                     "please ensure 'option.asset.synchronizeWithLocalAlbum' is set to true."
             )
             return []
