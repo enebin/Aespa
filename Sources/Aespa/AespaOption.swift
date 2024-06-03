@@ -73,7 +73,7 @@ public extension AespaOption {
         /// The rule for naming video files.
         public var fileExtension: String
 
-        init(
+        public init(
             albumName: String?,
             videoDirectoryName: String = "video",
             photoDirectoryName: String = "photo",
@@ -103,12 +103,20 @@ public extension AespaOption {
         /// An `AVCaptureDevice.DeviceType` value that determines camera device.
         /// If not specified, the device is automatically selected.
         public var cameraDevicePreference: AVCaptureDevice.DeviceType?
+        
+        public init(cameraDevicePreference: AVCaptureDevice.DeviceType? = nil) {
+            self.cameraDevicePreference = cameraDevicePreference
+        }
     }
 
     /// `Log` provides an option for enabling or disabling logging.
     struct Log {
         /// Enable logging
         public var loggingEnabled: Bool = true
+        
+        public init(loggingEnabled: Bool) {
+            self.loggingEnabled = loggingEnabled
+        }
     }
 }
 
@@ -116,14 +124,14 @@ public extension AespaOption {
 public extension AespaOption {
     /// `FileNamingRulePreset` provides pre-configured file naming rules.
     enum FileNamingRulePreset {
-        struct Timestamp {
+        public struct Timestamp {
             let formatter: DateFormatter
-            var rule: FileNamingRule {
+            public var rule: FileNamingRule {
                 return { formatter.string(from: Date()) }
             }
 
             /// Creates a `Timestamp` file naming rule.
-            init() {
+            public init() {
                 formatter = DateFormatter()
                 formatter.dateFormat = "yyyy_MM_dd_HH_mm_ss"
             }
