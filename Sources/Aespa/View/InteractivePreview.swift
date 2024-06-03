@@ -112,6 +112,11 @@ public struct InteractivePreview: View {
                     .opacity(focusFrameOpacity)
                     .animation(.spring(), value: focusFrameOpacity)
             }
+            .onChange(of: geometry.size) { newSize in
+                DispatchQueue.main.async {
+                    layer.frame = CGRect(origin: .zero, size: newSize)
+                }
+            }
         }
     }
 }
