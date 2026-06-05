@@ -22,37 +22,48 @@ nonisolated open class Aespa {
         with option: AespaOption,
         onComplete: @escaping CompletionHandler = { _ in }
     ) -> AespaSession {
-        var shouldConfigureSession = false
-        let currentCore = withCoreLock {
+        let existingCore: AespaSession? = withCoreLock {
             if let core {
                 return core
             }
-
-            let newCore = AespaSession(option: option)
-            core = newCore
-            shouldConfigureSession = true
-            return newCore
+            
+            return nil
         }
-
-        guard shouldConfigureSession else {
-            return currentCore
+        
+        if let existingCore {
+            return existingCore
         }
+        
+        let newCore = AespaSession(option: option)
 
         // Check logging option
         Logger.enableLogging = option.log.loggingEnabled
         
         // Configure session now
         Task {
-            guard
-                case .permitted = await AuthorizationChecker.checkCaptureAuthorizationStatus()
-            else {
-                throw AespaError.permission(reason: .denied)
+            do {
+                guard
+                    case .permitted = await AuthorizationChecker.checkCaptureAuthorizationStatus()
+                else {
+                    throw AespaError.permission(reason: .denied)
+                }
+                
+                newCore.startSession { result in
+                    if case .success = result {
+                        Self.withCoreLock {
+                            if core == nil {
+                                core = newCore
+                            }
+                        }
+                    }
+                    onComplete(result)
+                }
+            } catch {
+                onComplete(.failure(error))
             }
-            
-            currentCore.startSession(onComplete)
         }
         
-        return currentCore
+        return newCore
     }
     
     /// Terminates the current `AespaSession`.

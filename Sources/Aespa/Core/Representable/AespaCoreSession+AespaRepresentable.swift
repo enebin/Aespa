@@ -127,14 +127,9 @@ nonisolated extension AespaCoreSession: AespaCoreSessionRepresentable {
     }
 
     func removeMovieInput() {
-        guard
-            let videoDevice = AVCaptureDevice.default(for: AVMediaType.video),
-            let videoInput = try? AVCaptureDeviceInput(device: videoDevice)
-        else {
-            return
+        if let videoDeviceInput {
+            self.removeInput(videoDeviceInput)
         }
-
-        self.removeInput(videoInput)
     }
 
     func addAudioInput() throws {

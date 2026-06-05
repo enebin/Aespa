@@ -106,6 +106,7 @@ nonisolated extension AespaVideoContext: VideoContext {
         Task(priority: .utility) {
             do {
                 let videoFilePath = try await recorder.stopRecording()
+                isRecording = false
                 
                 if option.asset.synchronizeWithLocalAlbum {
                     try await albumManager.addToAlbum(filePath: videoFilePath)
@@ -115,7 +116,6 @@ nonisolated extension AespaVideoContext: VideoContext {
                 let videoFile = VideoFileGenerator.generate(with: videoFilePath, date: Date())
                 videoFileBufferSubject.sendOnMainThread(.success(videoFile))
                 
-                isRecording = false
                 onCompelte(.success(videoFile))
             } catch let error {
                 Logger.log(error: error)

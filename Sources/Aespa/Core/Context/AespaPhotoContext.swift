@@ -113,7 +113,7 @@ nonisolated extension AespaPhotoContext: PhotoContext {
             }
         case .custom(let aVCapturePhotoSettings):
             withSettingLock {
-                photoSetting = aVCapturePhotoSettings
+                photoSetting = AVCapturePhotoSettings(from: aVCapturePhotoSettings)
             }
         }
         
@@ -185,7 +185,7 @@ nonisolated extension AespaPhotoContext {
     @available(*, deprecated, message: "Please use `photo` instead.")
     public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
         withSettingLock {
-            photoSetting = setting
+            photoSetting = AVCapturePhotoSettings(from: setting)
         }
         return self
     }

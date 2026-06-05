@@ -15,31 +15,31 @@ nonisolated class AespaCoreSession: AVCaptureSession, @unchecked Sendable {
     private let workQueue = DispatchQueue(label: "co.enebin.aespa.session", qos: .background)
     private let queueStateLock = NSRecursiveLock()
     private var isWorkQueueActive = false
-    private var pendingWorkItems: [@Sendable () -> Void] = []
+    private var pendingWorkItems: [PendingWorkItem] = []
     
     init(option: AespaOption) {
         self.option = option
     }
     
     func run<T: AespaSessionTuning>(_ tuner: T, _ onComplete: @escaping CompletionHandler) {
-        enqueueWork {
+        enqueueWork({
             do {
                 if tuner.needTransaction { self.beginConfiguration() }
                 defer {
                     if tuner.needTransaction { self.commitConfiguration() }
-                    onComplete(.success(()))
                 }
                 
                 try tuner.tune(self)
+                onComplete(.success(()))
             } catch let error {
                 Logger.log(error: error, message: "in \(tuner)")
                 onComplete(.failure(error))
             }
-        }
+        }, onStartFailure: { onComplete(.failure($0)) })
     }
     
     func run<T: AespaDeviceTuning>(_ tuner: T, _ onComplete: @escaping CompletionHandler) {
-        enqueueWork {
+        enqueueWork({
             do {
                 guard let device = self.videoDeviceInput?.device else {
                     throw AespaError.device(reason: .invalid)
@@ -48,19 +48,19 @@ nonisolated class AespaCoreSession: AVCaptureSession, @unchecked Sendable {
                 if tuner.needLock { try device.lockForConfiguration() }
                 defer {
                     if tuner.needLock { device.unlockForConfiguration() }
-                    onComplete(.success(()))
                 }
                 
                 try tuner.tune(device)
+                onComplete(.success(()))
             } catch let error {
                 Logger.log(error: error, message: "in \(tuner)")
                 onComplete(.failure(error))
             }
-        }
+        }, onStartFailure: { onComplete(.failure($0)) })
     }
     
     func run<T: AespaConnectionTuning>(_ tuner: T, _ onComplete: @escaping CompletionHandler) {
-        enqueueWork {
+        enqueueWork({
             do {
                 guard let connection = self.connections.first else {
                     throw AespaError.session(reason: .cannotFindConnection)
@@ -72,11 +72,11 @@ nonisolated class AespaCoreSession: AVCaptureSession, @unchecked Sendable {
                 Logger.log(error: error, message: "in \(tuner)")
                 onComplete(.failure(error))
             }
-        }
+        }, onStartFailure: { onComplete(.failure($0)) })
     }
     
     func run<T: AespaMovieFileOutputProcessing>(_ processor: T, _ onComplete: @escaping CompletionHandler) {
-        enqueueWork {
+        enqueueWork({
             do {
                 guard let output = self.movieFileOutput else {
                     throw AespaError.session(reason: .cannotFindConnection)
@@ -88,40 +88,52 @@ nonisolated class AespaCoreSession: AVCaptureSession, @unchecked Sendable {
                 Logger.log(error: error, message: "in \(processor)")
                 onComplete(.failure(error))
             }
-        }
+        }, onStartFailure: { onComplete(.failure($0)) })
     }
     
     func start() throws {
-        let session = self
-        
-        guard session.isRunning == false else {
+        do {
+            try workQueue.sync {
+                guard self.isRunning == false else {
+                    return
+                }
+                
+                try self.addMovieInput()
+                try self.addMovieFileOutput()
+                try self.addCapturePhotoOutput()
+                self.startRunning()
+            }
+            
             activateWorkQueue()
-            return
+            Logger.log(message: "Session is configured successfully")
+        } catch {
+            activateWorkQueue(failingWith: error)
+            throw error
         }
-
-        try session.addMovieInput()
-        try session.addMovieFileOutput()
-        try session.addCapturePhotoOutput()
-        session.startRunning()
-        activateWorkQueue()
-        
-        Logger.log(message: "Session is configured successfully")
     }
 }
 
 nonisolated private extension AespaCoreSession {
-    func enqueueWork(_ work: @escaping @Sendable () -> Void) {
+    struct PendingWorkItem {
+        let work: @Sendable () -> Void
+        let onStartFailure: @Sendable (Error) -> Void
+    }
+    
+    func enqueueWork(
+        _ work: @escaping @Sendable () -> Void,
+        onStartFailure: @escaping @Sendable (Error) -> Void
+    ) {
         queueStateLock.lock()
         if isWorkQueueActive {
             queueStateLock.unlock()
             workQueue.async(execute: work)
         } else {
-            pendingWorkItems.append(work)
+            pendingWorkItems.append(PendingWorkItem(work: work, onStartFailure: onStartFailure))
             queueStateLock.unlock()
         }
     }
 
-    func activateWorkQueue() {
+    func activateWorkQueue(failingWith error: Error? = nil) {
         queueStateLock.lock()
         guard isWorkQueueActive == false else {
             queueStateLock.unlock()
@@ -133,6 +145,12 @@ nonisolated private extension AespaCoreSession {
         self.pendingWorkItems.removeAll()
         queueStateLock.unlock()
 
-        pendingWorkItems.forEach { workQueue.async(execute: $0) }
+        pendingWorkItems.forEach { item in
+            if let error {
+                item.onStartFailure(error)
+            } else {
+                workQueue.async(execute: item.work)
+            }
+        }
     }
 }

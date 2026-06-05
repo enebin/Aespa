@@ -356,8 +356,13 @@ nonisolated extension AespaSession {
         do {
             try coreSession.start()
             previewLayerSubject.sendOnMainThread(previewLayer)
+            DispatchQueue.main.async {
+                onComplete(.success(()))
+            }
         } catch let error {
-            onComplete(.failure(error))
+            DispatchQueue.main.async {
+                onComplete(.failure(error))
+            }
         }
     }
     

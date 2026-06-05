@@ -9,17 +9,19 @@ import Photos
 
 /// Retreive the video(url) from `FileManager` based local storage
 /// and add the video to the pre-defined album roll
-nonisolated class AespaCoreAlbumManager: NSObject, @unchecked Sendable {
+nonisolated class AespaCoreAlbumManager: NSObject {
     // Dependencies
     private let cachingProxy: AssetCachingProxy
     private let photoLibrary: PHPhotoLibrary
     private let albumName: String
     private let videoAssetEventSubject: AssetEventSubject
     private let photoAssetEventSubject: AssetEventSubject
+    private let stateLock = NSRecursiveLock()
     
     private var album: PHAssetCollection?
     private var latestVideoFetchResult: PHFetchResult<PHAsset>?
     private var latestPhotoFetchResult: PHFetchResult<PHAsset>?
+    private var isObservingPhotoLibraryChanges = false
     
     convenience init(
         albumName: String,
@@ -62,13 +64,9 @@ nonisolated class AespaCoreAlbumManager: NSObject, @unchecked Sendable {
             throw error
         }
 
-        if let album {
-            ensureLatestFetchResults(for: album)
-            try await processor.process(photoLibrary, album)
-        } else {
-            album = try AlbumImporter.getAlbum(name: albumName, in: photoLibrary)
-            try await run(processor: processor)
-        }
+        let album = try currentAlbum()
+        ensureLatestFetchResults(for: album)
+        try await processor.process(photoLibrary, album)
     }
     
     func run<T: AespaAssetLoading>(loader: T) async throws -> T.ReturnType {
@@ -80,12 +78,28 @@ nonisolated class AespaCoreAlbumManager: NSObject, @unchecked Sendable {
             throw error
         }
 
-        if let album {
-            ensureLatestFetchResults(for: album)
-            return try loader.loadAssets(photoLibrary, album)
-        } else {
-            album = try AlbumImporter.getAlbum(name: albumName, in: photoLibrary)
-            return try await run(loader: loader)
+        let album = try currentAlbum()
+        ensureLatestFetchResults(for: album)
+        return try loader.loadAssets(photoLibrary, album)
+    }
+}
+
+nonisolated private extension AespaCoreAlbumManager {
+    func withStateLock<T>(_ work: () throws -> T) rethrows -> T {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return try work()
+    }
+    
+    func currentAlbum() throws -> PHAssetCollection {
+        try withStateLock {
+            if let album {
+                return album
+            }
+            
+            let importedAlbum: PHAssetCollection = try AlbumImporter.getAlbum(name: albumName, in: photoLibrary)
+            album = importedAlbum
+            return importedAlbum
         }
     }
 }
@@ -128,29 +142,40 @@ nonisolated extension AespaCoreAlbumManager {
 
 nonisolated extension AespaCoreAlbumManager: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
-        if let latestVideoFetchResult {
+        let latestFetchResults: (video: PHFetchResult<PHAsset>?, photo: PHFetchResult<PHAsset>?) = withStateLock {
+            (self.latestVideoFetchResult, self.latestPhotoFetchResult)
+        }
+        
+        if let latestVideoFetchResult = latestFetchResults.video {
             handleChange(changeInstance, with: latestVideoFetchResult, for: .video)
         }
         
-        if let latestPhotoFetchResult {
+        if let latestPhotoFetchResult = latestFetchResults.photo {
             handleChange(changeInstance, with: latestPhotoFetchResult, for: .image)
         }
     }
     
     private func ensureLatestFetchResults(for album: PHAssetCollection) {
-        if latestVideoFetchResult == nil {
-            latestVideoFetchResult = try? AssetLoader(limit: 0, assetType: .video).laodFetchResult(photoLibrary, album)
-            observePhotoLibraryChanges(album: album)
-        }
-        
-        if latestPhotoFetchResult == nil {
-            latestPhotoFetchResult = try? AssetLoader(limit: 0, assetType: .image).laodFetchResult(photoLibrary, album)
-            observePhotoLibraryChanges(album: album)
+        withStateLock {
+            if latestVideoFetchResult == nil {
+                latestVideoFetchResult = try? AssetLoader(limit: 0, assetType: .video).laodFetchResult(photoLibrary, album)
+            }
+            
+            if latestPhotoFetchResult == nil {
+                latestPhotoFetchResult = try? AssetLoader(limit: 0, assetType: .image).laodFetchResult(photoLibrary, album)
+            }
+            
+            observePhotoLibraryChanges()
         }
     }
     
-    private func observePhotoLibraryChanges(album: PHAssetCollection) {
+    private func observePhotoLibraryChanges() {
+        guard isObservingPhotoLibraryChanges == false else {
+            return
+        }
+        
         photoLibrary.register(self)
+        isObservingPhotoLibraryChanges = true
     }
     
     private func handleChange(
@@ -161,10 +186,14 @@ nonisolated extension AespaCoreAlbumManager: PHPhotoLibraryChangeObserver {
         if let details = changeInstance.changeDetails(for: fetchResult) {
             switch assetType {
             case .video:
-                self.latestVideoFetchResult = details.fetchResultAfterChanges
+                withStateLock {
+                    self.latestVideoFetchResult = details.fetchResultAfterChanges
+                }
                 handleVideoAssetChanges(details)
             case .image:
-                self.latestPhotoFetchResult = details.fetchResultAfterChanges
+                withStateLock {
+                    self.latestPhotoFetchResult = details.fetchResultAfterChanges
+                }
                 handlePhotoAssetChanges(details)
             default:
                 break
