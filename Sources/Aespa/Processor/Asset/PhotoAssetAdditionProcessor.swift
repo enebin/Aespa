@@ -8,7 +8,7 @@
 import Photos
 import Foundation
 
-struct PhotoAssetAdditionProcessor: AespaAssetProcessing {
+nonisolated struct PhotoAssetAdditionProcessor: AespaAssetProcessing, Sendable {
     let imageData: Data
 
     func process<

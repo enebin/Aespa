@@ -7,7 +7,7 @@
 
 import AVFoundation
 
-struct FinishRecordProcessor: AespaMovieFileOutputProcessing {
+nonisolated struct FinishRecordProcessor: AespaMovieFileOutputProcessing, Sendable {
     func process<T: AespaFileOutputRepresentable>(_ output: T) throws {
         output.stopRecording()
     }

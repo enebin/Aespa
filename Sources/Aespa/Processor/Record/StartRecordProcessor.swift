@@ -8,7 +8,7 @@
 import UIKit
 import AVFoundation
 
-struct StartRecordProcessor: AespaMovieFileOutputProcessing {
+nonisolated struct StartRecordProcessor: AespaMovieFileOutputProcessing, @unchecked Sendable {
     let filePath: URL
     let delegate: AVCaptureFileOutputRecordingDelegate
     let autoVideoOrientationEnabled: Bool
@@ -19,7 +19,7 @@ struct StartRecordProcessor: AespaMovieFileOutputProcessing {
         }
         
         if autoVideoOrientationEnabled {
-            connection.orientation(to: UIDevice.current.orientation.toVideoOrientation)
+            connection.orientation(to: DeviceOrientationProvider.currentVideoOrientation)
         }
 
         output.startRecording(to: filePath, recordingDelegate: delegate)

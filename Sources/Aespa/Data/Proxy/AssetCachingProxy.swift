@@ -9,7 +9,7 @@ import UIKit
 import AVFoundation
 import Photos
 
-struct AssetCachingProxy {
+nonisolated struct AssetCachingProxy: @unchecked Sendable {
     private let assetManager: PHCachingImageManager
     
     init(_ assetManager: PHCachingImageManager = .init()) {
@@ -99,7 +99,7 @@ struct AssetCachingProxy {
     }
 }
 
-private extension AssetCachingProxy {
+nonisolated private extension AssetCachingProxy {
     // Create custom async function to fetch AVAsset
     func requestAVAsset(
         forVideo asset: PHAsset,
@@ -107,7 +107,8 @@ private extension AssetCachingProxy {
     ) async -> AVAsset? {
         return await withCheckedContinuation { continuation in
             assetManager.requestAVAsset(forVideo: asset, options: options) { avAsset, _, _ in
-                continuation.resume(returning: avAsset)
+                nonisolated(unsafe) let uncheckedAVAsset = avAsset
+                continuation.resume(returning: uncheckedAVAsset)
             }
         }
     }

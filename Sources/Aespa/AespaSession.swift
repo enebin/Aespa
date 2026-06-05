@@ -19,7 +19,7 @@ import AVFoundation
 /// For more option, you can use customization method to handle session with your own logic.
 ///
 /// It also includes functionalities to fetch video files.
-open class AespaSession {
+nonisolated open class AespaSession: @unchecked Sendable {
     let option: AespaOption
     let coreSession: AespaCoreSession
     private let albumManager: AespaCoreAlbumManager
@@ -142,14 +142,18 @@ open class AespaSession {
     /// Publishes events related to video assets,
     /// allowing subscribers to react to delete or add event in video assets.
     public var videoAssetEventPublisher: AnyPublisher<AssetEvent, Never> {
-        eventManager.videoAssetEventPublihser.eraseToAnyPublisher()
+        eventManager.videoAssetEventPublihser
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
     
     
     /// Publishes events related to photo assets,
     /// allowing subscribers to react to delete or add event in photo assets.
     public var photoAssetEventPublisher: AnyPublisher<AssetEvent, Never> {
-        eventManager.photoAssetEventPublihser.eraseToAnyPublisher()
+        eventManager.photoAssetEventPublihser
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
     
     /// This property indicates whether the camera device is set to monitor changes in the subject area.
@@ -166,11 +170,13 @@ open class AespaSession {
     /// A log message is printed to the console every time a new layer is pushed.
     /// If you don't want to show logs, set `enableLogging` to `false` from `AespaOption.Log`
     public var previewLayerPublisher: AnyPublisher<AVCaptureVideoPreviewLayer, Never> {
-        previewLayerSubject.handleEvents(receiveOutput: { _ in
-            Logger.log(message: "Preview layer is updated")
-        })
-        .compactMap { $0 }
-        .eraseToAnyPublisher()
+        previewLayerSubject
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .handleEvents(receiveOutput: { _ in
+                Logger.log(message: "Preview layer is updated")
+            })
+            .eraseToAnyPublisher()
     }
     
     // MARK: - Utilities
@@ -218,7 +224,7 @@ open class AespaSession {
     }
 }
 
-extension AespaSession: CommonContext {
+nonisolated extension AespaSession: CommonContext {
     public var underlyingCommonContext: AespaSession {
         self
     }
@@ -265,7 +271,7 @@ extension AespaSession: CommonContext {
     }
 }
 
-extension AespaSession: VideoContext {
+nonisolated extension AespaSession: VideoContext {
     public typealias AespaVideoSessionContext = AespaVideoContext<AespaSession>
 
     public var underlyingVideoContext: AespaVideoSessionContext {
@@ -292,7 +298,7 @@ extension AespaSession: VideoContext {
         videoContext.startRecording(at: path, autoVideoOrientationEnabled: autoVideoOrientationEnabled, onComplete)
     }
     
-    public func stopRecording(_ completionHandler: @escaping (Result<VideoFile, Error>) -> Void = { _ in }) {
+    public func stopRecording(_ completionHandler: @escaping ResultHandler<VideoFile> = { _ in }) {
         videoContext.stopRecording(completionHandler)
     }
     
@@ -310,7 +316,7 @@ extension AespaSession: VideoContext {
     }
 }
 
-extension AespaSession: PhotoContext {
+nonisolated extension AespaSession: PhotoContext {
     public var underlyingPhotoContext: AespaPhotoContext {
         photoContext
     }
@@ -325,7 +331,7 @@ extension AespaSession: PhotoContext {
 
     public func capturePhoto(
         autoVideoOrientationEnabled: Bool = false,
-        _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void = { _ in }
+        _ completionHandler: @escaping ResultHandler<PhotoFile> = { _ in }
     ) {
         photoContext.capturePhoto(autoVideoOrientationEnabled: autoVideoOrientationEnabled, completionHandler)
 
@@ -345,11 +351,11 @@ extension AespaSession: PhotoContext {
     }
 }
 
-extension AespaSession {
+nonisolated extension AespaSession {
     func startSession(_ onComplete: @escaping CompletionHandler) {
         do {
             try coreSession.start()
-            previewLayerSubject.send(previewLayer)
+            previewLayerSubject.sendOnMainThread(previewLayer)
         } catch let error {
             onComplete(.failure(error))
         }
@@ -362,7 +368,7 @@ extension AespaSession {
 }
 
 // MARK: - Deprecated methods
-extension AespaSession {
+nonisolated extension AespaSession {
     @available(*, deprecated, message: "Please use `common` instead.")
     @discardableResult
     public func quality(

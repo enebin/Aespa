@@ -13,7 +13,7 @@ import Foundation
 ///
 /// The struct represents different details about a photo file, such as its creation date and the image itself.
 /// To get more meta data from the image, you should refer to `PhotoAsset`
-public struct PhotoFile {
+nonisolated public struct PhotoFile: @unchecked Sendable {
     /// A `Date` value indicating the moment the photo was taken.
     public let creationDate: Date
 
@@ -21,13 +21,13 @@ public struct PhotoFile {
     public var image: UIImage
 }
 
-extension PhotoFile: Comparable {
+nonisolated extension PhotoFile: Comparable {
     public static func < (lhs: PhotoFile, rhs: PhotoFile) -> Bool {
         lhs.creationDate > rhs.creationDate
     }
 }
 
-public extension PhotoFile {
+nonisolated public extension PhotoFile {
     /// The captured image presented as a SwiftUI `Image`.
     var thumbnailImage: Image {
         return Image(uiImage: image)

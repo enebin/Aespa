@@ -10,20 +10,19 @@ import Combine
 import Foundation
 import AVFoundation
 
-class AespaCoreSession: AVCaptureSession {
+nonisolated class AespaCoreSession: AVCaptureSession, @unchecked Sendable {
     var option: AespaOption
-    private var workQueue = OperationQueue()
+    private let workQueue = DispatchQueue(label: "co.enebin.aespa.session", qos: .background)
+    private let queueStateLock = NSRecursiveLock()
+    private var isWorkQueueActive = false
+    private var pendingWorkItems: [@Sendable () -> Void] = []
     
     init(option: AespaOption) {
         self.option = option
-        
-        workQueue.qualityOfService = .background
-        workQueue.maxConcurrentOperationCount = 1
-        workQueue.isSuspended = true
     }
     
     func run<T: AespaSessionTuning>(_ tuner: T, _ onComplete: @escaping CompletionHandler) {
-        workQueue.addOperation {
+        enqueueWork {
             do {
                 if tuner.needTransaction { self.beginConfiguration() }
                 defer {
@@ -40,7 +39,7 @@ class AespaCoreSession: AVCaptureSession {
     }
     
     func run<T: AespaDeviceTuning>(_ tuner: T, _ onComplete: @escaping CompletionHandler) {
-        workQueue.addOperation {
+        enqueueWork {
             do {
                 guard let device = self.videoDeviceInput?.device else {
                     throw AespaError.device(reason: .invalid)
@@ -61,7 +60,7 @@ class AespaCoreSession: AVCaptureSession {
     }
     
     func run<T: AespaConnectionTuning>(_ tuner: T, _ onComplete: @escaping CompletionHandler) {
-        workQueue.addOperation {
+        enqueueWork {
             do {
                 guard let connection = self.connections.first else {
                     throw AespaError.session(reason: .cannotFindConnection)
@@ -77,7 +76,7 @@ class AespaCoreSession: AVCaptureSession {
     }
     
     func run<T: AespaMovieFileOutputProcessing>(_ processor: T, _ onComplete: @escaping CompletionHandler) {
-        workQueue.addOperation {
+        enqueueWork {
             do {
                 guard let output = self.movieFileOutput else {
                     throw AespaError.session(reason: .cannotFindConnection)
@@ -95,14 +94,45 @@ class AespaCoreSession: AVCaptureSession {
     func start() throws {
         let session = self
         
-        guard session.isRunning == false else { return }
+        guard session.isRunning == false else {
+            activateWorkQueue()
+            return
+        }
 
         try session.addMovieInput()
         try session.addMovieFileOutput()
         try session.addCapturePhotoOutput()
         session.startRunning()
+        activateWorkQueue()
         
-        self.workQueue.isSuspended = false
         Logger.log(message: "Session is configured successfully")
+    }
+}
+
+nonisolated private extension AespaCoreSession {
+    func enqueueWork(_ work: @escaping @Sendable () -> Void) {
+        queueStateLock.lock()
+        if isWorkQueueActive {
+            queueStateLock.unlock()
+            workQueue.async(execute: work)
+        } else {
+            pendingWorkItems.append(work)
+            queueStateLock.unlock()
+        }
+    }
+
+    func activateWorkQueue() {
+        queueStateLock.lock()
+        guard isWorkQueueActive == false else {
+            queueStateLock.unlock()
+            return
+        }
+
+        isWorkQueueActive = true
+        let pendingWorkItems = self.pendingWorkItems
+        self.pendingWorkItems.removeAll()
+        queueStateLock.unlock()
+
+        pendingWorkItems.forEach { workQueue.async(execute: $0) }
     }
 }

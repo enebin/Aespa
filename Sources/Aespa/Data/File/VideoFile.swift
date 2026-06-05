@@ -14,7 +14,7 @@ import SwiftUI
 /// and a thumbnail image (`thumbnail`) derived from the video content.
 ///
 /// - Warning: The path is temporary and will be removed once the application terminates.
-public struct VideoFile {
+nonisolated public struct VideoFile: @unchecked Sendable {
     /// A `Date` value representing when the video file was created.
     public let creationDate: Date
 
@@ -27,13 +27,13 @@ public struct VideoFile {
     public var thumbnail: UIImage
 }
 
-extension VideoFile: Comparable {
+nonisolated extension VideoFile: Comparable {
     public static func < (lhs: VideoFile, rhs: VideoFile) -> Bool {
         lhs.creationDate > rhs.creationDate
     }
 }
 
-public extension VideoFile {
+nonisolated public extension VideoFile {
     /// A thumbnail image, of type SwiftUI `Image`, generated from the video.
     var thumbnailImage: Image {
         Image(uiImage: thumbnail)

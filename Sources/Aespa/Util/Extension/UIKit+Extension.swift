@@ -8,12 +8,11 @@
 import UIKit
 import AVFoundation
 
-extension UIDeviceOrientation {
+nonisolated extension UIDeviceOrientation {
     var toVideoOrientation: AVCaptureVideoOrientation {
-        let currentOrientation = UIDevice.current.orientation
         let previewOrientation: AVCaptureVideoOrientation
 
-        switch currentOrientation {
+        switch self {
         case .portrait:
             previewOrientation = .portrait
         case .portraitUpsideDown:
@@ -27,5 +26,21 @@ extension UIDeviceOrientation {
         }
 
         return previewOrientation
+    }
+}
+
+nonisolated enum DeviceOrientationProvider {
+    static var currentVideoOrientation: AVCaptureVideoOrientation {
+        if Thread.isMainThread {
+            return MainActor.assumeIsolated {
+                UIDevice.current.orientation.toVideoOrientation
+            }
+        }
+
+        return DispatchQueue.main.sync {
+            MainActor.assumeIsolated {
+                UIDevice.current.orientation.toVideoOrientation
+            }
+        }
     }
 }

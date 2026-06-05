@@ -9,7 +9,7 @@ import Photos
 
 /// Retreive the video(url) from `FileManager` based local storage
 /// and add the video to the pre-defined album roll
-class AespaCoreAlbumManager: NSObject {
+nonisolated class AespaCoreAlbumManager: NSObject, @unchecked Sendable {
     // Dependencies
     private let cachingProxy: AssetCachingProxy
     private let photoLibrary: PHPhotoLibrary
@@ -90,7 +90,7 @@ class AespaCoreAlbumManager: NSObject {
     }
 }
 
-extension AespaCoreAlbumManager {
+nonisolated extension AespaCoreAlbumManager {
     func addToAlbum(filePath: URL) async throws {
         let processor = VideoAssetAdditionProcessor(filePath: filePath)
         try await run(processor: processor)
@@ -126,7 +126,7 @@ extension AespaCoreAlbumManager {
     }
 }
 
-extension AespaCoreAlbumManager: PHPhotoLibraryChangeObserver {
+nonisolated extension AespaCoreAlbumManager: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         if let latestVideoFetchResult {
             handleChange(changeInstance, with: latestVideoFetchResult, for: .video)
@@ -177,11 +177,11 @@ extension AespaCoreAlbumManager: PHPhotoLibraryChangeObserver {
         let removedObjects = details.removedObjects
         
         if !addedObjects.isEmpty {
-            videoAssetEventSubject.send(.added(addedObjects))
+            videoAssetEventSubject.sendOnMainThread(.added(addedObjects))
         }
         
         if !removedObjects.isEmpty {
-            videoAssetEventSubject.send(.deleted(removedObjects))
+            videoAssetEventSubject.sendOnMainThread(.deleted(removedObjects))
         }
     }
 
@@ -190,11 +190,11 @@ extension AespaCoreAlbumManager: PHPhotoLibraryChangeObserver {
         let removedObjects = details.removedObjects
         
         if !addedObjects.isEmpty {
-            photoAssetEventSubject.send(.added(addedObjects))
+            photoAssetEventSubject.sendOnMainThread(.added(addedObjects))
         }
         
         if !removedObjects.isEmpty {
-            photoAssetEventSubject.send(.deleted(removedObjects))
+            photoAssetEventSubject.sendOnMainThread(.deleted(removedObjects))
         }
     }
 }

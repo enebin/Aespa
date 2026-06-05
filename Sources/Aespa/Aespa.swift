@@ -5,10 +5,13 @@
 //  Created by 이영빈 on 2023/06/02.
 //
 
+import Foundation
+
 /// Top-level class that serves as the main access point for video recording sessions.
-open class Aespa {
+nonisolated open class Aespa {
     /// The core `AespaSession` that manages the actual video recording session.
-    private static var core: AespaSession?
+    nonisolated(unsafe) private static var core: AespaSession?
+    private static let coreLock = NSRecursiveLock()
 
     /// Creates a new `AespaSession` with the given options.
     ///
@@ -19,9 +22,21 @@ open class Aespa {
         with option: AespaOption,
         onComplete: @escaping CompletionHandler = { _ in }
     ) -> AespaSession {
-        if let core { return core }
-        
-        let newCore = AespaSession(option: option)
+        var shouldConfigureSession = false
+        let currentCore = withCoreLock {
+            if let core {
+                return core
+            }
+
+            let newCore = AespaSession(option: option)
+            core = newCore
+            shouldConfigureSession = true
+            return newCore
+        }
+
+        guard shouldConfigureSession else {
+            return currentCore
+        }
 
         // Check logging option
         Logger.enableLogging = option.log.loggingEnabled
@@ -34,11 +49,10 @@ open class Aespa {
                 throw AespaError.permission(reason: .denied)
             }
             
-            newCore.startSession(onComplete)
+            currentCore.startSession(onComplete)
         }
         
-        core = newCore
-        return newCore
+        return currentCore
     }
     
     /// Terminates the current `AespaSession`.
@@ -46,13 +60,23 @@ open class Aespa {
     /// If a session has been started, it stops the session and releases resources.
     /// After termination, a new session needs to be configured to start recording again.
     public static func terminate(_ onComplete: @escaping CompletionHandler = { _ in }) throws {
-        guard let core = core else {
+        guard let core = withCoreLock({ core }) else {
             return
         }
 
         core.terminateSession { result in
-            self.core = nil
+            Self.withCoreLock {
+                self.core = nil
+            }
             onComplete(result)
         }
+    }
+}
+
+nonisolated private extension Aespa {
+    static func withCoreLock<T>(_ work: () throws -> T) rethrows -> T {
+        coreLock.lock()
+        defer { coreLock.unlock() }
+        return try work()
     }
 }

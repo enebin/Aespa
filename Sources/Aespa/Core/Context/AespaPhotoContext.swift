@@ -11,12 +11,13 @@ import AVFoundation
 
 /// `AespaPhotoContext` is an open class that provides a context for photo capturing operations.
 /// It has methods and properties to handle the photo capturing and settings.
-open class AespaPhotoContext {
+nonisolated open class AespaPhotoContext: @unchecked Sendable {
     private let coreSession: AespaCoreSession
     private let albumManager: AespaCoreAlbumManager
     private let option: AespaOption
     
     private let camera: AespaCoreCamera
+    private let settingLock = NSRecursiveLock()
     
     private var photoSetting: AVCapturePhotoSettings
     private let photoFileBufferSubject: CurrentValueSubject<Result<PhotoFile, Error>?, Never>
@@ -42,34 +43,46 @@ open class AespaPhotoContext {
                     return
                 }
                 
-                photoFileBufferSubject.send(.success(firstPhotoAsset.toPhotoFile))
+                photoFileBufferSubject.sendOnMainThread(.success(firstPhotoAsset.toPhotoFile))
             }
         }
     }
 }
 
-extension AespaPhotoContext: PhotoContext {
+nonisolated private extension AespaPhotoContext {
+    func withSettingLock<T>(_ work: () throws -> T) rethrows -> T {
+        settingLock.lock()
+        defer { settingLock.unlock() }
+        return try work()
+    }
+}
+
+nonisolated extension AespaPhotoContext: PhotoContext {
     public var underlyingPhotoContext: AespaPhotoContext {
         self
     }
     
     public var photoFilePublisher: AnyPublisher<Result<PhotoFile, Error>, Never> {
-        photoFileBufferSubject.handleEvents(receiveOutput: { status in
-            if case .failure(let error) = status {
-                Logger.log(error: error)
-            }
-        })
-        .compactMap({ $0 })
-        .eraseToAnyPublisher()
+        photoFileBufferSubject
+            .compactMap({ $0 })
+            .receive(on: DispatchQueue.main)
+            .handleEvents(receiveOutput: { status in
+                if case .failure(let error) = status {
+                    Logger.log(error: error)
+                }
+            })
+            .eraseToAnyPublisher()
     }
     
     public var currentSetting: AVCapturePhotoSettings {
-        photoSetting
+        withSettingLock {
+            AVCapturePhotoSettings(from: photoSetting)
+        }
     }
     
     public func capturePhoto(
         autoVideoOrientationEnabled: Bool = false,
-        _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void
+        _ completionHandler: @escaping ResultHandler<PhotoFile>
     ) {
         Task(priority: .utility) {
             do {
@@ -91,11 +104,17 @@ extension AespaPhotoContext: PhotoContext {
         
         switch photoContextOption {
         case .flashMode(let flashMode):
-            photoSetting.flashMode = flashMode
+            withSettingLock {
+                photoSetting.flashMode = flashMode
+            }
         case .redEyeReduction(let enabled):
-            photoSetting.isAutoRedEyeReductionEnabled = enabled
+            withSettingLock {
+                photoSetting.isAutoRedEyeReductionEnabled = enabled
+            }
         case .custom(let aVCapturePhotoSettings):
-            photoSetting = aVCapturePhotoSettings
+            withSettingLock {
+                photoSetting = aVCapturePhotoSettings
+            }
         }
         
         onComplete(.success(()))
@@ -118,9 +137,11 @@ extension AespaPhotoContext: PhotoContext {
     }
 }
 
-private extension AespaPhotoContext {
+nonisolated private extension AespaPhotoContext {
     func capturePhotoWithError(autoVideoOrientationEnabled: Bool) async throws -> PhotoFile {
-        let setting = AVCapturePhotoSettings(from: photoSetting)
+        let setting = withSettingLock {
+            AVCapturePhotoSettings(from: photoSetting)
+        }
         let capturePhoto = try await camera.capture(setting: setting, autoVideoOrientationEnabled: autoVideoOrientationEnabled)
         
         guard let rawPhotoData = capturePhoto.fileDataRepresentation() else {
@@ -136,30 +157,36 @@ private extension AespaPhotoContext {
             data: rawPhotoData,
             date: Date())
         
-        photoFileBufferSubject.send(.success(photoFile))
+        photoFileBufferSubject.sendOnMainThread(.success(photoFile))
         return photoFile
     }
 }
 
 // MARK: - Deprecated methods
-extension AespaPhotoContext {
+nonisolated extension AespaPhotoContext {
     @available(*, deprecated, message: "Please use `photo` instead.")
     @discardableResult
     public func flashMode(to mode: AVCaptureDevice.FlashMode) -> AespaPhotoContext {
-        photoSetting.flashMode = mode
+        withSettingLock {
+            photoSetting.flashMode = mode
+        }
         return self
     }
     
     @available(*, deprecated, message: "Please use `photo` instead.")
     @discardableResult
     public func redEyeReduction(enabled: Bool) -> AespaPhotoContext {
-        photoSetting.isAutoRedEyeReductionEnabled = enabled
+        withSettingLock {
+            photoSetting.isAutoRedEyeReductionEnabled = enabled
+        }
         return self
     }
     
     @available(*, deprecated, message: "Please use `photo` instead.")
     public func custom(_ setting: AVCapturePhotoSettings) -> AespaPhotoContext {
-        photoSetting = setting
+        withSettingLock {
+            photoSetting = setting
+        }
         return self
     }
 }

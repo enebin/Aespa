@@ -8,7 +8,7 @@
 import UIKit
 import AVFoundation
 
-struct CapturePhotoProcessor: AespaCapturePhotoOutputProcessing {
+nonisolated struct CapturePhotoProcessor: AespaCapturePhotoOutputProcessing, @unchecked Sendable {
     let setting: AVCapturePhotoSettings
     let delegate: AVCapturePhotoCaptureDelegate
     let autoVideoOrientationEnabled: Bool
@@ -19,7 +19,7 @@ struct CapturePhotoProcessor: AespaCapturePhotoOutputProcessing {
         }
         
         if autoVideoOrientationEnabled {
-            connection.orientation(to: UIDevice.current.orientation.toVideoOrientation)
+            connection.orientation(to: DeviceOrientationProvider.currentVideoOrientation)
         }
 
         output.capturePhoto(with: setting, delegate: delegate)

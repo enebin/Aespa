@@ -10,7 +10,7 @@ import Foundation
 import AVFoundation
 
 /// Start, stop recording and responsible for notifying the result of recording
-class AespaCoreRecorder: NSObject {
+nonisolated class AespaCoreRecorder: NSObject, @unchecked Sendable {
     private let core: AespaCoreSession
 
     /// Notify the end of recording
@@ -36,7 +36,7 @@ class AespaCoreRecorder: NSObject {
     }
 }
 
-extension AespaCoreRecorder {
+nonisolated extension AespaCoreRecorder {
     func startRecording(
         in filePath: URL,
         _ autoVideoOrientationEnabled: Bool,
@@ -67,7 +67,7 @@ extension AespaCoreRecorder {
     }
 }
 
-extension AespaCoreRecorder: AVCaptureFileOutputRecordingDelegate {
+nonisolated extension AespaCoreRecorder: AVCaptureFileOutputRecordingDelegate {
     func fileOutput(
         _ output: AVCaptureFileOutput,
         didStartRecordingTo fileURL: URL,

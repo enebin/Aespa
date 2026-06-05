@@ -13,7 +13,7 @@ public typealias FileNamingRule = () -> String
 
 /// `AespaOption` allows customization of various aspects of the video recording process,
 /// such as the video asset configuration, session settings and logging preferences.
-public struct AespaOption {
+nonisolated public struct AespaOption: @unchecked Sendable {
     /// `Asset` configuration object which encapsulates options related to the media assets such as
     /// the album name, file extension and naming convention for the files.
     public var asset: Asset
@@ -52,10 +52,10 @@ public struct AespaOption {
     }
 }
 
-public extension AespaOption {
+nonisolated public extension AespaOption {
     /// `Asset` provides options for configuring the video assets,
     /// such as the album name, file naming rule, and file extension.
-    struct Asset {
+    struct Asset: @unchecked Sendable {
         /// The name of the album where recorded assets will be saved.
         public var albumName: String
         
@@ -99,7 +99,7 @@ public extension AespaOption {
 
     /// `Session` provides options for configuring the video recording session,
     /// such as automatic video orientation.
-    struct Session {
+    struct Session: Sendable {
         /// An `AVCaptureDevice.DeviceType` value that determines camera device.
         /// If not specified, the device is automatically selected.
         public var cameraDevicePreference: AVCaptureDevice.DeviceType?
@@ -110,7 +110,7 @@ public extension AespaOption {
     }
 
     /// `Log` provides an option for enabling or disabling logging.
-    struct Log {
+    struct Log: Sendable {
         /// Enable logging
         public var loggingEnabled: Bool = true
         
@@ -121,7 +121,7 @@ public extension AespaOption {
 }
 
 /// `AespaOption` extension related to file naming rules and file extensions.
-public extension AespaOption {
+nonisolated public extension AespaOption {
     /// `FileNamingRulePreset` provides pre-configured file naming rules.
     enum FileNamingRulePreset {
         public struct Timestamp {

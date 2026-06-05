@@ -7,8 +7,8 @@
 
 import Foundation
 
-class Logger {
-    static var enableLogging = true
+nonisolated class Logger: @unchecked Sendable {
+    nonisolated(unsafe) static var enableLogging = true
 
     static func log(message: String) {
         if enableLogging {

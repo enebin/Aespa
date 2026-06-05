@@ -8,7 +8,7 @@
 import Photos
 import Foundation
 
-protocol AespaAssetLibraryRepresentable {
+nonisolated protocol AespaAssetLibraryRepresentable {
     func performChanges(_ changes: @escaping () -> Void) async throws
     func performChangesAndWait(_ changeBlock: @escaping () -> Void) throws
     func requestAuthorization(for accessLevel: PHAccessLevel) async -> PHAuthorizationStatus
@@ -19,14 +19,14 @@ protocol AespaAssetLibraryRepresentable {
     ) -> Collection?
 }
 
-protocol AespaAssetCollectionRepresentable {
+nonisolated protocol AespaAssetCollectionRepresentable {
     var underlyingAssetCollection: PHAssetCollection { get }
     var localizedTitle: String? { get }
 
     func canAdd(video filePath: URL) -> Bool
 }
 
-extension PHPhotoLibrary: AespaAssetLibraryRepresentable {
+nonisolated extension PHPhotoLibrary: AespaAssetLibraryRepresentable {
     func fetchAlbum<Collection: AespaAssetCollectionRepresentable>(
         title: String,
         fetchOptions: PHFetchOptions
@@ -44,7 +44,7 @@ extension PHPhotoLibrary: AespaAssetLibraryRepresentable {
     }
 }
 
-extension PHAssetCollection: AespaAssetCollectionRepresentable {
+nonisolated extension PHAssetCollection: AespaAssetCollectionRepresentable {
     var underlyingAssetCollection: PHAssetCollection { self }
 
     func canAdd(video filePath: URL) -> Bool {

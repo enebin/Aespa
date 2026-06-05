@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FileWritingProcessor: AespaFileProcessing {
+nonisolated struct FileWritingProcessor: AespaFileProcessing, Sendable {
     let data: Data
     let path: URL
     

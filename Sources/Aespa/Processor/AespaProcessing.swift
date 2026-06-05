@@ -9,15 +9,15 @@ import Photos
 import Foundation
 import AVFoundation
 
-protocol AespaCapturePhotoOutputProcessing {
+nonisolated protocol AespaCapturePhotoOutputProcessing: Sendable {
     func process<T: AespaPhotoOutputRepresentable>(_ output: T) throws
 }
 
-protocol AespaMovieFileOutputProcessing {
+nonisolated protocol AespaMovieFileOutputProcessing: Sendable {
     func process<T: AespaFileOutputRepresentable>(_ output: T) throws
 }
 
-protocol AespaAssetProcessing {
+nonisolated protocol AespaAssetProcessing: Sendable {
     func process<Library, Collection>(
         _ library: Library,
         _ collection: Collection
@@ -26,6 +26,6 @@ protocol AespaAssetProcessing {
           Collection: AespaAssetCollectionRepresentable
 }
 
-protocol AespaFileProcessing {
+nonisolated protocol AespaFileProcessing: Sendable {
     func process(_ fileManager: FileManager) throws
 }
