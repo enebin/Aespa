@@ -179,6 +179,7 @@ nonisolated extension AespaCoreSession: AespaCoreSessionRepresentable {
         }
 
         self.addOutput(photoOutput)
+        photoOutput.maxPhotoQualityPrioritization = .quality
     }
 
     // MARK: - Option related
