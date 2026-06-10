@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Cuckoo's `run` script resolves the `version` file relative to CWD.
+cd "$(dirname "$0")" || exit 1
+
 ROOT_PATH=$(git rev-parse --show-toplevel)
 if [ -z "$ROOT_PATH" ]; then
     echo "❌ Error: Could not find repository root."
@@ -18,7 +21,9 @@ PROJECT_NAME="Aespa"
 TESTER_NAME="TestHostApp"
 PACKAGE_SOURCE_PATH="${ROOT_PATH}/Sources/Aespa"
 OUTPUT_FILE="${ROOT_PATH}/Tests/Tests/Mock/GeneratedMocks.swift"
-SWIFT_FILES=$(find "$PACKAGE_SOURCE_PATH" -type f -name "*.swift" -not -path "*/Context/*" -not -path "*/Loader/*" -print0 | xargs -0)
+# AespaCoreSession.swift is excluded because cuckoo_generator 1.10.3 segfaults
+# on its @Sendable closure type annotations; no test uses MockAespaCoreSession.
+SWIFT_FILES=$(find "$PACKAGE_SOURCE_PATH" -type f -name "*.swift" -not -path "*/Context/*" -not -path "*/Loader/*" -not -name "AespaCoreSession.swift" -print0 | xargs -0)
 
 
 echo "✅ Generated Mocks File = ${OUTPUT_FILE}"
