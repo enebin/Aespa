@@ -15,6 +15,7 @@ final class CoreSessionRepresentableTests: XCTestCase {
         let session = AespaCoreSession(option: AespaOption(albumName: nil))
 
         try session.addCapturePhotoOutput()
+        try session.addCapturePhotoOutput()
 
         XCTAssertEqual(session.photoOutput?.maxPhotoQualityPrioritization, .quality)
     }
