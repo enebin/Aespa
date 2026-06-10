@@ -15,3 +15,5 @@ Scripts/run
 Tests/Tests/Mock/GeneratedMocks.swift
 
 .agents
+.claude/
+.codex/
