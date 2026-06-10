@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-protocol AespaFileOutputRepresentable {
+nonisolated protocol AespaFileOutputRepresentable {
     func stopRecording()
     func startRecording(
         to outputFileURL: URL,
@@ -16,7 +16,7 @@ protocol AespaFileOutputRepresentable {
     func getConnection(with mediaType: AVMediaType) -> AespaCaptureConnectionRepresentable?
 }
 
-extension AVCaptureFileOutput: AespaFileOutputRepresentable {
+nonisolated extension AVCaptureFileOutput: AespaFileOutputRepresentable {
     func getConnection(with mediaType: AVMediaType) -> AespaCaptureConnectionRepresentable? {
         return connection(with: mediaType)
     }

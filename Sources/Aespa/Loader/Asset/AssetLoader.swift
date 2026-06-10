@@ -8,7 +8,7 @@
 import Photos
 import Foundation
 
-struct AssetLoader: AespaAssetLoading {
+nonisolated struct AssetLoader: AespaAssetLoading, Sendable {
     let limit: Int
     let assetType: PHAssetMediaType
     

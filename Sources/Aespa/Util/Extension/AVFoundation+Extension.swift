@@ -7,7 +7,7 @@
 
 import AVFoundation
 
-extension AVCaptureDevice.Position {
+nonisolated extension AVCaptureDevice.Position {
     var chooseBestCamera: AVCaptureDevice? {
         let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInDualCamera,
                                                                               .builtInTripleCamera,
@@ -31,7 +31,7 @@ extension AVCaptureDevice.Position {
 
 import UIKit
 
-extension AVCapturePhoto {
+nonisolated extension AVCapturePhoto {
     var image: UIImage? {
         guard let imageData = fileDataRepresentation() else { return nil }
         return UIImage(data: imageData)

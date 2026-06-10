@@ -7,8 +7,22 @@
 
 import Foundation
 
-class Logger {
-    static var enableLogging = true
+nonisolated class Logger: @unchecked Sendable {
+    private static let loggingLock = NSRecursiveLock()
+    nonisolated(unsafe) private static var isLoggingEnabled = true
+
+    static var enableLogging: Bool {
+        get {
+            loggingLock.lock()
+            defer { loggingLock.unlock() }
+            return isLoggingEnabled
+        }
+        set {
+            loggingLock.lock()
+            defer { loggingLock.unlock() }
+            isLoggingEnabled = newValue
+        }
+    }
 
     static func log(message: String) {
         if enableLogging {

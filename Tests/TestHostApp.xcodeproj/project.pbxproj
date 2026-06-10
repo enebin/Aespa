@@ -18,6 +18,7 @@
 		9C4BBE5D2A400E450071C84F /* ConnectionTunerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4BBE4F2A400E450071C84F /* ConnectionTunerTests.swift */; };
 		9C4BBE5E2A400E450071C84F /* AlbumUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4BBE512A400E450071C84F /* AlbumUtilTests.swift */; };
 		9C4BBE5F2A400E450071C84F /* FileUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4BBE522A400E450071C84F /* FileUtilTests.swift */; };
+		9C69A0012C0AA0010069A049 /* SubjectExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C69A0002C0AA0010069A049 /* SubjectExtensionTests.swift */; };
 		9C4BBE602A400E450071C84F /* video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 9C4BBE552A400E450071C84F /* video.mp4 */; };
 		9C4BBE612A400E450071C84F /* MockVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4BBE562A400E450071C84F /* MockVideo.swift */; };
 		9C4BBE622A400E450071C84F /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4BBE572A400E450071C84F /* MockFileManager.swift */; };
@@ -57,6 +58,7 @@
 		9C4BBE4F2A400E450071C84F /* ConnectionTunerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionTunerTests.swift; sourceTree = "<group>"; };
 		9C4BBE512A400E450071C84F /* AlbumUtilTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumUtilTests.swift; sourceTree = "<group>"; };
 		9C4BBE522A400E450071C84F /* FileUtilTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileUtilTests.swift; sourceTree = "<group>"; };
+		9C69A0002C0AA0010069A049 /* SubjectExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubjectExtensionTests.swift; sourceTree = "<group>"; };
 		9C4BBE552A400E450071C84F /* video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = video.mp4; sourceTree = "<group>"; };
 		9C4BBE562A400E450071C84F /* MockVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockVideo.swift; sourceTree = "<group>"; };
 		9C4BBE572A400E450071C84F /* MockFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManager.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				9C4BBE512A400E450071C84F /* AlbumUtilTests.swift */,
 				9C4BBE522A400E450071C84F /* FileUtilTests.swift */,
 				9CD12FFB2A454AC40012D1E1 /* GeneratorTests.swift */,
+				9C69A0002C0AA0010069A049 /* SubjectExtensionTests.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -464,6 +467,7 @@
 				9CD12FFC2A454AC40012D1E1 /* GeneratorTests.swift in Sources */,
 				9C4BBE5E2A400E450071C84F /* AlbumUtilTests.swift in Sources */,
 				9C4BBE5F2A400E450071C84F /* FileUtilTests.swift in Sources */,
+				9C69A0012C0AA0010069A049 /* SubjectExtensionTests.swift in Sources */,
 				9C4BBE622A400E450071C84F /* MockFileManager.swift in Sources */,
 				9C4BBE5B2A400E450071C84F /* SessionTunerTests.swift in Sources */,
 				9C4BBE642A400E450071C84F /* FileOutputProcessorTests.swift in Sources */,

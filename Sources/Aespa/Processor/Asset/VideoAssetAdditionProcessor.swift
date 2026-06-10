@@ -8,7 +8,7 @@
 import Photos
 import Foundation
 
-struct VideoAssetAdditionProcessor: AespaAssetProcessing {
+nonisolated struct VideoAssetAdditionProcessor: AespaAssetProcessing, Sendable {
     let filePath: URL
 
     func process<

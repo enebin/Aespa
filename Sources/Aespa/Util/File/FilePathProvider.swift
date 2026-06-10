@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct FilePathProvider {
+nonisolated struct FilePathProvider {
     static func requestTemporaryFilePath(
         from fileManager: FileManager = .default,
         fileName: String,

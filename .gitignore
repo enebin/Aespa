@@ -9,6 +9,7 @@ DerivedData/
 .netrc
 
 Scripts/cuckoo_generator
+Scripts/cuckoonator
 Scripts/run
 
 Tests/Tests/Mock/GeneratedMocks.swift

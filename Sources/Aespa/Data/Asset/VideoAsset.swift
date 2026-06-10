@@ -11,7 +11,7 @@ import SwiftUI
 import AVFoundation
 
 /// Struct to represent a video asset saved in the album.
-public struct VideoAsset {
+nonisolated public struct VideoAsset: @unchecked Sendable {
     /// The associated `PHAsset` object from the Photos framework.
     public let phAsset: PHAsset
     
@@ -28,16 +28,16 @@ public struct VideoAsset {
     }
 }
 
-extension VideoAsset: Identifiable {
+nonisolated extension VideoAsset: Identifiable {
     /// ID is determined by the local identifier of the `PHAsset`.
     public var id: String {
         phAsset.localIdentifier
     }
 }
 
-extension VideoAsset: Equatable {}
+nonisolated extension VideoAsset: Equatable {}
 
-extension VideoAsset: Comparable {
+nonisolated extension VideoAsset: Comparable {
     /// Defines the logic to compare two `VideoAsset` instances.
     public static func < (lhs: VideoAsset, rhs: VideoAsset) -> Bool {
         creationDateOfAsset(lhs.phAsset) > creationDateOfAsset(rhs.phAsset)
@@ -48,7 +48,7 @@ extension VideoAsset: Comparable {
     }
 }
 
-public extension VideoAsset {
+nonisolated public extension VideoAsset {
     /// Transforms a `VideoAsset` to a `VideoFile`.
     var toVideoFile: VideoFile {
         VideoFile(

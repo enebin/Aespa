@@ -11,20 +11,20 @@ import Foundation
 import AVFoundation
 
 /// A type representing a closure that handles a completion event with potential errors.
-public typealias CompletionHandler = (Result<Void, Error>) -> Void
+public typealias CompletionHandler = @Sendable (Result<Void, Error>) -> Void
 
 /// A type representing a closure that handles a result of an operation
 /// that produces a value of type `T`, with potential errors.
-public typealias ResultHandler<T> = (Result<T, Error>) -> Void
+public typealias ResultHandler<T> = @Sendable (Result<T, Error>) -> Void
 
 // MARK: - Contexts
 /// A protocol that defines the common behaviors and properties that all context types must implement.
 ///
 /// It includes methods to control the quality, position, orientation, and auto-focusing behavior
 /// of the session. It also includes the ability to adjust the zoom level of the session.
-public protocol CommonContext {
+nonisolated public protocol CommonContext: Sendable {
     ///
-    associatedtype CommonContextType: CommonContext & VideoContext & PhotoContext
+    associatedtype CommonContextType: CommonContext & VideoContext & PhotoContext & Sendable
     ///
     var underlyingCommonContext: CommonContextType { get }
     
@@ -138,9 +138,9 @@ public protocol CommonContext {
 /// It adds video-specific capabilities such as checking if
 /// the session is currently recording or muted, and controlling video recording,
 /// stabilization, torch mode, and fetching recorded video files.
-public protocol VideoContext {
+nonisolated public protocol VideoContext: Sendable {
     ///
-    associatedtype VideoContextType: VideoContext
+    associatedtype VideoContextType: VideoContext & Sendable
     ///
     var underlyingVideoContext: VideoContextType { get }
 
@@ -179,7 +179,7 @@ public protocol VideoContext {
     ///
     /// - Parameter onComplete: A closure to be called after the recording has stopped
     ///  and the video file is saved or failed.
-    func stopRecording(_ onComplete: @escaping (Result<VideoFile, Error>) -> Void)
+    func stopRecording(_ onComplete: @escaping ResultHandler<VideoFile>)
     
     /// Applies a specified configuration or action to the video session context.
     ///
@@ -262,9 +262,9 @@ public protocol VideoContext {
 /// It adds photo-specific capabilities such as accessing
 /// current photo settings, controlling flash mode, and red-eye reduction, capturing
 /// photo, and fetching captured photo files.
-public protocol PhotoContext {
+nonisolated public protocol PhotoContext: Sendable {
     ///
-    associatedtype PhotoContextType: PhotoContext
+    associatedtype PhotoContextType: PhotoContext & Sendable
     ///
     var underlyingPhotoContext: PhotoContextType { get }
     
@@ -292,7 +292,7 @@ public protocol PhotoContext {
     ///     `Failure` contains an `Error` object. By default, the closure does nothing.
     func capturePhoto(
         autoVideoOrientationEnabled: Bool,
-        _ completionHandler: @escaping (Result<PhotoFile, Error>) -> Void
+        _ completionHandler: @escaping ResultHandler<PhotoFile>
     )
     
     /// Configures the photo session context based on the specified option.

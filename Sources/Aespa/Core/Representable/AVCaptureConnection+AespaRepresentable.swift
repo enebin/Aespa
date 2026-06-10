@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-protocol AespaCaptureConnectionRepresentable {
+nonisolated protocol AespaCaptureConnectionRepresentable {
     var videoOrientation: AVCaptureVideoOrientation { get set }
     var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode { get set }
     var isVideoOrientationSupported: Bool { get }
@@ -17,7 +17,7 @@ protocol AespaCaptureConnectionRepresentable {
     func stabilizationMode(to mode: AVCaptureVideoStabilizationMode)
 }
 
-extension AVCaptureConnection: AespaCaptureConnectionRepresentable {
+nonisolated extension AVCaptureConnection: AespaCaptureConnectionRepresentable {
     func orientation(to orientation: AVCaptureVideoOrientation) {
         self.videoOrientation = orientation
     }

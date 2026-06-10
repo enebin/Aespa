@@ -8,12 +8,12 @@
 import Foundation
 import AVFoundation
 
-protocol AespaPhotoOutputRepresentable {
+nonisolated protocol AespaPhotoOutputRepresentable {
     func capturePhoto(with: AVCapturePhotoSettings, delegate: AVCapturePhotoCaptureDelegate)
     func getConnection(with mediaType: AVMediaType) -> AespaCaptureConnectionRepresentable?
 }
 
-extension AVCapturePhotoOutput: AespaPhotoOutputRepresentable {
+nonisolated extension AVCapturePhotoOutput: AespaPhotoOutputRepresentable {
     func getConnection(with mediaType: AVMediaType) -> AespaCaptureConnectionRepresentable? {
         return connection(with: mediaType)
     }

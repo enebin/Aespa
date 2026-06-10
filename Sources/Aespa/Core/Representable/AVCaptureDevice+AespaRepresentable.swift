@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-protocol AespaCaptureDeviceRepresentable {
+nonisolated protocol AespaCaptureDeviceRepresentable {
     var hasTorch: Bool { get }
     var focusMode: AVCaptureDevice.FocusMode { get set }
     var isSubjectAreaChangeMonitoringEnabled: Bool { get set }
@@ -26,7 +26,7 @@ protocol AespaCaptureDeviceRepresentable {
     func setTorchModeOn(level torchLevel: Float) throws
 }
 
-extension AVCaptureDevice: AespaCaptureDeviceRepresentable {
+nonisolated extension AVCaptureDevice: AespaCaptureDeviceRepresentable {
     func torchMode(_ torchMode: TorchMode) {
         switch torchMode {
         case .off:

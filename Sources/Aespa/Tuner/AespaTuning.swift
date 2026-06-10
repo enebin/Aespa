@@ -14,7 +14,7 @@ import AVFoundation
 ///
 /// - Warning: Do not `begin` or `commit` session change yourself. It can cause deadlock.
 ///     Instead, use `needTransaction` flag
-public protocol AespaSessionTuning {
+nonisolated public protocol AespaSessionTuning: Sendable {
     /// Determines if a transaction is required for this particular tuning operation.
     /// Default is `true`, indicating a transaction is generally needed.
     var needTransaction: Bool { get }
@@ -30,24 +30,24 @@ public protocol AespaSessionTuning {
 }
 
 /// Default implementation for `AespaSessionTuning`.
-public extension AespaSessionTuning {
+nonisolated public extension AespaSessionTuning {
     /// By default, tuning operations need a transaction. This can be overridden by specific tuners
     /// if a transaction isn't necessary for their operation.
     var needTransaction: Bool { true }
 }
 
 /// AespaConnectionTuning
-protocol AespaConnectionTuning {
+nonisolated protocol AespaConnectionTuning: Sendable {
     func tune<T: AespaCaptureConnectionRepresentable>(_ connection: T) throws
 }
 
 /// - Warning: Do not `lock` or `release` device yourself. It can cause deadlock.
 ///     Instead, use `needLock` flag
-protocol AespaDeviceTuning {
+nonisolated protocol AespaDeviceTuning: Sendable {
     var needLock: Bool { get }
     func tune<T: AespaCaptureDeviceRepresentable>(_ device: T) throws
 }
 
-extension AespaDeviceTuning {
+nonisolated extension AespaDeviceTuning {
     var needLock: Bool { true }
 }

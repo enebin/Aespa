@@ -13,18 +13,23 @@ import AVFoundation
 
 /// `AespaVideoContext` is an open class that provides a context for video recording operations.
 /// It has methods and properties to handle the video recording and settings.
-public class AespaVideoContext<Common: CommonContext> {
+nonisolated public class AespaVideoContext<Common: CommonContext>: @unchecked Sendable {
     private let commonContext: Common
     private let coreSession: AespaCoreSession
     private let albumManager: AespaCoreAlbumManager
     private let option: AespaOption
 
     private let recorder: AespaCoreRecorder
+    private let stateLock = NSRecursiveLock()
+    private var isRecordingStorage = false
     
     private let videoFileBufferSubject: CurrentValueSubject<Result<VideoFile, Error>?, Never>
 
     /// A Boolean value that indicates whether the session is currently recording video.
-    public var isRecording: Bool
+    public var isRecording: Bool {
+        get { withStateLock { isRecordingStorage } }
+        set { withStateLock { isRecordingStorage = newValue } }
+    }
 
     init(
         commonContext: Common,
@@ -41,8 +46,6 @@ public class AespaVideoContext<Common: CommonContext> {
         
         self.videoFileBufferSubject = .init(nil)
         
-        self.isRecording = false
-        
         // Add first video file to buffer if it exists
         if option.asset.synchronizeWithLocalAlbum {
             Task(priority: .utility) {
@@ -50,13 +53,21 @@ public class AespaVideoContext<Common: CommonContext> {
                     return
                 }
                 
-                videoFileBufferSubject.send(.success(firstVideoAsset.toVideoFile))
+                videoFileBufferSubject.sendOnMainThread(.success(firstVideoAsset.toVideoFile))
             }
         }
     }
 }
 
-extension AespaVideoContext: VideoContext {
+nonisolated private extension AespaVideoContext {
+    func withStateLock<T>(_ work: () throws -> T) rethrows -> T {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return try work()
+    }
+}
+
+nonisolated extension AespaVideoContext: VideoContext {
     public var underlyingVideoContext: AespaVideoContext {
         self
     }
@@ -67,12 +78,13 @@ extension AespaVideoContext: VideoContext {
     
     public var videoFilePublisher: AnyPublisher<Result<VideoFile, Error>, Never> {
         videoFileBufferSubject
+            .compactMap({ $0 })
+            .receive(on: DispatchQueue.main)
             .handleEvents(receiveOutput: { status in
                 if case .failure(let error) = status {
                     Logger.log(error: error)
                 }
             })
-            .compactMap({ $0 })
             .eraseToAnyPublisher()
     }
     
@@ -94,6 +106,7 @@ extension AespaVideoContext: VideoContext {
         Task(priority: .utility) {
             do {
                 let videoFilePath = try await recorder.stopRecording()
+                isRecording = false
                 
                 if option.asset.synchronizeWithLocalAlbum {
                     try await albumManager.addToAlbum(filePath: videoFilePath)
@@ -101,9 +114,8 @@ extension AespaVideoContext: VideoContext {
                 }
                 
                 let videoFile = VideoFileGenerator.generate(with: videoFilePath, date: Date())
-                videoFileBufferSubject.send(.success(videoFile))
+                videoFileBufferSubject.sendOnMainThread(.success(videoFile))
                 
-                isRecording = false
                 onCompelte(.success(videoFile))
             } catch let error {
                 Logger.log(error: error)
@@ -160,7 +172,7 @@ extension AespaVideoContext: VideoContext {
 }
 
 // MARK: - Deprecated methods
-extension AespaVideoContext {
+nonisolated extension AespaVideoContext {
     @available(*, deprecated, message: "Please use `video` instead.")
     @discardableResult
     public func mute(_ onComplete: @escaping CompletionHandler = { _ in }) -> AespaVideoContext {

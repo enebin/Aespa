@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class AespaEventManager {
+nonisolated class AespaEventManager: @unchecked Sendable {
     let videoAssetEventPublihser = PassthroughSubject<AssetEvent, Never>()
     let photoAssetEventPublihser = PassthroughSubject<AssetEvent, Never>()
 }

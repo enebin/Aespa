@@ -11,7 +11,7 @@ import AVFoundation
 /// `AespaCoreSessionRepresentable` defines a set of requirements for classes or
 /// structs that interact with `AVCaptureDeviceInput` and
 /// `AVCaptureMovieFileOutput` to setup and configure a camera session for recording videos.
-public protocol AespaCoreSessionRepresentable {
+nonisolated public protocol AespaCoreSessionRepresentable {
     /// The `AVCaptureSession` that coordinates the flow of data from AV input devices to outputs.
     var avCaptureSession: AVCaptureSession { get }
 
@@ -69,7 +69,7 @@ public protocol AespaCoreSessionRepresentable {
     func videoQuality(to preset: AVCaptureSession.Preset) throws
 }
 
-extension AespaCoreSession: AespaCoreSessionRepresentable {
+nonisolated extension AespaCoreSession: AespaCoreSessionRepresentable {
     // MARK: - Vars
     var avCaptureSession: AVCaptureSession { self }
 
@@ -127,14 +127,9 @@ extension AespaCoreSession: AespaCoreSessionRepresentable {
     }
 
     func removeMovieInput() {
-        guard
-            let videoDevice = AVCaptureDevice.default(for: AVMediaType.video),
-            let videoInput = try? AVCaptureDeviceInput(device: videoDevice)
-        else {
-            return
+        if let videoDeviceInput {
+            self.removeInput(videoDeviceInput)
         }
-
-        self.removeInput(videoInput)
     }
 
     func addAudioInput() throws {

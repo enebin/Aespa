@@ -10,11 +10,11 @@ import Foundation
 import AVFoundation
 
 /// Capturing a photo and responsible for notifying the result
-class AespaCoreCamera: NSObject {
+nonisolated class AespaCoreCamera: NSObject, @unchecked Sendable {
     private let core: AespaCoreSession
 
-    private let fileIOResultSubject = PassthroughSubject<Result<AVCapturePhoto, Error>, Never>()
-    private var fileIOResultSubsciption: Cancellable?
+    private let captureLock = NSRecursiveLock()
+    private var captureContinuations: [Int64: CheckedContinuation<AVCapturePhoto, Error>] = [:]
 
     init(core: AespaCoreSession) {
         self.core = core
@@ -29,42 +29,60 @@ class AespaCoreCamera: NSObject {
     }
 }
 
-extension AespaCoreCamera {
+nonisolated extension AespaCoreCamera {
     func capture(
         setting: AVCapturePhotoSettings,
         autoVideoOrientationEnabled: Bool
     ) async throws -> AVCapturePhoto {
         let processor = CapturePhotoProcessor(setting: setting, delegate: self, autoVideoOrientationEnabled: autoVideoOrientationEnabled)
-        try run(processor: processor)
-
         return try await withCheckedThrowingContinuation { continuation in
-            fileIOResultSubsciption = fileIOResultSubject
-                .subscribe(on: DispatchQueue.global())
-                .sink(receiveValue: { result in
-                    switch result {
-                    case .success(let photo):
-                        continuation.resume(returning: photo)
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    }
-                })
+            setContinuation(continuation, for: setting.uniqueID)
+            
+            do {
+                try run(processor: processor)
+            } catch {
+                _ = removeContinuation(for: setting.uniqueID)
+                continuation.resume(throwing: error)
+            }
         }
     }
 }
 
-extension AespaCoreCamera: AVCapturePhotoCaptureDelegate {
+nonisolated extension AespaCoreCamera: AVCapturePhotoCaptureDelegate {
     func photoOutput(
         _ output: AVCapturePhotoOutput,
         didFinishProcessingPhoto photo: AVCapturePhoto,
         error: Error?
     ) {
         Logger.log(message: "Photo captured")
+        
+        guard let continuation = removeContinuation(for: photo.resolvedSettings.uniqueID) else {
+            return
+        }
 
         if let error {
-            fileIOResultSubject.send(.failure(error))
             Logger.log(error: error)
+            continuation.resume(throwing: error)
         } else {
-            fileIOResultSubject.send(.success(photo))
+            nonisolated(unsafe) let uncheckedPhoto = photo
+            continuation.resume(returning: uncheckedPhoto)
         }
+    }
+}
+
+nonisolated private extension AespaCoreCamera {
+    func setContinuation(
+        _ continuation: CheckedContinuation<AVCapturePhoto, Error>,
+        for uniqueID: Int64
+    ) {
+        captureLock.lock()
+        captureContinuations[uniqueID] = continuation
+        captureLock.unlock()
+    }
+    
+    func removeContinuation(for uniqueID: Int64) -> CheckedContinuation<AVCapturePhoto, Error>? {
+        captureLock.lock()
+        defer { captureLock.unlock() }
+        return captureContinuations.removeValue(forKey: uniqueID)
     }
 }

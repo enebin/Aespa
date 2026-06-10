@@ -1,14 +1,17 @@
 #!/bin/bash
 
-ROOT_PATH="../"
-ROOT_DIR_NAME=$(basename "$(cd "$ROOT_PATH" && pwd)")
-if [ "$ROOT_DIR_NAME" != "Aespa" ]; then
-    echo "❌ Error: Script's not called in proper path."
+ROOT_PATH=$(git rev-parse --show-toplevel)
+if [ -z "$ROOT_PATH" ]; then
+    echo "❌ Error: Could not find repository root."
     exit 1
 fi
 
 if [ ! -f run ]; then
     curl -Lo run https://raw.githubusercontent.com/Brightify/Cuckoo/master/run && chmod +x run
+fi
+
+if ! grep -q "cuckoo_generator" run; then
+    perl -pi -e 's/grep "\$GENERATOR_NAME"/grep -E "\$GENERATOR_NAME|cuckoo_generator"/' run
 fi
 
 PROJECT_NAME="Aespa"

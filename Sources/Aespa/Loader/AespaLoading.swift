@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol AespaAssetLoading {
+nonisolated protocol AespaAssetLoading: Sendable {
     associatedtype ReturnType
     
     func loadAssets<Library, Collection>(_ library: Library, _ collection: Collection) throws -> ReturnType

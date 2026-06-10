@@ -11,7 +11,7 @@ import SwiftUI
 import Foundation
 
 /// Struct to represent a photo asset saved in the album.
-public struct PhotoAsset {
+nonisolated public struct PhotoAsset: @unchecked Sendable {
     /// The associated `PHAsset` object from the Photos framework.
     public let asset: PHAsset
     
@@ -19,15 +19,15 @@ public struct PhotoAsset {
     public let uiimage: UIImage
 }
 
-extension PhotoAsset: Identifiable {
+nonisolated extension PhotoAsset: Identifiable {
     public var id: String {
         asset.localIdentifier
     }
 }
 
-extension PhotoAsset: Equatable {}
+nonisolated extension PhotoAsset: Equatable {}
 
-extension PhotoAsset: Comparable {
+nonisolated extension PhotoAsset: Comparable {
     public static func < (lhs: PhotoAsset, rhs: PhotoAsset) -> Bool {
         creationDateOfAsset(lhs.asset) > creationDateOfAsset(rhs.asset)
     }
@@ -37,7 +37,7 @@ extension PhotoAsset: Comparable {
     }
 }
 
-public extension PhotoAsset {
+nonisolated public extension PhotoAsset {
     /// Transforms a `PhotoAsset` to a `PhotoFile`.
     var toPhotoFile: PhotoFile {
         PhotoFile(
