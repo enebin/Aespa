@@ -54,7 +54,7 @@ nonisolated public protocol AespaCoreSessionRepresentable {
     /// Throws an error if the operation fails.
     func addMovieFileOutput() throws
 
-    /// Adds photo file output to the session.
+    /// Adds photo file output to the session, allowing captures up to `.quality` prioritization.
     /// Throws an error if the operation fails.
     func addCapturePhotoOutput() throws
 
@@ -179,6 +179,7 @@ nonisolated extension AespaCoreSession: AespaCoreSessionRepresentable {
         }
 
         self.addOutput(photoOutput)
+        photoOutput.maxPhotoQualityPrioritization = .quality
     }
 
     // MARK: - Option related

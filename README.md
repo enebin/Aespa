@@ -201,7 +201,7 @@ import Aespa
 <!-- INSERT_CODE: GETTING_STARTED -->
 ```swift
 let option = AespaOption(albumName: "YOUR_ALBUM_NAME")
-let aespaSession = Aespa.session(with: option)
+self.aespaSession = Aespa.session(with: option)
 ```
 <!-- INSERT_CODE: END -->
 
